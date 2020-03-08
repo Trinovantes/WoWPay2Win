@@ -1,0 +1,91 @@
+@padding: 20px;
+
+#container{
+    display: flex;
+}
+
+#ad{
+    text-align: center;
+}
+
+#filters{
+    background: #eee;
+    width: 400px + (@padding * 2);
+    border-right: 1px solid #ccc;
+
+    .group{
+        border-bottom: 1px solid #ccc;
+        padding: @padding;
+
+        h2{
+            font-size: 30px;
+            font-weight: bold;
+            line-height: 40px;
+            margin-bottom: 10px;
+        }
+
+        ul{
+            margin: 0;
+            padding: 0;
+
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+
+            li{
+                background: #ddd;
+                border-radius: 3px;
+                cursor: pointer;
+                list-style: none;
+                padding: 5px 10px;
+                transition: 0.15s;
+
+                &:hover{
+                    background-color: #ccc;
+                }
+
+                &.active{
+                    background-color: #333;
+                    color: #fff;
+                }
+            }
+        }
+
+        .btn-secondary.active{
+            background-color: #333;
+        }
+    }
+
+    p{
+        font-size: 13px;
+        line-height: 20px;
+        margin-top: @padding / 2;
+        margin-bottom: 0;
+
+        &:first-child{
+            margin-top: 0;
+        }
+    }
+}
+
+#auctions{
+    flex: 1;
+
+    #loading{
+        display: none;
+        margin: @padding * 2;
+        text-align: center;
+    }
+
+    td.price{
+        text-align: right;
+    }
+
+    tr.error{
+        background: none;
+
+        .alert{
+            margin: 0;
+        }
+    }
+}
