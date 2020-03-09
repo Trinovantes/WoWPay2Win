@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>WoW Pay2Win</title>
-    <meta name="description" content="All you need to win in World of Warcraft is a couple million gold!">
+    <meta name="description" content="Tired of being bad in World of Warcraft? All you need to do is swipe your credit card and buy a couple million gold!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="og:image" itemprop="image" content="/img/token.jpg">
 
     <link rel="icon" href="/img/favicon.ico">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -20,40 +21,69 @@
     <div class="group" id="regionFilter">
         <h2>Region Filter</h2>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary" for="regionUS">
+            <label class="btn btn-light" for="regionUS">
                 <input type="radio" name="regionSelector" id="regionUS" value="us">US</input>
             </label>
-            <label class="btn btn-secondary" for="regionEU">
+            <label class="btn btn-light" for="regionEU">
                 <input type="radio" name="regionSelector" id="regionEU" value="eu">EU</input>
             </label>
-            <label class="btn btn-secondary" for="regionTW">
+            <label class="btn btn-light" for="regionTW">
                 <input type="radio" name="regionSelector" id="regionTW" value="tw">TW</input>
             </label>
-            <label class="btn btn-secondary" for="regionKR">
+            <label class="btn btn-light" for="regionKR">
                 <input type="radio" name="regionSelector" id="regionKR" value="kr">KR</input>
             </label>
         </div>
         <p id="lastUpdate">Last update: <time>N/A</time></p>
     </div>
-    <div class="group" id="ad">
-        <img src="https://place-hold.it/300x250">
-        <p>Yeah if you could disable your adblocker, that would be great.</p>
-    </div>
     <div class="group" id="boeFilter">
         <h2>BoE Filter</h2>
-        <ul></ul>
+        <div class="btn-group-toggle filter-grid" data-toggle="buttons">
+            {{#each config.gearData}}
+            <label class="btn btn-light">
+                <input type="checkbox" data-item-id="{{ itemId }}">{{ name.us }}
+            </label>
+            {{/each}}
+        </div>
+    </div>
+    <div class="group" id="ilvlFilter">
+        <h2>Level Filter</h2>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            {{#each config.t26GearLevels}}
+            <label class="btn btn-light">
+                <input type="checkbox" data-item-level="{{ this }}">{{ this }}
+            </label>
+            {{/each}}
+        </div>
     </div>
     <div class="group" id="socketFilter">
         <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary" for="socketSelector">
+            <label class="btn btn-light" for="socketSelector">
                 <input type="checkbox" id="socketSelector">Only Gear with Sockets
             </label>
         </div>
-        <p>Does not include gear with guaranteed sockets. For example, enabling this option will only show rings with two sockets.</p>
+        <p>Does not include gear with guaranteed sockets. For example, this option will only show Ny'alotha rings with two sockets.</p>
     </div>
     <div class="group" id="corruptionFilter">
         <h2>Corruption Filter</h2>
-        <ul></ul>
+        <div class="btn-group-toggle filter-grid" data-toggle="buttons">
+            {{#each config.t26Corruptions}}
+            <label class="btn btn-light">
+                {{#if this.[1] }}
+                <input type="checkbox" data-corruption-id="{{ this.[1] }}">{{ this.[2] }}
+                {{else}}
+                <input type="checkbox" data-corruption-id="{{ this.[0] }}">{{ this.[2] }}
+                {{/if}}
+            </label>
+            {{/each}}
+        </div>
+    </div>
+    <div class="group">
+        <a href="https://www.patreon.com/bePatron?u=10301737" data-patreon-widget-type="become-patron-button">Become a Patron!</a>
+        <script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
+        <p>I also accept donations in the form of Jaina/N'Zoth mounts in the US region. Created by the now-retired Bangall-Turalyon. <a href="https://www.wowprogress.com/guild/us/turalyon/Occasional+Excellence">&lt;Occassional Excellence&gt;</a> on US-Turalyon is currently recruiting.</p>
+        <p>Why is China not supported? Unfortunately, the Chinese API is blocked for users without a Chinese account.</p>
+        <p>&copy; 2020 WoWPay2Win.com </p>
     </div>
 </div>
 

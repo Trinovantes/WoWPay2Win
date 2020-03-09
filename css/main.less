@@ -1,3 +1,6 @@
+@grey: rgba(0,0,0,.05);
+@dark-grey: #ccc;
+@border: 1px solid @dark-grey;
 @padding: 20px;
 
 #container{
@@ -9,12 +12,12 @@
 }
 
 #filters{
-    background: #eee;
+    background: @grey;
     width: 400px + (@padding * 2);
-    border-right: 1px solid #ccc;
+    border-right: @border;
 
     .group{
-        border-bottom: 1px solid #ccc;
+        border-bottom: @border;
         padding: @padding;
 
         h2{
@@ -24,35 +27,23 @@
             margin-bottom: 10px;
         }
 
-        ul{
-            margin: 0;
-            padding: 0;
-
+        div.filter-grid{
             display: grid;
             grid-gap: 10px;
             grid-template-columns: repeat(2, 1fr);
 
-            li{
-                background: #ddd;
-                border-radius: 3px;
-                cursor: pointer;
-                list-style: none;
-                padding: 5px 10px;
-                transition: 0.15s;
-
-                &:hover{
-                    background-color: #ccc;
-                }
-
-                &.active{
-                    background-color: #333;
-                    color: #fff;
-                }
+            .btn{
+                text-align: left;
             }
         }
 
-        .btn-secondary.active{
-            background-color: #333;
+        .btn-light{
+            border-color: @dark-grey;
+        }
+
+        .btn-light.active{
+            background-color: #111;
+            color: #fff;
         }
     }
 
@@ -75,6 +66,10 @@
         display: none;
         margin: @padding * 2;
         text-align: center;
+    }
+
+    th{
+        cursor: pointer;
     }
 
     td.price{

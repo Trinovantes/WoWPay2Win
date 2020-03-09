@@ -287,7 +287,11 @@ class ConnectedRealm():
                 price = 0
 
             bonusIds = auction['item']['bonus_lists']
-            self.auctions.append(GearAuction(itemId, price, bonusIds))
+            gearAuction = GearAuction(itemId, price, bonusIds)
+
+            # Only keep auctions that have corruptions
+            if gearAuction.corruption:
+                self.auctions.append(gearAuction)
 
         logger.info('Fetched {} auctions for realm {}'.format(len(self.auctions), self.connectedRealmId))
 

@@ -2,6 +2,7 @@
 
 import Config from '../dist/data/config.json';
 import moment from 'moment';
+import 'jquery-tablesort';
 
 //-----------------------------------------------------------------------------
 // Update
@@ -16,11 +17,11 @@ function update() {
 }
 
 function updateTable() {
-    let $table = $('#auctions table tbody');
-    $table.empty();
+    let $table = $('#auctions table');
+    let $tbody = $table.find('tbody');
+    $tbody.empty();
 
     let showError = function(error) {
-        console.log(error);
         let $tr = $('<tr>');
         $tr.addClass('error');
 
@@ -31,7 +32,7 @@ function updateTable() {
         $error.text(error);
         $error.addClass('alert alert-warning');
 
-        $table.append($tr);
+        $tbody.append($tr);
         $tr.append($td);
         $td.append($error);
     }
@@ -47,8 +48,9 @@ function updateTable() {
         }
 
         let regionSlug = $region.val();
-        let boeFilter = $('#boeFilter ul li.active').get().map(el => $(el).data('item-id'));
-        let corruptionFilter = $('#corruptionFilter ul li.active').get().map(el => $(el).data('corruption-id'));
+        let boeFilter = $('#boeFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-id'));
+        let ilvlFilter = $('#ilvlFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-level'));
+        let corruptionFilter = $('#corruptionFilter input[type="checkbox"]:checked').get().map(el => $(el).data('corruption-id'));
         let onlySocket = $('#socketSelector').is(':checked');
 
         let dataFile = `data/region-${regionSlug}-auctions.json`;
@@ -68,6 +70,10 @@ function updateTable() {
             let auctions = data.auctions;
             let filteredAuctions = auctions.filter((auction) => {
                 if (boeFilter.length > 0 && !boeFilter.includes(auction.itemId)) {
+                    return false;
+                }
+
+                if (ilvlFilter.length > 0 && !ilvlFilter.includes(auction.level)) {
                     return false;
                 }
 
@@ -95,7 +101,7 @@ function updateTable() {
                     }
                 };
 
-                return sort(a, b, 'itemId') || sort(b, a, 'level') || sort(a, b, 'price') || sort(b, a, 'corruption') || sort(a, b, 'realm');
+                return sort(a, b, 'price') || sort(b, a, 'level') || sort(a, b, 'corruption') || sort(a, b, 'realm') || sort(a, b, 'itemId');
             });
 
             for (let i = 0; i < filteredAuctions.length; i++) {
@@ -111,11 +117,16 @@ function updateTable() {
                     $link.attr('href', `https://www.wowhead.com/item=${a.itemId}&bonus=${a.bonuses.join(':')}`);
                 }
 
-                let $level = $(`<td>${a.level}</td>`);
+                let $level = $('<td>');
                 $row.append($level);
+                $level.text(a.level);
 
-                let $price = $(`<td class="price">${new Intl.NumberFormat().format(a.price)}</td>`);
+                let $price = $('<td>');
                 $row.append($price);
+                $price.addClass('price');
+                $price.data('sort-value', a.price);
+                let price = (a.price == 0) ? 'No Buyout' : new Intl.NumberFormat().format(a.price);
+                $price.text(price);
 
                 let $corruption = $('<td>');
                 $row.append($corruption);
@@ -141,9 +152,10 @@ function updateTable() {
                 let $realm = `<td>${a.realm}</td>`;
                 $row.append($realm);
 
-                $table.append($row);
+                $tbody.append($row);
             }
 
+            $table.tablesort();
             resolve();
         });
     });
@@ -175,43 +187,22 @@ for (let i = 0; i < Corruptions.length; i++) {
 // Setup
 //-----------------------------------------------------------------------------
 
-function updateItemNames(regionSlug = 'us') {
-    let $container = $('#boeFilter ul');
-    $container.empty();
-
-    for (let i = 0; i < Items.length; i++) {
-        let option = `<li data-item-id="${Items[i].itemId}">${Items[i].name[regionSlug]}</li>`;
-        $container.append(option)
-    }
-}
-
-function updateCorruptionNames(regionSlug = 'us') {
-    let $container = $('#corruptionFilter ul');
-    $container.empty();
-
-    for (let i = 0; i < Corruptions.length; i++) {
-        let effectId = Corruptions[i][1] || Corruptions[i][0];
-        let option = `<li data-corruption-id="${effectId}">${Corruptions[i][2]}</li>`;
-        $container.append(option)
-    }
-}
-
 $.when($.ready).then(function() {
-    updateItemNames();
-    updateCorruptionNames();
     update();
 
     $('#regionFilter input:radio').click(function() {
         update();
     });
 
-    $('#boeFilter li').click(function() {
-        $(this).toggleClass('active');
+    $('#boeFilter input:checkbox').click(function() {
         update();
     });
 
-    $('#corruptionFilter li').click(function() {
-        $(this).toggleClass('active');
+    $('#ilvlFilter input:checkbox').click(function() {
+        update();
+    });
+
+    $('#corruptionFilter input:checkbox').click(function() {
         update();
     });
 
