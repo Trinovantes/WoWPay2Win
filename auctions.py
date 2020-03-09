@@ -29,13 +29,13 @@ CLIENT_ID     = '75775a8f0c364b6d980cb2bdf7c22105'
 CLIENT_SECRET = 'g5AM5o5cvL7eCPb1TFHYLwqd60v78TNv'
 
 REGIONS = [
-    ('us', 'en_US'),
-    ('eu', 'en_GB'),
-    ('kr', 'ko_KR'),
-    ('tw', 'zh_TW'),
+    ('us', 'en_US', 'https://us.api.blizzard.com', 'https://us.battle.net/oauth/token'),
+    ('eu', 'en_GB', 'https://eu.api.blizzard.com', 'https://eu.battle.net/oauth/token'),
+    ('tw', 'zh_TW', 'https://tw.api.blizzard.com', 'https://apac.battle.net/oauth/token'),
+    ('kr', 'ko_KR', 'https://kr.api.blizzard.com', 'https://apac.battle.net/oauth/token'),
+    # ('cn', 'zh_CN', 'https://gateway.battlenet.com.cn', 'https://www.battlenet.com.cn/oauth/token'), # Chinese API requires a Chinese bnet account
 ]
 
-API_HOST = 'https://{}.api.blizzard.com'
 REALMS_ENDPOINT   = '/data/wow/connected-realm/index'
 REALM_ENDPOINT    = '/data/wow/connected-realm/{}'
 AUCTIONS_ENDPOINT = '/data/wow/connected-realm/{}/auctions'
@@ -56,6 +56,8 @@ T26_BOE_IDS = [
     175007,
     175006,
 ]
+
+T26_GEAR_LEVELS = [430 + difficulty * 15 for difficulty in range(4)]
 
 T26_CORRUPTIONS = [
     # Some of these bundle into same id
@@ -129,21 +131,36 @@ T26_CORRUPTIONS = [
 
 
 class Region():
-    def __init__(self, slug, locale):
-        self.slug = slug
+    def __init__(self, slug, locale, apiHost, tokenEndpoint):
         self.cacheFile = '{}/region-{}.pkl'.format(CACHE_DIR, slug)
-        self.host = API_HOST.format(slug)
+
+        self.slug = slug
         self.locale = locale
+        self.apiHost = apiHost
+        self.tokenEndpoint = tokenEndpoint
+
+        # To be fetched from API
+        self.accessToken = '';
         self.connectedRealms = []
 
 
-    def fetchConnectedRealms(self, accessToken):
+    def fetchAccessToken(self):
+        response = requests.post(self.tokenEndpoint, auth=(CLIENT_ID, CLIENT_SECRET), data={'grant_type':'client_credentials'}, timeout=MAX_REQUEST_TIME)
+        if response.status_code != 200:
+            debugResponse(response)
+            raise Exception('Failed to obtain access token')
+
+        data = json.loads(response.text)
+        self.accessToken = data['access_token']
+
+
+    def fetchConnectedRealms(self):
         if self.loadFromCache():
             return
 
-        realmsEndpoint = '{}{}'.format(self.host, REALMS_ENDPOINT)
+        realmsEndpoint = '{}{}'.format(self.apiHost, REALMS_ENDPOINT)
         headers = {
-            'Authorization': 'Bearer {}'.format(accessToken)
+            'Authorization': 'Bearer {}'.format(self.accessToken)
         }
         params = {
             'region': self.slug,
@@ -159,16 +176,16 @@ class Region():
         data = json.loads(response.text)
 
         for connectedRealmEndpoint in data['connected_realms']:
-            connectedRealm = ConnectedRealm.fetch(accessToken, self, connectedRealmEndpoint['href'])
+            connectedRealm = ConnectedRealm.fetchConnectedRealm(self, connectedRealmEndpoint['href'])
             self.connectedRealms.append(connectedRealm)
             logger.info('Fetched connected realm {}'.format(connectedRealm))
 
         self.saveToCache()
 
 
-    def fetchAuctions(self, accessToken):
+    def fetchAuctions(self):
         for connectedRealm in self.connectedRealms:
-            connectedRealm.fetchAuctions(accessToken, self)
+            connectedRealm.fetchAuctions(self)
 
 
     def saveToCache(self):
@@ -187,7 +204,7 @@ class Region():
 
             assert (self.slug      == region.slug)
             assert (self.cacheFile == region.cacheFile)
-            assert (self.host      == region.host)
+            assert (self.apiHost   == region.apiHost)
             assert (self.locale    == region.locale)
             self.connectedRealms = region.connectedRealms
 
@@ -195,30 +212,10 @@ class Region():
         return True
 
 
-    def exportData(self, itemData):
-        with open('{}/region-{}-auctions.json'.format(EXPORT_DIR, self.slug), 'w') as f:
-            auctions = []
-
-            for itemId in T26_BOE_IDS:
-                for connectedRealm in self.connectedRealms:
-                    for item in connectedRealm.items:
-                        if not item.itemId == itemId:
-                            continue
-
-                        auction = item.exportToObj()
-                        auction['realm'] = ', '.join(connectedRealm.realms)
-                        auctions.append(auction)
-
-            f.write(json.dumps({
-                'lastUpdate': str(datetime.datetime.utcnow()),
-                'auctions': auctions,
-            }));
-
-
     def __str__(self):
         output = io.StringIO()
 
-        output.write('Region:{} locale:{}'.format(self.host, self.locale))
+        output.write('Region:{} locale:{}'.format(self.apiHost, self.locale))
         output.write('\n')
 
         for connectedRealm in self.connectedRealms:
@@ -235,9 +232,9 @@ class Region():
 
 class ConnectedRealm():
     @staticmethod
-    def fetch(accessToken, region, endpoint):
+    def fetchConnectedRealm(region, endpoint):
         headers = {
-            'Authorization': 'Bearer {}'.format(accessToken)
+            'Authorization': 'Bearer {}'.format(region.accessToken)
         }
         params = {
             'region': region.slug,
@@ -257,13 +254,13 @@ class ConnectedRealm():
     def __init__(self, connectedRealmData):
         self.connectedRealmId = connectedRealmData['id']
         self.realms = [realm['name'] for realm in connectedRealmData['realms']]
-        self.items = []
+        self.auctions = []
 
 
-    def fetchAuctions(self, accessToken, region):
-        auctionEndpoint = '{}{}'.format(region.host, AUCTIONS_ENDPOINT.format(self.connectedRealmId))
+    def fetchAuctions(self, region):
+        auctionEndpoint = '{}{}'.format(region.apiHost, AUCTIONS_ENDPOINT.format(self.connectedRealmId))
         headers = {
-            'Authorization': 'Bearer {}'.format(accessToken)
+            'Authorization': 'Bearer {}'.format(region.accessToken)
         }
         params = {
             'region': region.slug,
@@ -290,9 +287,9 @@ class ConnectedRealm():
                 price = 0
 
             bonusIds = auction['item']['bonus_lists']
-            self.items.append(Item(price, itemId, bonusIds))
+            self.auctions.append(GearAuction(itemId, price, bonusIds))
 
-        logger.info('Fetched {} auctions for realm {}'.format(len(self.items), self.connectedRealmId))
+        logger.info('Fetched {} auctions for realm {}'.format(len(self.auctions), self.connectedRealmId))
 
 
     def __str__(self):
@@ -300,26 +297,26 @@ class ConnectedRealm():
 
 
 #------------------------------------------------------------------------------
-# ItemData (for specifying item's generic characteristics such as locale name)
+# GearData (for specifying item's generic characteristics such as locale name)
 #------------------------------------------------------------------------------
 
 
-class ItemData:
+class GearData:
     def __init__(self, itemId):
         self.itemId = itemId
         self.name = {}
 
 
-    def fetchItemData(self, accessToken, region):
+    def fetchGearData(self, region):
         cacheFile = '{}/item-{}.pkl'.format(CACHE_DIR, self.itemId)
         if self.loadFromCache(cacheFile, self.itemId):
             # Only return if our locale has been cached as well
             if region.locale in self.name:
                 return
 
-        itemEndpoint = '{}{}'.format(region.host, ITEM_ENDPOINT.format(self.itemId))
+        itemEndpoint = '{}{}'.format(region.apiHost, ITEM_ENDPOINT.format(self.itemId))
         headers = {
-            'Authorization': 'Bearer {}'.format(accessToken)
+            'Authorization': 'Bearer {}'.format(region.accessToken)
         }
         params = {
             'region': region.slug,
@@ -350,24 +347,24 @@ class ItemData:
             return False
 
         with open(cacheFile, 'rb') as file:
-            itemData = pickle.load(file)
+            gearData = pickle.load(file)
 
-            assert(self.itemId == itemData.itemId)
-            self.name = itemData.name
+            assert(self.itemId == gearData.itemId)
+            self.name = gearData.name
 
         logger.info('Successfully loaded item from {}'.format(cacheFile))
         return True
 
 
 #------------------------------------------------------------------------------
-# Item (specific to an auction)
+# GearAuction (specific to an auction)
 #------------------------------------------------------------------------------
 
 
-class Item():
-    def __init__(self, price, itemId, bonuses):
-        self.price = int(price)
+class GearAuction():
+    def __init__(self, itemId, price, bonuses):
         self.itemId = itemId
+        self.price = int(price)
         self.bonuses = bonuses
         self.level = 0
         self.hasSocket = False
@@ -459,26 +456,6 @@ class Item():
         return output.getvalue()
 
 
-    def exportToObj(self):
-        data = {
-            'itemId':  self.itemId,
-            'price':   self.price,
-            'bonuses': self.bonuses,
-            'level':   self.level,
-        }
-
-        if self.hasSocket:
-            data['hasSocket'] = self.hasSocket
-
-        if self.tertiary:
-            data['tertiary'] = self.tertiary
-
-        if self.corruption:
-            data['corruption'] = self.corruption
-
-        return data
-
-
 #------------------------------------------------------------------------------
 # Helpers
 #------------------------------------------------------------------------------
@@ -490,30 +467,54 @@ def debugResponse(response):
     logger.error(response.text)
 
 
-def getAccessToken():
-    tokenEndpoint = 'https://us.battle.net/oauth/token' # Apparently a token from US can access all APIs
-
-    response = requests.post(tokenEndpoint, auth=(CLIENT_ID, CLIENT_SECRET), data={'grant_type':'client_credentials'}, timeout=MAX_REQUEST_TIME)
-    if response.status_code != 200:
-        debugResponse(response)
-        raise Exception('Failed to obtain access token')
-
-    data = json.loads(response.text)
-    accessToken = data['access_token']
-    return accessToken
-
-
 #------------------------------------------------------------------------------
 # Exports
 #------------------------------------------------------------------------------
 
 
-def exportConfig(itemData):
+def exportRegion(region):
+    with open('{}/region-{}-auctions.json'.format(EXPORT_DIR, region.slug), 'w') as f:
+        exportedAuctions = []
+
+        for itemId in T26_BOE_IDS:
+            for connectedRealm in region.connectedRealms:
+                for auction in connectedRealm.auctions:
+                    if not auction.itemId == itemId:
+                        continue
+
+                    exportedAuction = {
+                        'itemId':  auction.itemId,
+                        'price':   auction.price,
+                        'bonuses': auction.bonuses,
+                        'level':   auction.level,
+                        'realm':   ', '.join(connectedRealm.realms)
+                    }
+
+                    if auction.hasSocket:
+                        exportedAuction['hasSocket'] = auction.hasSocket
+
+                    if auction.tertiary:
+                        exportedAuction['tertiary'] = auction.tertiary
+
+                    if auction.corruption:
+                        exportedAuction['corruption'] = auction.corruption
+
+                    exportedAuctions.append(exportedAuction)
+
+        f.write(json.dumps({
+            'lastUpdate': str(datetime.datetime.utcnow()),
+            'auctions': exportedAuctions,
+        }));
+
+
+def exportConfig(gearData):
     with open('{}/config.json'.format(EXPORT_DIR), 'w') as f:
         data = {
-            'itemData': [item.__dict__ for itemId, item in itemData.items()],
+            'gearData': [item.__dict__ for itemId, item in gearData.items()],
+            't26GearLevels': T26_GEAR_LEVELS,
             't26Corruptions': T26_CORRUPTIONS,
         }
+
         f.write(json.dumps(data, indent=2))
 
 
@@ -523,22 +524,22 @@ def exportConfig(itemData):
 
 
 def main():
-    itemData = {}
+    gearData = {}
     for itemId in T26_BOE_IDS:
-        itemData[itemId] = ItemData(itemId)
+        gearData[itemId] = GearData(itemId)
 
     for region in REGIONS:
         region = Region(*region)
-        accessToken = getAccessToken()
+        region.fetchAccessToken()
 
         for itemId in T26_BOE_IDS:
-            itemData[itemId].fetchItemData(accessToken, region)
+            gearData[itemId].fetchGearData(region)
 
-        region.fetchConnectedRealms(accessToken)
-        region.fetchAuctions(accessToken)
-        region.exportData(itemData)
+        region.fetchConnectedRealms()
+        region.fetchAuctions()
+        exportRegion(region)
 
-    exportConfig(itemData)
+    exportConfig(gearData)
 
 
 if __name__ == '__main__':

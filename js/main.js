@@ -153,7 +153,7 @@ function updateTable() {
 // Lookup Tables
 //-----------------------------------------------------------------------------
 
-const Items = Config.itemData;
+const Items = Config.gearData;
 const ItemsMap = {};
 
 for (let i = 0; i < Items.length; i++) {
