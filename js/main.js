@@ -11,7 +11,17 @@ import 'jquery-tablesort';
 function update() {
     let $loading = $('#loading');
     $loading.show();
+
+    let $error = $('#error');
+    $error.text('');
+    $error.hide();
+
     updateTable().then(() => {
+        // nop
+    }).catch((error) => {
+        $error.text(error);
+        $error.show();
+    }).finally(() => {
         $loading.hide();
     });
 }
@@ -21,52 +31,28 @@ function updateTable() {
     let $tbody = $table.find('tbody');
     $tbody.empty();
 
-    let showError = function(error) {
-        let $tr = $('<tr>');
-        $tr.addClass('error');
-
-        let $td = $('<td>');
-        $td.attr('colspan', 7);
-
-        let $error = $('<div>');
-        $error.text(error);
-        $error.addClass('alert alert-warning');
-
-        $tbody.append($tr);
-        $tr.append($td);
-        $td.append($error);
-    }
-
     return new Promise((resolve, reject) => {
-        let $regionFilter = $('#regionFilter');
-        let $region = $regionFilter.find('input[type="radio"]:checked');
+        saveSettings();
+        const [region, boeFilter, ilvlFilter, needSocket, corruptionFilter] = getSettings();
 
-        if ($region.length != 1) {
-            showError('No region selected');
-            resolve();
-            return;
+        if (!region) {
+            throw 'No region selected';
         }
 
-        let regionSlug = $region.val();
-        let boeFilter = $('#boeFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-id'));
-        let ilvlFilter = $('#ilvlFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-level'));
-        let corruptionFilter = $('#corruptionFilter input[type="checkbox"]:checked').get().map(el => $(el).data('corruption-id'));
-        let onlySocket = $('#socketSelector').is(':checked');
+        if (boeFilter.length < 1) {
+            throw 'No BoE selected';
+        }
 
-        let dataFile = `data/region-${regionSlug}-auctions.json`;
+        let dataFile = `data/region-${region}-auctions.json`;
         $.getJSON(dataFile, function(data) {
+            // Update lastUpdate time
             let $time = $('#lastUpdate time');
             let lastUpdate =  moment.utc(data.lastUpdate);
             $time.text(lastUpdate.fromNow());
             $time.attr('datetime', lastUpdate.format());
             $time.attr('title', lastUpdate.format());
 
-            if (boeFilter.length < 1) {
-                showError('No BoE selected');
-                resolve();
-                return;
-            }
-
+            // Filter auctions
             let auctions = data.auctions;
             let filteredAuctions = auctions.filter((auction) => {
                 if (boeFilter.length > 0 && !boeFilter.includes(auction.itemId)) {
@@ -77,21 +63,22 @@ function updateTable() {
                     return false;
                 }
 
-                if (corruptionFilter.length > 0 && !corruptionFilter.includes(auction.corruption)) {
-                    return false;
-                }
-
-                if (onlySocket) {
+                if (needSocket) {
                     if (!auction.hasSocket) {
                         return false;
                     }
                 }
 
+                if (corruptionFilter.length > 0 && !corruptionFilter.includes(auction.corruption)) {
+                    return false;
+                }
+
                 return true;
             });
 
+            // Sort auctions
             filteredAuctions.sort((a, b) => {
-                let sort = function(a, b, key) {
+                let compare = function(a, b, key) {
                     if (a[key] > b[key]) {
                         return 1;
                     } else if (a[key] < b[key]) {
@@ -101,9 +88,11 @@ function updateTable() {
                     }
                 };
 
-                return sort(a, b, 'price') || sort(b, a, 'level') || sort(a, b, 'corruption') || sort(a, b, 'realm') || sort(a, b, 'itemId');
+                return compare(a, b, 'price') || compare(b, a, 'level') || compare(a, b, 'corruption') || compare(a, b, 'realm') || compare(a, b, 'itemId');
             });
 
+            // Display auctions
+            let rows = [];
             for (let i = 0; i < filteredAuctions.length; i++) {
                 let a = filteredAuctions[i];
                 let $row = $('<tr>');
@@ -113,7 +102,7 @@ function updateTable() {
                 {
                     let $link = $('<a>');
                     $item.append($link);
-                    $link.text(ItemsMap[a.itemId][regionSlug]);
+                    $link.text(ItemsMap[a.itemId][region]);
                     $link.attr('href', `https://www.wowhead.com/item=${a.itemId}&bonus=${a.bonuses.join(':')}`);
                 }
 
@@ -151,10 +140,10 @@ function updateTable() {
 
                 let $realm = `<td>${a.realm}</td>`;
                 $row.append($realm);
-
-                $tbody.append($row);
+                rows.push($row);
             }
 
+            $tbody.append(rows);
             $table.tablesort();
             resolve();
         });
@@ -184,11 +173,136 @@ for (let i = 0; i < Corruptions.length; i++) {
 }
 
 //-----------------------------------------------------------------------------
-// Setup
+// Settings
+//-----------------------------------------------------------------------------
+
+function deparam(querystring) {
+    querystring = querystring.substring(querystring.indexOf('?') + 1).split('&');
+    let params = {};
+
+    for (let i = 0; i < querystring.length; i++) {
+        let pair = querystring[i].split('=');
+        let k = decodeURIComponent(pair[0]);
+        let v = decodeURIComponent(pair[1]);
+
+        if (k.substring(k.length - 2) === '[]') {
+            k = k.substring(0, k.length - 2);
+            v = parseInt(v); // Assume we only encode arrays of ints
+            (params[k] || (params[k] = [])).push(v);
+        } else {
+            params[k] = v;
+        }
+    }
+
+    return params;
+}
+
+function getSettings() {
+    let region = $('#regionFilter input[type="radio"]:checked').val();
+    let boeFilter = $('#boeFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-id'));
+    let ilvlFilter = $('#ilvlFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-level'));
+    let needSocket = $('#socketSelector').is(':checked');
+    let corruptionFilter = $('#corruptionFilter input[type="checkbox"]:checked').get().map(el => $(el).data('corruption-id'));
+
+    return [region, boeFilter, ilvlFilter, needSocket, corruptionFilter];
+}
+
+function resetForm() {
+    $('form#filters').trigger('reset');
+    $('form#filters label.btn').removeClass('active');
+}
+
+function loadSettings() {
+    let hash = window.location.hash;
+    if (!hash) {
+        return;
+    }
+
+    hash = hash.substring(hash.indexOf('#/') + 2);
+    let settings = deparam(hash);
+
+    let activate = function($input) {
+        if (!$input.prop('checked')) {
+            $input.click();
+        }
+    }
+
+    if (settings.region) {
+        let $input = $(`#regionFilter input[type="radio"][value="${settings.region}"]`);
+        activate($input);
+    }
+
+    if (settings.boes) {
+        for (const itemId of settings.boes) {
+            let $input = $(`#boeFilter input[type="checkbox"][data-item-id="${itemId}"]`);
+            activate($input);
+        }
+    }
+
+    if (settings.ilvls) {
+        for (const ilvl of settings.ilvls) {
+            let $input = $(`#ilvlFilter input[type="checkbox"][data-item-level="${ilvl}"]`);
+            activate($input);
+        }
+    }
+
+    if (settings.socket) {
+        let $input = $('#socketSelector');
+        activate($input);
+    }
+
+    if (settings.corruptions) {
+        for (const corruption of settings.corruptions) {
+            let $input = $(`#corruptionFilter input[type="checkbox"][data-corruption-id="${corruption}"]`);
+            activate($input);
+        }
+    }
+}
+
+function saveSettings() {
+    const [region, boeFilter, ilvlFilter, needSocket, corruptionFilter] = getSettings();
+    let filter = {};
+
+    if (region) {
+        filter['region'] = region;
+    }
+
+    if (boeFilter.length > 0) {
+        filter['boes'] = boeFilter;
+    }
+
+    if (ilvlFilter.length > 0) {
+        filter['ilvls'] = ilvlFilter;
+    }
+
+    if (needSocket) {
+        filter['socket'] = needSocket;
+    }
+
+    if (corruptionFilter.length > 0) {
+        filter['corruptions'] = corruptionFilter;
+    }
+
+    history.replaceState(null, null, `#/${$.param(filter)}`);
+}
+
+//-----------------------------------------------------------------------------
+// Set up
 //-----------------------------------------------------------------------------
 
 $.when($.ready).then(function() {
+    // Reset the form and load settings from the URL (if any)
+    resetForm();
+    loadSettings();
+
+    // Event listeners haven't been set up yet so we need to manually call update()
     update();
+
+    $(window).on('hashchange', function() {
+        // Only triggered by user changing hash
+        // Will not trigger from replaceState
+        window.location.reload();
+    });
 
     $('#regionFilter input:radio').click(function() {
         update();

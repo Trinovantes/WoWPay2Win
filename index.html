@@ -1,10 +1,14 @@
+---
+title: WoWPay2Win
+desc: Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!
+---
 <!doctype html>
 <html class="no-js" lang="">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>WoW Pay2Win</title>
-    <meta name="description" content="Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!">
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ desc }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="og:image" itemprop="image" content="/img/token.jpg">
 
@@ -15,7 +19,7 @@
 <body>
 <div id="container">
 
-<div id="filters">
+<form id="filters">
     <div class="group" id="regionFilter">
         <h2>Region Filter</h2>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -81,9 +85,9 @@
         <script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
         <p>Created by the now-retired Bangall-Turalyon. I will also accept donations in the form of Jaina/N'Zoth mounts in the US region.</p>
         <p>Why is China not supported? Unfortunately, the Chinese API is blocked for non-Chinese citizens.</p>
-        <p>&copy; 2020 WoWPay2Win.com </p>
+        <p>&copy; 2020 {{ title }}</p>
     </div>
-</div>
+</form>
 
 <div id="auctions">
     <table class="table table-striped">
@@ -105,6 +109,8 @@
         <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
         </div>
+    </div>
+    <div class="alert alert-warning" role="alert" id="error">
     </div>
 </div>
 

@@ -62,25 +62,26 @@
 #auctions{
     flex: 1;
 
+    table{
+        margin-bottom: @padding;
+
+        th{
+            cursor: pointer;
+        }
+
+        td.price{
+            text-align: right;
+        }
+    }
+
     #loading{
         display: none;
         margin: @padding * 2;
         text-align: center;
     }
 
-    th{
-        cursor: pointer;
-    }
-
-    td.price{
-        text-align: right;
-    }
-
-    tr.error{
-        background: none;
-
-        .alert{
-            margin: 0;
-        }
+    #error{
+        display: none;
+        margin: @padding;
     }
 }
