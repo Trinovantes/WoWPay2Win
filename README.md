@@ -1,11 +1,12 @@
+# On Remote Server
+
 ```
 sudo apt update
 sudo apt install -y nodejs npm
-
 sudo npm install -g parcel-bundler
-python3 auctions.py
-parcel build index.html
 ```
+
+Create the nginx configuration file (`/etc/nginx/sites-available/wowpay2win.com`):
 
 ```
 #-------------------------------------------------------------------------------
@@ -51,4 +52,65 @@ server {
         root /var/www/wowpay2win.com/;
     }
 }
+```
+
+The SSL options are initially commented out because those files do not exist yet. This will allow us to start nginx for the initial authentication without getting `FileDoesNotExist` errors.
+
+Next symlink the config file to `sites-enabled`:
+```
+sudo ln -s /etc/nginx/sites-available/wowpay2win.com /etc/nginx/sites-enabled/
+```
+
+Create the common nginx file (`/etc/nginx/snippets/ssl.conf`):
+```
+ssl on;
+
+# certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:50m;
+ssl_session_tickets off;
+
+# modern configuration. tweak to your needs.
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_ciphers AES256+EECDH:AES256+EDH:!aNULL;
+ssl_prefer_server_ciphers on;
+
+# HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+add_header Strict-Transport-Security max-age=15768000;
+add_header X-Frame-Options DENY;
+add_header X-Content-Type-Options nosniff;
+
+# OCSP Stapling ---
+# fetch OCSP records from URL in ssl_certificate and cache them
+ssl_stapling on;
+ssl_stapling_verify on;
+```
+
+Create the common nginx file (`/etc/nginx/snippets/letsencrypt.conf`):
+```
+location ^~ /.well-known/acme-challenge/ {
+    default_type "text/plain";
+    root /var/www/letsencrypt;
+}
+```
+
+Now we can restart nginx (`sudo systemctl restart nginx`) to host the non-SSL version for Let's Encrypt authentication challenge.
+```
+sudo certbot certonly --webroot -d wowpay2win.com -d www.wowpay2win.com --webroot-path /var/www/letsencrypt
+```
+
+After this, go back to `/etc/nginx/sites-available/wowpay2win.com` and uncomment the SSL options.
+
+# Cron
+
+Run `crontab -e` and add this line:
+```
+30 * * * * python3 /var/www/wowpay2win.com/auctions.py
+```
+
+# Deploy
+```
+./auctions.py
+npm run clean
+npm run build
 ```
