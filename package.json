@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "clean": "find dist cache -maxdepth 1 -type f -not -path '*/.*'",
+    "clean": "find dist cache -maxdepth 1 -type f -not -path '*/.*' | xargs rm",
     "build": "parcel build index.html --no-source-maps"
   },
   "devDependencies": {

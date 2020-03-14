@@ -23,18 +23,16 @@ desc: Tired of being bad in World of Warcraft? Just swipe your credit card and b
     <div class="group" id="regionFilter">
         <h2>Region Filter</h2>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-light" for="regionUS">
-                <input type="radio" name="regionSelector" id="regionUS" value="us">US</input>
+            {{#each config.regions }}
+            <label class="btn btn-light text-uppercase">
+                <input type="radio" name="regionSelector" value="{{ slug }}">{{ slug }}</input>
             </label>
-            <label class="btn btn-light" for="regionEU">
-                <input type="radio" name="regionSelector" id="regionEU" value="eu">EU</input>
-            </label>
-            <label class="btn btn-light" for="regionTW">
-                <input type="radio" name="regionSelector" id="regionTW" value="tw">TW</input>
-            </label>
-            <label class="btn btn-light" for="regionKR">
-                <input type="radio" name="regionSelector" id="regionKR" value="kr">KR</input>
-            </label>
+            {{/each}}
+        </div>
+        <div>
+            <select name="realmSelector" id="realmSelector">
+                <option value="" id="allRealmsOption">All Realms</option>
+            </select>
         </div>
         <p id="lastUpdate">Last update: <time>N/A</time></p>
     </div>
@@ -43,7 +41,7 @@ desc: Tired of being bad in World of Warcraft? Just swipe your credit card and b
         <div class="btn-group-toggle filter-grid" data-toggle="buttons">
             {{#each config.gearData}}
             <label class="btn btn-light">
-                <input type="checkbox" data-item-id="{{ itemId }}">{{ name.us }}
+                <input type="checkbox" name="boeSelector" data-item-id="{{ itemId }}">{{ name.us }}
             </label>
             {{/each}}
         </div>
@@ -53,7 +51,7 @@ desc: Tired of being bad in World of Warcraft? Just swipe your credit card and b
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             {{#each config.t26GearLevels}}
             <label class="btn btn-light">
-                <input type="checkbox" data-item-level="{{ this }}">{{ this }}
+                <input type="checkbox" name="ilvlSelector" data-item-level="{{ this }}">{{ this }}
             </label>
             {{/each}}
         </div>
@@ -72,18 +70,16 @@ desc: Tired of being bad in World of Warcraft? Just swipe your credit card and b
             {{#each config.t26Corruptions}}
             <label class="btn btn-light">
                 {{#if this.[1] }}
-                <input type="checkbox" data-corruption-id="{{ this.[1] }}">{{ this.[2] }}
+                <input type="checkbox" name="corruptionSelector" data-corruption-id="{{ this.[1] }}">{{ this.[2] }}
                 {{else}}
-                <input type="checkbox" data-corruption-id="{{ this.[0] }}">{{ this.[2] }}
+                <input type="checkbox" name="corruptionSelector" data-corruption-id="{{ this.[0] }}">{{ this.[2] }}
                 {{/if}}
             </label>
             {{/each}}
         </div>
     </div>
     <div class="group">
-        <a href="https://www.patreon.com/bePatron?u=10301737" data-patreon-widget-type="become-patron-button">Become a Patron!</a>
-        <script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
-        <p>Created by the now-retired Bangall-Turalyon. I will also accept donations in the form of Jaina/N'Zoth mounts in the US region.</p>
+        <p>Support me on <a href="https://www.patreon.com/user?u=10301737">Patreon</a>. Having issues? You can <a href="https://www.reddit.com/u/pm_me_brh_keys">contact me on Reddit</a>. Sorry, I generally do not take feature requests.</p>
         <p>Why is China not supported? Unfortunately, the Chinese API is blocked for non-Chinese citizens.</p>
         <p>&copy; 2020 {{ title }}</p>
     </div>

@@ -180,6 +180,12 @@ class Region():
             self.connectedRealms.append(connectedRealm)
             logger.info('Fetched connected realm {}'.format(connectedRealm))
 
+        sortedId = 1 # JS treats numerical 0 as false (same as null) so it's just easier to always use truthy ids
+        self.connectedRealms.sort(key=lambda connectedRealm: ', '.join(connectedRealm.realms))
+        for connectedRealm in self.connectedRealms:
+            connectedRealm.sortedId = sortedId
+            sortedId += 1
+
         self.saveToCache()
 
 
@@ -248,6 +254,7 @@ class ConnectedRealm():
             raise Exception('Failed to get connected realm data')
 
         data = json.loads(response.text)
+
         return ConnectedRealm(data)
 
 
@@ -268,7 +275,7 @@ class ConnectedRealm():
             'locale': region.locale,
         }
 
-        logger.info('Fetching autions for realm {}'.format(self.connectedRealmId))
+        logger.info('Fetching autions for realm {}'.format(self))
         response = requests.get(auctionEndpoint, headers=headers, params=params, timeout=MAX_REQUEST_TIME)
         if response.status_code != 200:
             debugResponse(response)
@@ -293,7 +300,7 @@ class ConnectedRealm():
             if gearAuction.corruption:
                 self.auctions.append(gearAuction)
 
-        logger.info('Fetched {} auctions for realm {}'.format(len(self.auctions), self.connectedRealmId))
+        logger.info('Fetched {} auctions for realm {}'.format(len(self.auctions), str(self)))
 
 
     def __str__(self):
@@ -429,7 +436,7 @@ class GearAuction():
             return
 
         # Socket
-        if bonus == 1808:
+        if bonus == 1808 or bonus == 6514:
             self.hasSocket = True
             return
 
@@ -491,7 +498,7 @@ def exportRegion(region):
                         'price':   auction.price,
                         'bonuses': auction.bonuses,
                         'level':   auction.level,
-                        'realm':   ', '.join(connectedRealm.realms)
+                        'realm':   connectedRealm.sortedId,
                     }
 
                     if auction.hasSocket:
@@ -511,10 +518,18 @@ def exportRegion(region):
         }));
 
 
-def exportConfig(gearData):
+def exportConfig(regions, gearData):
+    regionsData = []
+    for region in regions:
+        regionsData.append({
+            'slug': region.slug,
+            'realms': [{ 'sortedId': connectedRealm.sortedId, 'name': ', '.join(connectedRealm.realms) } for connectedRealm in region.connectedRealms]
+        })
+
     with open('{}/config.json'.format(EXPORT_DIR), 'w') as f:
         data = {
             'gearData': [item.__dict__ for itemId, item in gearData.items()],
+            'regions': regionsData,
             't26GearLevels': T26_GEAR_LEVELS,
             't26Corruptions': T26_CORRUPTIONS,
         }
@@ -532,18 +547,20 @@ def main():
     for itemId in T26_BOE_IDS:
         gearData[itemId] = GearData(itemId)
 
+    regions = []
     for region in REGIONS:
         region = Region(*region)
-        region.fetchAccessToken()
+        regions.append(region)
 
+        region.fetchAccessToken()
         for itemId in T26_BOE_IDS:
             gearData[itemId].fetchGearData(region)
-
         region.fetchConnectedRealms()
         region.fetchAuctions()
+
         exportRegion(region)
 
-    exportConfig(gearData)
+    exportConfig(regions, gearData)
 
 
 if __name__ == '__main__':

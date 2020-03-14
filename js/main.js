@@ -26,6 +26,38 @@ function update() {
     });
 }
 
+function updateLastUpdate(lastUpdate) {
+    lastUpdate = moment.utc(lastUpdate);
+
+    let $time = $('#lastUpdate time');
+    $time.text(lastUpdate.fromNow());
+    $time.attr('datetime', lastUpdate.format());
+    $time.attr('title', lastUpdate.format());
+}
+
+function updateRealmSelector(region, realm) {
+    if (!region) {
+        return;
+    }
+
+    let $select = $('select#realmSelector');
+    $select.children().not('#allRealmsOption').remove();
+
+    let options = [];
+    for (const [realmId, realmName] of Object.entries(RegionsMap[region])) {
+        let $option = $('<option>');
+        $option.text(realmName);
+        $option.val(realmId);
+        if (realmId === realm) {
+            $option.attr('selected', 'selected');
+        }
+
+        options.push($option);
+    }
+
+    $select.append(options);
+}
+
 function updateTable() {
     let $table = $('#auctions table');
     let $tbody = $table.find('tbody');
@@ -33,7 +65,7 @@ function updateTable() {
 
     return new Promise((resolve, reject) => {
         saveSettings();
-        const [region, boeFilter, ilvlFilter, needSocket, corruptionFilter] = getSettings();
+        const [region, realm, boeFilter, ilvlFilter, needSocket, corruptionFilter] = getSettings();
 
         if (!region) {
             throw 'No region selected';
@@ -45,16 +77,15 @@ function updateTable() {
 
         let dataFile = `data/region-${region}-auctions.json`;
         $.getJSON(dataFile, function(data) {
-            // Update lastUpdate time
-            let $time = $('#lastUpdate time');
-            let lastUpdate =  moment.utc(data.lastUpdate);
-            $time.text(lastUpdate.fromNow());
-            $time.attr('datetime', lastUpdate.format());
-            $time.attr('title', lastUpdate.format());
+            updateLastUpdate(data.lastUpdate);
 
             // Filter auctions
             let auctions = data.auctions;
             let filteredAuctions = auctions.filter((auction) => {
+                if (realm && realm !== auction.realm) {
+                    return false;
+                }
+
                 if (boeFilter.length > 0 && !boeFilter.includes(auction.itemId)) {
                     return false;
                 }
@@ -138,8 +169,11 @@ function updateTable() {
                     $tertiary.append(a.tertiary);
                 }
 
-                let $realm = `<td>${a.realm}</td>`;
+                let $realm = $(`<td>`);
                 $row.append($realm);
+                $realm.text(RegionsMap[region][a.realm]);
+                $realm.data('sort-value', a.realm);
+
                 rows.push($row);
             }
 
@@ -172,6 +206,20 @@ for (let i = 0; i < Corruptions.length; i++) {
     };
 }
 
+const Regions = Config.regions;
+const RegionsMap = {};
+
+for (let i = 0; i < Regions.length; i++) {
+    let realms = Regions[i].realms;
+    let realmsMap = {};
+
+    for (let j = 0; j < realms.length; j++) {
+        realmsMap[realms[j].sortedId] = realms[j].name;
+    }
+
+    RegionsMap[Regions[i].slug] = realmsMap;
+}
+
 //-----------------------------------------------------------------------------
 // Settings
 //-----------------------------------------------------------------------------
@@ -199,12 +247,13 @@ function deparam(querystring) {
 
 function getSettings() {
     let region = $('#regionFilter input[type="radio"]:checked').val();
+    let realm = parseInt($('select#realmSelector').val());
     let boeFilter = $('#boeFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-id'));
     let ilvlFilter = $('#ilvlFilter input[type="checkbox"]:checked').get().map(el => $(el).data('item-level'));
     let needSocket = $('#socketSelector').is(':checked');
     let corruptionFilter = $('#corruptionFilter input[type="checkbox"]:checked').get().map(el => $(el).data('corruption-id'));
 
-    return [region, boeFilter, ilvlFilter, needSocket, corruptionFilter];
+    return [region, realm, boeFilter, ilvlFilter, needSocket, corruptionFilter];
 }
 
 function resetForm() {
@@ -230,6 +279,7 @@ function loadSettings() {
     if (settings.region) {
         let $input = $(`#regionFilter input[type="radio"][value="${settings.region}"]`);
         activate($input);
+        updateRealmSelector(settings.region, settings.realm);
     }
 
     if (settings.boes) {
@@ -260,11 +310,15 @@ function loadSettings() {
 }
 
 function saveSettings() {
-    const [region, boeFilter, ilvlFilter, needSocket, corruptionFilter] = getSettings();
+    const [region, realm, boeFilter, ilvlFilter, needSocket, corruptionFilter] = getSettings();
     let filter = {};
 
     if (region) {
         filter['region'] = region;
+    }
+
+    if (realm) {
+        filter['realm'] = realm;
     }
 
     if (boeFilter.length > 0) {
@@ -305,6 +359,11 @@ $.when($.ready).then(function() {
     });
 
     $('#regionFilter input:radio').click(function() {
+        updateRealmSelector($(this).val(), undefined);
+        update();
+    });
+
+    $('select#realmSelector').change(function() {
         update();
     });
 
