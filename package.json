@@ -1,10 +1,10 @@
 {
   "scripts": {
     "clean": "find dist cache -maxdepth 1 -type f -not -path '*/.*' | xargs rm",
-    "build": "parcel build index.html --no-source-maps"
+    "build": "parcel build index.html --no-source-maps",
+    "dev": "parcel index.html"
   },
   "devDependencies": {
-    "cssnano": "^4.1.10",
     "less": "^3.11.1",
     "parcel-plugin-handlebars": "^0.4.4"
   },
