@@ -99,7 +99,20 @@ Now we can restart nginx (`sudo systemctl restart nginx`) to host the non-SSL ve
 sudo certbot certonly --webroot -d wowpay2win.com -d www.wowpay2win.com --webroot-path /var/www/letsencrypt
 ```
 
+If we are behind Cloudflare, we need to create a Page Rule to ensure the authentication challenge is not being automatically redirected to https:
+```
+*wowpay2win.com/.well-known/acme-challenge/*
+SSL: Off
+```
+
 After this, go back to `/etc/nginx/sites-available/wowpay2win.com` and uncomment the SSL options.
+
+Next we need to add this line to `/etc/letsencrypt/cli.ini` to ensure nginx restarts whenever the auto renew script runs (automatically generated in `/etc/cron.d/certbot`).
+```
+deploy-hook = systemctl reload nginx
+```
+
+Finally, we can test auto renew with `certbot renew --dry-run`.
 
 # Cron
 
