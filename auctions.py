@@ -562,25 +562,28 @@ def exportConfig(regions, gearData):
 
 
 def main():
-    gearData = {}
-    for itemId in T26_BOE_IDS:
-        gearData[itemId] = GearData(itemId)
-
-    regions = []
-    for region in REGIONS:
-        region = Region(*region)
-        regions.append(region)
-
-        region.fetchAccessToken()
+    try:
+        gearData = {}
         for itemId in T26_BOE_IDS:
-            gearData[itemId].fetchGearData(region)
-        region.fetchConnectedRealms()
-        region.fetchAuctions()
+            gearData[itemId] = GearData(itemId)
 
-        exportRegion(region)
+        regions = []
+        for region in REGIONS:
+            region = Region(*region)
+            regions.append(region)
 
-    exportConfig(regions, gearData)
+            region.fetchAccessToken()
+            for itemId in T26_BOE_IDS:
+                gearData[itemId].fetchGearData(region)
+            region.fetchConnectedRealms()
+            region.fetchAuctions()
 
+            exportRegion(region)
+
+        exportConfig(regions, gearData)
+
+    except Exception as e:
+        logger.error(e)
 
 if __name__ == '__main__':
     main()
