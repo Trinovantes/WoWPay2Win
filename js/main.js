@@ -44,10 +44,12 @@ function updateRealmSelector(region, realm) {
     $select.children().not('#allRealmsOption').remove();
 
     let options = [];
-    for (const [realmId, realmName] of Object.entries(RegionsMap[region])) {
+    for (const {connectedRealmId, realmId, name} of RegionsMap[region].realms) {
         let $option = $('<option>');
-        $option.text(realmName);
+        $option.text(name);
         $option.val(realmId);
+        $option.data('connectedRealmId', connectedRealmId);
+
         if (realmId === realm) {
             $option.attr('selected', 'selected');
         }
@@ -81,8 +83,10 @@ function updateTable() {
 
             // Filter auctions
             let auctions = data.auctions;
+            let selectedRealmConnectedId = realm ? RegionsMap[region].connectedRealmsMap[realm] : null;
+
             let filteredAuctions = auctions.filter((auction) => {
-                if (realm && realm !== auction.realm) {
+                if (selectedRealmConnectedId && selectedRealmConnectedId !== auction.connectedRealmId) {
                     return false;
                 }
 
@@ -171,7 +175,7 @@ function updateTable() {
 
                 let $realm = $(`<td>`);
                 $row.append($realm);
-                $realm.text(RegionsMap[region][a.realm]);
+                $realm.text(RegionsMap[region].connectedRealmsNamesMap[a.connectedRealmId].join(', '));
                 $realm.data('sort-value', a.realm);
 
                 rows.push($row);
@@ -188,36 +192,42 @@ function updateTable() {
 // Lookup Tables
 //-----------------------------------------------------------------------------
 
-const Items = Config.gearData;
 const ItemsMap = {};
 
-for (let i = 0; i < Items.length; i++) {
-    ItemsMap[Items[i].itemId] = Items[i].name;
+for (let item of Config.gearData) {
+    ItemsMap[item.itemId] = item.name;
 }
 
-const Corruptions = Config.t26Corruptions;
 const CorruptionsMap = {};
 
-for (let i = 0; i < Corruptions.length; i++) {
-    let effectId = Corruptions[i][1] || Corruptions[i][0];
+for (let corruption of Config.t26Corruptions) {
+    let effectId = corruption[1] || corruption[0];
     CorruptionsMap[effectId] = {
-        name: Corruptions[i][2],
-        spellId: Corruptions[i][3],
+        name: corruption[2],
+        spellId: corruption[3],
     };
 }
 
-const Regions = Config.regions;
 const RegionsMap = {};
 
-for (let i = 0; i < Regions.length; i++) {
-    let realms = Regions[i].realms;
-    let realmsMap = {};
+for (let region of Config.regions) {
+    let connectedRealmsMap = {};
+    let connectedRealmsNamesMap = {};
 
-    for (let j = 0; j < realms.length; j++) {
-        realmsMap[realms[j].sortedId] = realms[j].name;
+    for (let realm of region.realms) {
+        if (!connectedRealmsNamesMap[realm.connectedRealmId]) {
+            connectedRealmsNamesMap[realm.connectedRealmId] = [] // list of realms connected to the parent connectedRealmId
+        }
+
+        connectedRealmsMap[realm.realmId] = realm.connectedRealmId;
+        connectedRealmsNamesMap[realm.connectedRealmId].push(realm.name);
     }
 
-    RegionsMap[Regions[i].slug] = realmsMap;
+    RegionsMap[region.slug] = {
+        connectedRealmsMap: connectedRealmsMap,
+        connectedRealmsNamesMap: connectedRealmsNamesMap,
+        realms: region.realms,
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -279,7 +289,8 @@ function loadSettings() {
     if (settings.region) {
         let $input = $(`#regionFilter input[type="radio"][value="${settings.region}"]`);
         activate($input);
-        updateRealmSelector(settings.region, settings.realm);
+        let realm = (settings.realm) ? parseInt(settings.realm) : null;
+        updateRealmSelector(settings.region, realm);
     }
 
     if (settings.boes) {
@@ -359,7 +370,7 @@ $.when($.ready).then(function() {
     });
 
     $('#regionFilter input:radio').click(function() {
-        updateRealmSelector($(this).val(), undefined);
+        updateRealmSelector($(this).val(), null);
         update();
     });
 

@@ -19,6 +19,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 # Constants
 #------------------------------------------------------------------------------
 
+
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 CACHE_DIR = '{}/cache'.format(BASE_DIR)
 EXPORT_DIR = '{}/dist/data'.format(BASE_DIR)
@@ -116,12 +117,14 @@ T26_CORRUPTIONS = [
     (6542, None, 'Void Ritual III'          , 318480),
     (6573, None, 'Gushing Wound'            , 318272),
     (6546, None, 'Glimpse of Clarity'       , 318239),
-    (6571, None, 'Searing Flames'           , 318293),
-    (6572, None, 'Obsidian Skin'            , 316651),
-    (6567, None, 'Devour Vitality'          , 318294),
-    (6568, None, 'Whispered Truths'         , 316780),
-    (6570, None, 'Flash of Insight'         , 318299),
-    (6569, None, 'Lash of the Void'         , 317290),
+
+    # Raid item effects only
+    # (6571, None, 'Searing Flames'           , 318293),
+    # (6572, None, 'Obsidian Skin'            , 316651),
+    # (6567, None, 'Devour Vitality'          , 318294),
+    # (6568, None, 'Whispered Truths'         , 316780),
+    # (6570, None, 'Flash of Insight'         , 318299),
+    # (6569, None, 'Lash of the Void'         , 317290),
 ]
 
 
@@ -179,12 +182,6 @@ class Region():
             connectedRealm = ConnectedRealm.fetchConnectedRealm(self, connectedRealmEndpoint['href'])
             self.connectedRealms.append(connectedRealm)
             logger.info('Fetched connected realm {}'.format(connectedRealm))
-
-        sortedId = 1 # JS treats numerical 0 as false (same as null) so it's just easier to always use truthy ids
-        self.connectedRealms.sort(key=lambda connectedRealm: ', '.join(connectedRealm.realms))
-        for connectedRealm in self.connectedRealms:
-            connectedRealm.sortedId = sortedId
-            sortedId += 1
 
         self.saveToCache()
 
@@ -260,7 +257,7 @@ class ConnectedRealm():
 
     def __init__(self, connectedRealmData):
         self.connectedRealmId = connectedRealmData['id']
-        self.realms = [realm['name'] for realm in connectedRealmData['realms']]
+        self.realms = [{ 'realmId': realm['id'], 'name': realm['name'] } for realm in connectedRealmData['realms']]
         self.auctions = []
 
 
@@ -293,7 +290,11 @@ class ConnectedRealm():
             else:
                 price = 0
 
-            bonusIds = auction['item']['bonus_lists']
+            if 'bonus_lists' in auction['item']:
+                bonusIds = auction['item']['bonus_lists']
+            else:
+                bonusIds = []
+
             gearAuction = GearAuction(itemId, price, bonusIds)
 
             # Only keep auctions that have corruptions
@@ -304,7 +305,7 @@ class ConnectedRealm():
 
 
     def __str__(self):
-        return '{:4} {}'.format(self.connectedRealmId, self.realms)
+        return '{:4} {}'.format(self.connectedRealmId, [realm['name'] for realm in self.realms])
 
 
 #------------------------------------------------------------------------------
@@ -377,7 +378,7 @@ class GearAuction():
         self.itemId = itemId
         self.price = int(price)
         self.bonuses = bonuses
-        self.level = 0
+        self.level = 430
         self.hasSocket = False
         self.tertiary = None
         self.corruption = None
@@ -498,7 +499,7 @@ def exportRegion(region):
                         'price':   auction.price,
                         'bonuses': auction.bonuses,
                         'level':   auction.level,
-                        'realm':   connectedRealm.sortedId,
+                        'connectedRealmId': connectedRealm.connectedRealmId,
                     }
 
                     if auction.hasSocket:
@@ -521,9 +522,20 @@ def exportRegion(region):
 def exportConfig(regions, gearData):
     regionsData = []
     for region in regions:
+        realms = []
+        for connectedRealm in region.connectedRealms:
+            for realm in connectedRealm.realms:
+                realms.append({
+                    'connectedRealmId': connectedRealm.connectedRealmId,
+                    'realmId': realm['realmId'],
+                    'name': realm['name'],
+                })
+
+        realms.sort(key=lambda realm: realm['name'])
+
         regionsData.append({
             'slug': region.slug,
-            'realms': [{ 'sortedId': connectedRealm.sortedId, 'name': ', '.join(connectedRealm.realms) } for connectedRealm in region.connectedRealms]
+            'realms': realms,
         })
 
     with open('{}/config.json'.format(EXPORT_DIR), 'w') as f:
