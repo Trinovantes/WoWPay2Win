@@ -7,6 +7,7 @@ import json
 import io
 import pickle
 import os
+import time
 import datetime
 
 
@@ -25,6 +26,7 @@ CACHE_DIR = '{}/cache'.format(BASE_DIR)
 EXPORT_DIR = '{}/dist/data'.format(BASE_DIR)
 
 MAX_REQUEST_TIME = 30 # seconds
+MAX_CACHE_AGE = 3600 * 24 # seconds
 
 CLIENT_ID     = '75775a8f0c364b6d980cb2bdf7c22105'
 CLIENT_SECRET = 'g5AM5o5cvL7eCPb1TFHYLwqd60v78TNv'
@@ -199,7 +201,12 @@ class Region():
 
     def loadFromCache(self):
         if not os.path.isfile(self.cacheFile):
-            logger.info('Cache file not found {}'.format(self.cacheFile))
+            logger.info('Cache file {} not found'.format(self.cacheFile))
+            return False
+
+        lastModified = os.path.getmtime(self.cacheFile)
+        if (time.time() - lastModified) > MAX_CACHE_AGE:
+            logger.info('Cache file {} is too old lastModified:{}'.format(self.cacheFile, datetime.datetime.utcfromtimestamp(lastModified)))
             return False
 
         with open(self.cacheFile, 'rb') as file:
@@ -315,13 +322,13 @@ class ConnectedRealm():
 
 class GearData:
     def __init__(self, itemId):
+        self.cacheFile = '{}/item-{}.pkl'.format(CACHE_DIR, itemId)
         self.itemId = itemId
         self.name = {}
 
 
     def fetchGearData(self, region):
-        cacheFile = '{}/item-{}.pkl'.format(CACHE_DIR, self.itemId)
-        if self.loadFromCache(cacheFile, self.itemId):
+        if self.loadFromCache(self.itemId):
             # Only return if our locale has been cached as well
             if region.locale in self.name:
                 return
@@ -344,27 +351,27 @@ class GearData:
         data = json.loads(response.text)
         self.name[region.slug] = data['name']
 
-        self.saveToCache(cacheFile, self.itemId)
+        self.saveToCache(self.itemId)
 
 
-    def saveToCache(self, cacheFile, itemId):
-        with open(cacheFile, 'wb') as file:
+    def saveToCache(self, itemId):
+        with open(self.cacheFile, 'wb') as file:
             pickle.dump(self, file)
-            logger.info('Successfully saved item to {}'.format(cacheFile))
+            logger.info('Successfully saved item to {}'.format(self.cacheFile))
 
 
-    def loadFromCache(self, cacheFile, itemId):
-        if not os.path.isfile(cacheFile):
-            logger.info('Cache file not found {}'.format(cacheFile))
+    def loadFromCache(self, itemId):
+        if not os.path.isfile(self.cacheFile):
+            logger.info('Cache file not found {}'.format(self.cacheFile))
             return False
 
-        with open(cacheFile, 'rb') as file:
+        with open(self.cacheFile, 'rb') as file:
             gearData = pickle.load(file)
 
             assert(self.itemId == gearData.itemId)
             self.name = gearData.name
 
-        logger.info('Successfully loaded item from {}'.format(cacheFile))
+        logger.info('Successfully loaded item from {}'.format(self.cacheFile))
         return True
 
 
