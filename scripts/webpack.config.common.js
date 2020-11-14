@@ -32,7 +32,7 @@ const CommonConfig = {
             '@data': path.resolve(__dirname, '../src/web/assets/data'),
 
             // https://github.com/vuejs-templates/webpack/issues/215
-            vue: 'vue/dist/vue.js',
+            vue: isDev ? 'vue/dist/vue.js' : 'vue/dist/vue.min.js',
         },
         modules: [
             'node_modules',
