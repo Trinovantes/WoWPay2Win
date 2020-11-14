@@ -43,6 +43,7 @@ jobs:
         run: yarn buildCron
 
       - name: Run Cron (fetchAuctions)
+        timeout-minutes: 30
         run: |
           yarn fetchAuctions
         env:

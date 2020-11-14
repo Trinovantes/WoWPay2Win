@@ -1,6 +1,8 @@
 import Axios from 'axios'
-import { Region } from './Region'
 import querystring from 'querystring'
+
+import { Region } from './Region'
+import Constants from '@common/Constants'
 
 export type onReceiveFn = (data: unknown) => Promise<void>
 
@@ -48,6 +50,7 @@ export class APIAccessor {
     async fetch(onReceive: onReceiveFn): Promise<void> {
         console.debug('Fetching', this.endpoint.replace(this.region.config.apiHost, ''))
         const response = await Axios.get(this.endpoint, {
+            timeout: Constants.API_TIMEOUT,
             headers: {
                 Authorization: `Bearer ${this.accessToken}`,
             },

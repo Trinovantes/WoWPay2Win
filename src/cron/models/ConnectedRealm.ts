@@ -46,7 +46,13 @@ export class ConnectedRealm {
     }
 
     async fetchAuctions(): Promise<void> {
-        await this.auctionsAccessor.fetch(this.onReceiveAuctionsData)
+        // Even if fetching auctions for this server fails, the script can still proceed
+        // and just treat this realm as having 0 auctions until next scheduled run
+        try {
+            await this.auctionsAccessor.fetch(this.onReceiveAuctionsData)
+        } catch (err) {
+            console.warn(`Failed to get auctions for ${this.toString()}`, err)
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/require-await
