@@ -1,0 +1,31 @@
+import { RegionConfigs } from '@common/Constants'
+import { Region } from './models/Region'
+
+async function fetchRegions() {
+    const regions: Array<Region> = []
+
+    for (const regionConfig of RegionConfigs) {
+        const region = new Region(regionConfig)
+        await region.fetch()
+        regions.push(region)
+    }
+
+    return regions
+}
+
+async function main() {
+    try {
+        const regions = await fetchRegions()
+
+        for (const region of regions) {
+            await region.fetchAuctions()
+        }
+    } catch (err) {
+        const error = err as Error
+        console.error(error)
+    } finally {
+        console.info('Cron Script Finished')
+    }
+}
+
+void main()

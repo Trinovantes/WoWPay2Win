@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run fetchData",
+
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "program": "${workspaceFolder}/dist-cron/fetchData.js",
+            "sourceMaps": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run fetchAuctions",
+
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "program": "${workspaceFolder}/dist-cron/fetchAuctions.js",
+            "sourceMaps": true
+        }
+    ]
+}

@@ -1,15 +1,54 @@
 {
-  "scripts": {
-    "clean": "find dist cache -maxdepth 1 -type f -not -path '*/.*' | xargs rm",
-    "build": "parcel build index.html --no-source-maps",
-    "dev": "parcel index.html"
-  },
-  "devDependencies": {
-    "less": "^3.11.1",
-    "parcel-plugin-handlebars": "^0.4.4"
-  },
-  "dependencies": {
-    "jquery-tablesort": "0.0.11",
-    "moment": "^2.24.0"
-  }
+    "private": true,
+    "scripts": {
+        "fetchData": "node -r dotenv/config dist-cron/fetchData.js",
+        "fetchAuctions": "node -r dotenv/config dist-cron/fetchAuctions.js",
+        "cron": "cross-env NODE_ENV=development webpack --config scripts/webpack.config.cron.js --watch",
+        "web": "cross-env NODE_ENV=development webpack-dev-server --config scripts/webpack.config.web.js --watch",
+        "buildCron": "cross-env NODE_ENV=production webpack --config scripts/webpack.config.cron.js",
+        "buildWeb": "cross-env NODE_ENV=production webpack --config scripts/webpack.config.web.js",
+        "lint": "eslint --ext .ts,.vue ./src"
+    },
+    "dependencies": {
+        "axios": "^0.21.0",
+        "dayjs": "^1.9.5",
+        "lodash": "^4.17.20",
+        "material-design-icons-iconfont": "^6.1.0",
+        "quasar": "^1.14.3",
+        "vue": "^2.6.12",
+        "vue-class-component": "^7.2.6",
+        "vue-property-decorator": "^9.0.2",
+        "vue-router": "^3.4.9",
+        "vue-template-compiler": "^2.6.12",
+        "vuex": "^3.5.1"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.165",
+        "@types/node": "^14.11.7",
+        "@types/webpack-env": "^1.15.3",
+        "@typescript-eslint/eslint-plugin": "^4.4.0",
+        "@typescript-eslint/parser": "^4.2.0",
+        "cross-env": "^7.0.2",
+        "css-loader": "^5.0.0",
+        "dotenv": "^8.2.0",
+        "eslint": "^7.9.0",
+        "eslint-config-standard": "^14.1.1",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "eslint-plugin-vue": "^7.0.1",
+        "html-webpack-plugin": "^4.5.0",
+        "sass": "^1.27.0",
+        "sass-loader": "^10.0.3",
+        "style-loader": "^2.0.0",
+        "ts-loader": "^8.0.5",
+        "typescript": "^4.0.3",
+        "url-loader": "^4.1.1",
+        "vue-loader": "^15.9.5",
+        "webpack": "^4.41.4",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.11.0",
+        "webpack-merge": "^5.3.0"
+    }
 }

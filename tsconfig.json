@@ -1,0 +1,39 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "outDir": "./dist/",
+        "sourceMap": true,
+
+        "target": "es2017",
+        "module": "esnext",
+        "moduleResolution": "node",
+
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+
+        "baseUrl": ".",
+        "paths": {
+            "@common/*": ["./src/common/*"],
+
+            "@components/*": ["./src/web/components/*"],
+            "@router/*": ["./src/web/router/*"],
+            "@store/*": ["./src/web/store/*"],
+
+            "@img/*": ["./src/web/assets/img/*"],
+            "@css/*": ["./src/web/assets/css/*"],
+            "@data/*": ["./src/web/assets/data/*"],
+        },
+    },
+    "exclude": [
+        "node_modules",
+        "dist-*",
+    ],
+    "include": [
+        "src/**/*",
+    ],
+}
