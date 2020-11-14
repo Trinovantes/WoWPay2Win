@@ -6,6 +6,7 @@ export default {
     APP_NAME: 'WoWPay2Win',
 
     API_TIMEOUT: 30 * 1000, // in ms
+    CONCURRENT_API_REQUESTS: 50,
 
     // I doubt anyone will ever spend more than 1mil gold on BoEs so there's no need to use the 10mil gold cap
     MAX_GOLD: 1 * 1000 * 1000,

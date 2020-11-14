@@ -92,9 +92,11 @@ export class ConnectedRealm {
                 this.auctions.push(auction)
             }
         }
+
+        console.debug(`Fetched ${this.auctions.length.toString().padStart(4, ' ')} auctions from ${this.toString()}`)
     }
 
     toString(): string {
-        return `${this.region.toString()} ConnectedRealm:${this.id.toString().padStart(4, '0')} ${this.realms.map((realm) => realm.name).join(', ')}`
+        return `${this.region.toString()} ConnectedRealm:${this.id.toString().padStart(4, ' ')} ${this.realms.map((realm) => realm.name).join(', ')}`
     }
 }

@@ -1,6 +1,7 @@
 import path from 'path'
+import { existsSync, mkdirSync } from 'fs'
 
-import { RegionConfig } from '@common/Constants'
+import Constants, { RegionConfig } from '@common/Constants'
 import { IRegionResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { ConnectedRealm } from './ConnectedRealm'
@@ -81,6 +82,25 @@ export class Region extends Cacheable {
         console.info(`Region::fetchAuctions ${this.toString()}`)
         this.accessToken = await this.regionAccessor.fetchAccessToken()
 
+        let offset = 0
+        const numCr = this.connectedRealms.length
+        while (offset < numCr) {
+            const queuedRequests: Array<Promise<void>> = []
+
+            for (let i = 0; i < Constants.CONCURRENT_API_REQUESTS; i++) {
+                const crIdx = offset + i
+                if (crIdx >= numCr) {
+                    break
+                }
+
+                const connectedRealm = this.connectedRealms[crIdx]
+                queuedRequests.push(connectedRealm.fetchAuctions())
+            }
+
+            await Promise.all(queuedRequests)
+            offset += Constants.CONCURRENT_API_REQUESTS
+        }
+
         let totalAuctions = 0
         const auctionsCache: IAuctionsCache = {
             lastModified: Date.now(),
@@ -88,9 +108,6 @@ export class Region extends Cacheable {
         }
 
         for (const connectedRealm of this.connectedRealms) {
-            await connectedRealm.fetchAuctions()
-            console.debug(`Fetched ${connectedRealm.auctions.length.toString().padStart(4, '0')} auctions from ${connectedRealm.toString()}`)
-
             for (const auction of connectedRealm.auctions) {
                 totalAuctions += 1
                 auctionsCache.auctions.push(auction.export())
