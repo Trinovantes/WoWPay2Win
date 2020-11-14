@@ -57,7 +57,7 @@ jobs:
         run: |
           git fetch
           git worktree add $WORKTREE_DIR gh-pages
-          find $WORKTREE_DIR -not -path $WORKTREE_DIR -not -path '*/\.*' -not -name 'CNAME' | xargs rm -rf
+          find $WORKTREE_DIR -not -path $WORKTREE_DIR -not -path '*/\.*' -not -name 'CNAME' -not -name '*.json' | xargs rm -rf
           mv $BUILD_DIR/* $WORKTREE_DIR
 
       - name: Commit gh-pages Branch
