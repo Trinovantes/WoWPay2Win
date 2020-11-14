@@ -1,0 +1,76 @@
+name: Build Web
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - src/**
+
+env:
+  BOT_NAME: Build Web
+  WORKTREE_DIR: gh-pages
+  BUILD_DIR: dist-web
+  DATA_DIR: src/web/assets/data
+
+jobs:
+  build_web:
+    name: Build Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
+
+      - name: Cache API Data
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-data
+        with:
+          path: ${{ env.DATA_DIR }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.ts') }}
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build Cron
+        run: yarn buildCron
+
+      - name: Run Cron (fetchData)
+        run: yarn fetchData
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+      - name: Build Web
+        run: yarn buildWeb
+
+      - name: Set up gh-pages Worktree
+        run: |
+          git fetch
+          git worktree add $WORKTREE_DIR gh-pages
+          find $WORKTREE_DIR -not -path $WORKTREE_DIR -not -path '*/\.*' -not -name 'CNAME' | xargs rm -rf
+          mv $BUILD_DIR/* $WORKTREE_DIR
+
+      - name: Commit gh-pages Branch
+        working-directory: ${{ env.WORKTREE_DIR }}
+        run: |
+          git config --global user.name "$BOT_NAME"
+          git config --global user.email '<>'
+          git add .
+          if [[ $(git log --format='%an' HEAD^..HEAD) == $BOT_NAME ]];
+          then
+              git commit -m "$BOT_NAME ($(date +'%Y-%m-%d %R %Z'))" --amend || true
+              git push --force
+          else
+              git commit -m "$BOT_NAME ($(date +'%Y-%m-%d %R %Z'))" || true
+              git push
+          fi
