@@ -3,13 +3,17 @@
 const path = require('path')
 const webpack = require('webpack')
 
+const TerserPlugin = require('terser-webpack-plugin')
+
 // ----------------------------------------------------------------------------
 // Common
 // ----------------------------------------------------------------------------
 
+const isDev = (process.env.NODE_ENV === 'development')
+
 const CommonConfig = {
     mode: process.env.NODE_ENV,
-    devtool: (process.env.NODE_ENV === 'development')
+    devtool: isDev
         ? 'source-map'
         : false,
 
@@ -99,6 +103,18 @@ const CommonConfig = {
             'process.env.IMAGE_DIR': JSON.stringify(path.resolve(__dirname, '../src/web/assets/img')),
         }),
     ],
+
+    optimization: {
+        minimize: !isDev,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    // https://github.com/vuejs/vue-class-component/issues/407
+                    keep_classnames: true,
+                },
+            }),
+        ],
+    },
 }
 
 module.exports = CommonConfig
