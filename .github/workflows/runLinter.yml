@@ -1,0 +1,29 @@
+name: Run Linter
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - src/**
+
+jobs:
+  run_linter:
+    name: Run Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Linter
+        run: yarn lint
