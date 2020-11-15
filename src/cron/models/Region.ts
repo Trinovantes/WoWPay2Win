@@ -135,6 +135,6 @@ export class Region extends Cacheable {
     }
 
     toString(): string {
-        return `Region:${this.config.locale}`
+        return `[Region:${this.config.slug}]`
     }
 }

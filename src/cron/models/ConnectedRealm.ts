@@ -97,6 +97,6 @@ export class ConnectedRealm {
     }
 
     toString(): string {
-        return `${this.region.toString()} ConnectedRealm:${this.id.toString().padStart(4, ' ')} ${this.realms.map((realm) => realm.name).join(', ')}`
+        return `[ConnectedRealm:${this.id.toString().padStart(4, '0')} ${this.region.toString()} ${this.realms.map((realm) => realm.name).join(', ')}]`
     }
 }

@@ -140,6 +140,6 @@ export class Item extends Cacheable {
     }
 
     toString(): string {
-        return `Item:${this.id} locale:${this.region.config.locale}`
+        return `[Item:${this.id}]`
     }
 }
