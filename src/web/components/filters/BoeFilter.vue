@@ -12,8 +12,22 @@
                     {{ category.label }}
 
                     <div class="toggles">
-                        <a @click="toggleNone(category.ids)">none</a>
-                        <a @click="toggleAll(category.ids)">all</a>
+                        <a
+                            :class="{
+                                'active': isNoneActive(category.ids)
+                            }"
+                            @click="toggleNone(category.ids)"
+                        >
+                            none
+                        </a>
+                        <a
+                            :class="{
+                                'active': isAllActive(category.ids)
+                            }"
+                            @click="toggleAll(category.ids)"
+                        >
+                            all
+                        </a>
                     </div>
                 </h2>
                 <q-list>
@@ -107,11 +121,59 @@ export default class BoeFilter extends mixins(VuexComponent, DataComponent, Imag
 
         this.changeBoes(ids)
     }
+
+    isAllActive(idsToCheck: Set<number>): boolean {
+        for (const id of idsToCheck) {
+            if (!this.boes.has(id)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    isNoneActive(idsToCheck: Set<number>): boolean {
+        for (const id of this.boes) {
+            if (idsToCheck.has(id)) {
+                return false
+            }
+        }
+
+        return true
+    }
 }
 </script>
 
 <style lang="scss">
 .boes{
+    .toggles{
+        flex: 1;
+
+        a{
+            background: var(--q-color-dark);
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            display: block;
+            float: right;
+            margin-left: $padding / 2;
+            padding: 5px 10px;
+
+            font-size: 11px;
+            line-height: 20px;
+            text-transform: uppercase;
+            text-decoration: none;
+
+            &.active{
+                background: var(--q-color-primary);
+            }
+
+            &:hover{
+                background: var(--q-color-secondary);
+            }
+        }
+    }
+
     a.boe{
         font-size: 15px;
 

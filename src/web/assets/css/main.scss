@@ -43,30 +43,6 @@ aside#sidebar{
         font-size: 21px;
         font-weight: bold;
         line-height: 30px;
-
-        .toggles{
-            flex: 1;
-
-            a{
-                background: var(--q-color-primary);
-                border-radius: 15px;
-                color: white;
-                cursor: pointer;
-                display: block;
-                float: right;
-                margin-left: $padding / 2;
-                padding: 5px 10px;
-
-                font-size: 11px;
-                line-height: 20px;
-                text-transform: uppercase;
-                text-decoration: none;
-
-                &:hover{
-                    background: var(--q-color-secondary);
-                }
-            }
-        }
     }
 
     .q-list{
