@@ -33,6 +33,7 @@ import '@css/main.scss'
 import App from '@components/App.vue'
 import store from '@store/AppStore'
 import router from '@router/AppRouter'
+import Constants from '@common/Constants'
 
 const app = new App({
     store: store,
@@ -43,5 +44,8 @@ try {
     app.$mount('#app')
 } catch (err) {
     const error = err as Error
-    console.error('Application Error', error)
+    console.error(error.message)
+    if (Constants.IS_DEV) {
+        console.error(error.stack)
+    }
 }

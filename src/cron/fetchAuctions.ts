@@ -1,4 +1,4 @@
-import { RegionConfigs } from '@common/Constants'
+import Constants, { RegionConfigs } from '@common/Constants'
 import { Region } from './models/Region'
 
 async function fetchRegions() {
@@ -22,7 +22,10 @@ async function main() {
         }
     } catch (err) {
         const error = err as Error
-        console.error(error)
+        console.error('Cron Script Failed:', error.message)
+        if (Constants.IS_DEV) {
+            console.error(error.stack)
+        }
     } finally {
         console.info('Cron Script Finished')
     }
