@@ -41,6 +41,10 @@ const CommonConfig = {
         ],
     },
 
+    output: {
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
+    },
+
     module: {
         rules: [
             {
