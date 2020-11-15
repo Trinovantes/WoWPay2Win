@@ -86,7 +86,7 @@ export class ConnectedRealm {
                 const error = err as Error
                 const delay = Math.round(Math.exp(attempt) * 1000)
 
-                console.warn(this.toString(), error.message, `Retrying after ${delay}ms`)
+                console.warn(error.message, `Retrying after ${delay}ms`)
                 if (Constants.IS_DEV) {
                     console.warn(error.stack)
                 }
