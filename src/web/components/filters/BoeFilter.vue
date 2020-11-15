@@ -11,7 +11,10 @@
                 <h2>
                     {{ category.label }}
 
-                    <div class="toggles">
+                    <div
+                        v-if="category.ids.size > 1"
+                        class="toggles"
+                    >
                         <a
                             :class="{
                                 'active': isNoneActive(category.ids)
