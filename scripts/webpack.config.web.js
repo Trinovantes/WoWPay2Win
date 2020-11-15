@@ -14,6 +14,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SRC_DIR = path.resolve(__dirname, '../src/web')
 const DIST_DIR = path.resolve(__dirname, '../dist-web')
 
+const isDev = (process.env.NODE_ENV === 'development')
+
 const WebConfig = merge(CommonConfig, {
     target: 'web',
 
@@ -23,6 +25,9 @@ const WebConfig = merge(CommonConfig, {
     },
     output: {
         path: DIST_DIR,
+        filename: isDev
+            ? '[name].js'
+            : '[name].[contenthash].js',
     },
 
     resolve: {
