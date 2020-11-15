@@ -2,21 +2,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run fetchData",
             "type": "node",
             "request": "launch",
-            "name": "Run fetchData",
 
-            "cwd": "${workspaceFolder}",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+
             "envFile": "${workspaceFolder}/.env",
             "program": "${workspaceFolder}/dist-cron/fetchData.js",
             "sourceMaps": true
         },
         {
+            "name": "Run fetchAuctions",
             "type": "node",
             "request": "launch",
-            "name": "Run fetchAuctions",
 
-            "cwd": "${workspaceFolder}",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+
             "envFile": "${workspaceFolder}/.env",
             "program": "${workspaceFolder}/dist-cron/fetchAuctions.js",
             "sourceMaps": true
