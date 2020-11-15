@@ -104,7 +104,7 @@ export default class App extends VuexComponent {
         }
         if (savedFilters.maxBuyout) {
             const maxBuyout = parseInt(savedFilters.maxBuyout)
-            this.changeMaxBuyout(isNaN(maxBuyout) ? Constants.MAX_GOLD : _.clamp(maxBuyout, 0, Constants.MAX_GOLD))
+            this.changeMaxBuyout(isNaN(maxBuyout) ? Constants.GOLD_CAP : _.clamp(maxBuyout, 0, Constants.GOLD_CAP))
         }
         if (savedFilters.mustHaveSocket) {
             this.changeMustHaveSocket(savedFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
@@ -139,7 +139,7 @@ export default class App extends VuexComponent {
         if (!_.isEqual(this.ilvlRange, getIlvlRange(this.tier))) {
             savedFilters.ilvlRange = `${this.ilvlRange.min}${DELIMITER}${this.ilvlRange.max}`
         }
-        if (this.maxBuyout !== Constants.MAX_GOLD) {
+        if (this.maxBuyout < Constants.GOLD_CAP) {
             savedFilters.maxBuyout = this.maxBuyout.toString()
         }
         if (this.mustHaveSocket) {

@@ -65,7 +65,7 @@ const store = new Vuex.Store<IRootState>({
             min: -1,
             max: -1,
         },
-        maxBuyout: Constants.MAX_GOLD,
+        maxBuyout: Constants.GOLD_CAP,
         mustHaveSocket: false,
         tertiaries: new Set(),
     },

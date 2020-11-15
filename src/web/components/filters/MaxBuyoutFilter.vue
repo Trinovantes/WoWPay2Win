@@ -3,10 +3,9 @@
         <h2>Max Buyout</h2>
         <div class="wrapper">
             <q-slider
-                v-model="selectedMaxBuyout"
+                v-model="buyoutSlider"
                 :min="0"
-                :max="MAX_GOLD"
-                :step="MAX_GOLD / 100"
+                :max="MAX_SLIDER"
                 label
                 :label-value="Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(maxBuyout)"
             />
@@ -24,19 +23,63 @@ import Constants from '@common/Constants'
 
 @Component
 export default class MaxBuyoutFilter extends VuexComponent {
-    readonly MAX_GOLD = Constants.MAX_GOLD
+    readonly MAX_SLIDER = 100
+    readonly SLIDER_TIERS = [
+        [25, 100 * 1000],
+        [50, 500 * 1000],
+        [75, 1000 * 1000],
+        [this.MAX_SLIDER, Constants.GOLD_CAP],
+    ]
 
-    get selectedMaxBuyout(): number {
-        return this.maxBuyout
+    sliderPosition = this.MAX_SLIDER
+
+    get buyoutSlider(): number {
+        return this.convertGoldToPos(this.maxBuyout)
     }
 
-    set selectedMaxBuyout(maxBuyout: number) {
-        this.throttledChangeMaxBuyout(maxBuyout)
+    set buyoutSlider(pos: number) {
+        this.throttledChangeMaxBuyout(this.convertPosToGold(pos))
     }
 
     private throttledChangeMaxBuyout = _.throttle((maxBuyout: number) => {
         this.changeMaxBuyout(maxBuyout)
     }, 500)
+
+    private convertPosToGold(pos: number): number {
+        let posMin = 0
+        let goldMin = 0
+
+        for (const [posMax, goldMax] of this.SLIDER_TIERS) {
+            if (pos <= posMax) {
+                const scale = (goldMax - goldMin) / (posMax - posMin)
+                const gold = goldMin + scale * (pos - posMin)
+                return gold
+            }
+
+            posMin = posMax
+            goldMin = goldMax
+        }
+
+        throw new Error(`Invalid slider position for conversion ${pos}`)
+    }
+
+    private convertGoldToPos(gold: number): number {
+        let posMin = 0
+        let goldMin = 0
+
+        for (const [posMax, goldMax] of this.SLIDER_TIERS) {
+            if (gold <= goldMax) {
+                const scale = (posMax - posMin) / (goldMax - goldMin)
+                const pos = posMin + scale * (gold - goldMin)
+                return pos
+            }
+
+            posMin = posMax
+            goldMin = goldMax
+        }
+
+        throw new Error(`Invalid gold amount for conversion ${gold}`)
+    }
 }
 
 </script>

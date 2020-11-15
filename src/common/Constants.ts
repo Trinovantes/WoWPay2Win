@@ -11,8 +11,7 @@ export default {
     CONCURRENT_API_REQUESTS: isDev ? 1 : 50,
     MAX_API_RETRIES: isDev ? 1 : 5,
 
-    // I doubt anyone will ever spend more than 1mil gold on BoEs so there's no need to use the 10mil gold cap
-    MAX_GOLD: 1 * 1000 * 1000,
+    GOLD_CAP: 10 * 1000 * 1000,
 
     ROWS_PER_PAGE: 50,
 }
