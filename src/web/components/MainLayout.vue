@@ -12,7 +12,8 @@
                     <div v-if="region">
                         <div class="group">
                             <p>
-                                <strong>Last Updated:</strong> {{ lastUpdated }}
+                                <strong>Last Updated:</strong>
+                                <time :datetime="lastUpdatedIso" :title="lastUpdatedString">{{ lastUpdated }}</time>
                             </p>
                         </div>
                         <RealmFilter />
@@ -65,6 +66,22 @@ export default class MainLayout extends VuexComponent {
             return dayjs(this.lastModified).fromNow()
         } else {
             return 'N/A'
+        }
+    }
+
+    get lastUpdatedIso(): string | null {
+        if (this.lastModified) {
+            return dayjs(this.lastModified).toISOString()
+        } else {
+            return null
+        }
+    }
+
+    get lastUpdatedString(): string | null {
+        if (this.lastModified) {
+            return dayjs(this.lastModified).toString()
+        } else {
+            return null
         }
     }
 }
