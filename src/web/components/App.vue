@@ -36,7 +36,6 @@ export default class App extends VuexComponent {
         document.title = Constants.APP_NAME
 
         const savedFilters = this.$route.query as SavedFilters
-        console.info('Loading from query', savedFilters)
         this.importFilters(savedFilters)
 
         this.ready = true
@@ -57,7 +56,6 @@ export default class App extends VuexComponent {
             return
         }
 
-        console.info('Changing query', newFilters)
         void this.$router.replace({
             query: newFilters,
         })
