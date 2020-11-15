@@ -1,5 +1,6 @@
-import { getBoeIds } from '@common/Constants'
+import Constants, { getBoeIds } from '@common/Constants'
 import { IConnectedRealmCache } from '@common/ICache'
+import { sleep } from '@common/utils'
 import { IAuctionsResponse, IConnectedRealmResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { ItemAuction } from './ItemAuctions'
@@ -7,8 +8,8 @@ import { Realm } from './Realm'
 import { Region } from './Region'
 
 export class ConnectedRealm {
-    readonly connectedRealmAccessor: APIAccessor
-    readonly auctionsAccessor: APIAccessor
+    readonly connectedRealmAccessor: APIAccessor<IConnectedRealmResponse>
+    readonly auctionsAccessor: APIAccessor<IAuctionsResponse>
 
     readonly region: Region
     readonly id: number
@@ -42,24 +43,9 @@ export class ConnectedRealm {
     }
 
     async fetch(): Promise<void> {
-        await this.connectedRealmAccessor.fetch(this.onReceiveData)
-    }
+        const connectedRealmResponse = await this.connectedRealmAccessor.fetch()
 
-    async fetchAuctions(): Promise<void> {
-        // Even if fetching auctions for this server fails, the script can still proceed
-        // and just treat this realm as having 0 auctions until next scheduled run
-        try {
-            await this.auctionsAccessor.fetch(this.onReceiveAuctionsData)
-        } catch (err) {
-            console.warn(`Failed to get auctions for ${this.toString()}`, err)
-        }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    private onReceiveData = async(response: unknown): Promise<void> => {
-        const data = response as IConnectedRealmResponse
-
-        for (const { id, name } of data.realms) {
+        for (const { id, name } of connectedRealmResponse.realms) {
             const realm = new Realm(this.region, id, name)
             this.realms.push(realm)
         }
@@ -67,33 +53,50 @@ export class ConnectedRealm {
         console.debug(`Fetched ${this.toString()}`)
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    private onReceiveAuctionsData = async(response: unknown): Promise<void> => {
-        const data = response as IAuctionsResponse
-        const boeIds: Array<number> = getBoeIds()
+    async fetchAuctions(): Promise<void> {
+        // Retry with exponential back-off if server is temporarily unavilable
+        for (let attempt = 0; attempt < Constants.MAX_API_RETRIES; attempt++) {
+            try {
+                const auctionsResponse = await this.auctionsAccessor.fetch()
+                if (!auctionsResponse.auctions) {
+                    // Sometimes the API returns a malformed 200 response and we need to retry
+                    throw new Error(`No auctions found for ${this.toString()}`)
+                }
 
-        if (!data.auctions) {
-            console.warn(`No auctions found for ${this.toString()}`)
-            return
+                const boeIds: Array<number> = getBoeIds()
+                for (const auctionResponse of auctionsResponse.auctions) {
+                    const itemId = auctionResponse.item.id
+                    if (!boeIds.includes(itemId)) {
+                        continue
+                    }
+
+                    const id = auctionResponse.id
+                    const buyout = Math.round((auctionResponse.buyout || 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
+                    const bonuses = auctionResponse.item.bonus_lists || []
+
+                    if (buyout > 0) {
+                        const auction = new ItemAuction(id, this.id, itemId, buyout, bonuses)
+                        this.auctions.push(auction)
+                    }
+                }
+
+                console.debug(`Saved ${this.auctions.length.toString().padStart(4, ' ')} auctions from ${this.toString()}`)
+                return
+            } catch (err) {
+                const error = err as Error
+                const delay = Math.round(Math.exp(attempt) * 1000)
+
+                console.warn(this.toString(), error.message, `Retrying after ${delay}ms`)
+                if (Constants.IS_DEV) {
+                    console.warn(error.stack)
+                }
+
+                await sleep(delay)
+            }
         }
 
-        for (const auctionResponse of data.auctions) {
-            const itemId = auctionResponse.item.id
-            if (!boeIds.includes(itemId)) {
-                continue
-            }
-
-            const id = auctionResponse.id
-            const buyout = Math.round((auctionResponse.buyout || 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
-            const bonuses = auctionResponse.item.bonus_lists || []
-
-            if (buyout > 0) {
-                const auction = new ItemAuction(id, this.id, itemId, buyout, bonuses)
-                this.auctions.push(auction)
-            }
-        }
-
-        console.debug(`Fetched ${this.auctions.length.toString().padStart(4, ' ')} auctions from ${this.toString()}`)
+        // If after all our attempts, fetching auctions still this ConnectedRealm fails,
+        // the script can still proceed and just treat this realm as having 0 auctions until next scheduled run
     }
 
     toString(): string {

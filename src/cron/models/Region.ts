@@ -1,16 +1,17 @@
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
 
-import Constants, { RegionConfig } from '@common/Constants'
+import { RegionConfig } from '@common/Constants'
+import { IAuctionsCache, ICache, IRegionCache } from '@common/ICache'
+import { batchRequests } from '@common/utils'
 import { IRegionResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { ConnectedRealm } from './ConnectedRealm'
-import { IAuctionsCache, ICache, IRegionCache } from '@common/ICache'
 import { Cacheable } from './Cacheable'
 import { Realm } from './Realm'
 
 export class Region extends Cacheable {
-    readonly regionAccessor: APIAccessor
+    readonly regionAccessor: APIAccessor<IRegionResponse>
 
     readonly config: RegionConfig
     connectedRealms: Array<ConnectedRealm>
@@ -63,7 +64,17 @@ export class Region extends Cacheable {
             return
         }
 
-        await this.regionAccessor.fetch(this.onReceiveData)
+        const regionResponse = await this.regionAccessor.fetch()
+        await batchRequests(regionResponse.connected_realms.length, async(idx) => {
+            const { href } = regionResponse.connected_realms[idx]
+            const re = /\/data\/wow\/connected-realm\/(\d+)/
+            const matches = re.exec(href)
+            if (matches) {
+                const connectedRealm = new ConnectedRealm(this, parseInt(matches[1]))
+                await connectedRealm.fetch()
+                this.connectedRealms.push(connectedRealm)
+            }
+        })
 
         console.debug(`Saving ${this.connectedRealms.length} realms to ${this.cacheFile}`)
         await this.saveToCache()
@@ -80,26 +91,10 @@ export class Region extends Cacheable {
         }
 
         console.info(`Region::fetchAuctions ${this.toString()}`)
-        this.accessToken = await this.regionAccessor.fetchAccessToken()
-
-        let offset = 0
-        const numCr = this.connectedRealms.length
-        while (offset < numCr) {
-            const queuedRequests: Array<Promise<void>> = []
-
-            for (let i = 0; i < Constants.CONCURRENT_API_REQUESTS; i++) {
-                const crIdx = offset + i
-                if (crIdx >= numCr) {
-                    break
-                }
-
-                const connectedRealm = this.connectedRealms[crIdx]
-                queuedRequests.push(connectedRealm.fetchAuctions())
-            }
-
-            await Promise.all(queuedRequests)
-            offset += Constants.CONCURRENT_API_REQUESTS
-        }
+        await batchRequests(this.connectedRealms.length, async(idx) => {
+            const connectedRealm = this.connectedRealms[idx]
+            await connectedRealm.fetchAuctions()
+        })
 
         let totalAuctions = 0
         const auctionsCache: IAuctionsCache = {
@@ -117,21 +112,6 @@ export class Region extends Cacheable {
         const auctionCacheFile = path.resolve(dataDir, `auctions-${this.config.slug}.json`)
         console.debug(`Saving ${totalAuctions} auctions to ${auctionCacheFile}`)
         await Cacheable.saveToCache(auctionCacheFile, auctionsCache)
-    }
-
-    private onReceiveData = async(response: unknown): Promise<void> => {
-        const data = response as IRegionResponse
-
-        for (const { href } of data.connected_realms) {
-            const re = /\/data\/wow\/connected-realm\/(\d+)/
-            const matches = re.exec(href)
-
-            if (matches) {
-                const connectedRealm = new ConnectedRealm(this, parseInt(matches[1]))
-                await connectedRealm.fetch()
-                this.connectedRealms.push(connectedRealm)
-            }
-        }
     }
 
     toString(): string {

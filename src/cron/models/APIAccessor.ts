@@ -4,9 +4,7 @@ import querystring from 'querystring'
 import { Region } from './Region'
 import Constants from '@common/Constants'
 
-export type onReceiveFn = (data: unknown) => Promise<void>
-
-export class APIAccessor {
+export class APIAccessor<T> {
     readonly endpoint: string
     readonly isDynamic: boolean
     readonly region: Region
@@ -32,7 +30,7 @@ export class APIAccessor {
             throw new Error('Cannnot find CLIENT_ID or CLIENT_SECRET in env')
         }
 
-        console.debug('Trying to get access token', this.region.config.oauthEndpoint)
+        console.debug('Fetching', this.region.config.oauthEndpoint)
 
         const response = await Axios.post(this.region.config.oauthEndpoint, querystring.stringify({
             grant_type: 'client_credentials',
@@ -47,8 +45,10 @@ export class APIAccessor {
         return data.access_token
     }
 
-    async fetch(onReceive: onReceiveFn): Promise<void> {
+    async fetch(): Promise<T> {
         console.debug('Fetching', this.endpoint.replace(this.region.config.apiHost, ''))
+
+        // This will throw an error if status is not 200
         const response = await Axios.get(this.endpoint, {
             timeout: Constants.API_TIMEOUT,
             headers: {
@@ -61,10 +61,6 @@ export class APIAccessor {
             },
         })
 
-        if (response.status !== 200) {
-            throw new Error(`Failed to access ${this.endpoint}`)
-        }
-
-        await onReceive(response.data)
+        return response.data as T
     }
 }

@@ -14,8 +14,8 @@ export class Item extends Cacheable {
     readonly iconFile: string
     readonly iconPath: string
 
-    readonly itemAccessor: APIAccessor
-    readonly itemMediaAccessor: APIAccessor
+    readonly itemAccessor: APIAccessor<IItemResponse>
+    readonly itemMediaAccessor: APIAccessor<IItemMediaResponse>
 
     readonly region: Region
     readonly id: number
@@ -82,10 +82,19 @@ export class Item extends Cacheable {
             return
         }
 
-        await this.itemAccessor.fetch(this.onReceiveData)
+        const itemResponse = await this.itemAccessor.fetch()
+        this.baseLevel = itemResponse.level
+        this.localizedName[this.region.config.locale] = itemResponse.name
 
         if (!this.iconUrl || !existsSync(this.iconPath)) {
-            await this.itemMediaAccessor.fetch(this.onReceiveMediaData)
+            const itemMediaResponse = await this.itemMediaAccessor.fetch()
+            for (const asset of itemMediaResponse.assets) {
+                if (asset.key === 'icon') {
+                    this.iconUrl = asset.value
+                    break
+                }
+            }
+
             await this.downloadMedia()
         }
 
@@ -113,30 +122,10 @@ export class Item extends Cacheable {
                 resolve()
             })
             fileWriter.on('error', (error) => {
-                console.error(`Failed to download ${this.iconUrl} to ${this.iconPath}`)
+                console.warn(`Failed to download ${this.iconUrl} to ${this.iconPath}`)
                 reject(error)
             })
         })
-    }
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    private onReceiveData = async(response: unknown): Promise<void> => {
-        const data = response as IItemResponse
-
-        this.baseLevel = data.level
-        this.localizedName[this.region.config.locale] = data.name
-    }
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    private onReceiveMediaData = async(response: unknown): Promise<void> => {
-        const data = response as IItemMediaResponse
-
-        for (const asset of data.assets) {
-            if (asset.key === 'icon') {
-                this.iconUrl = asset.value
-                break
-            }
-        }
     }
 
     toString(): string {
