@@ -16,10 +16,10 @@
             >
                 <q-item-section avatar>
                     <q-avatar
-                        size="xl"
                         rounded
+                        size="40px"
                     >
-                        <img :src="getTierIcon(scope.opt)">
+                        <img :src="getTierIcon(scope.opt)" :alt="getTierName(scope.opt)" width="40" height="40">
                     </q-avatar>
                 </q-item-section>
                 <q-item-section>

@@ -2,7 +2,7 @@ import VuexComponent from './VuexComponent'
 import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
-import { IItemCache, IRealmCache, IRegionCache } from '@common/ICache'
+import { IItemAuctionCache, IItemCache, IRealmCache, IRegionCache } from '@common/ICache'
 import { getRegionLocale } from '@common/Constants'
 
 @Component
@@ -68,6 +68,14 @@ export default class DataComponent extends VuexComponent {
         const itemCache = this.dataFiles[itemFile] as IItemCache
         const locale = getRegionLocale(this.region)
         return itemCache.localizedName[locale] || ''
+    }
+
+    getWowheadItemLink(item: IItemAuctionCache): string {
+        return `https://www.wowhead.com/item=${item.itemId}&bonus=${item.bonuses.join(':')}`
+    }
+
+    getWowheadItemLinkById(itemId: number): string {
+        return `https://www.wowhead.com/item=${itemId}`
     }
 
     getConnectedRealmName(crId: number): string {

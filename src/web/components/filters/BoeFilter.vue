@@ -17,32 +17,40 @@
                     </div>
                 </h2>
                 <q-list>
-                    <q-item
+                    <a
                         v-for="id of category.ids"
                         :key="id"
-                        v-ripple
-                        clickable
-                        :active="selectedBoes.includes(id)"
-                        tag="label"
+                        :href="getWowheadItemLinkById(id)"
+                        :data-wowhead="`item=${id}`"
+                        class="boe"
+                        rel="noopener"
+                        target="_blank"
+                        @click="(event) => event.stopPropagation()"
                     >
-                        <q-checkbox
-                            v-model="selectedBoes"
-                            :val="id"
-                            hidden
-                        />
-                        <a :data-wowhead="`item=${id}`">
+                        <q-item
+                            v-ripple
+                            clickable
+                            tag="label"
+                            :active="selectedBoes.includes(id)"
+                        >
+                            <q-checkbox
+                                v-model="selectedBoes"
+                                :val="id"
+                                hidden
+                            />
                             <q-item-section avatar>
                                 <q-avatar
                                     rounded
+                                    size="40px"
                                 >
-                                    <img :src="getItemIcon(id)">
+                                    <img :src="getItemIcon(id)" :alt="getItemName(id)" width="40" height="40">
                                 </q-avatar>
                             </q-item-section>
                             <q-item-section>
                                 {{ getItemName(id) }}
                             </q-item-section>
-                        </a>
-                    </q-item>
+                        </q-item>
+                    </a>
                 </q-list>
             </div>
         </div>
@@ -104,22 +112,23 @@ export default class BoeFilter extends mixins(VuexComponent, DataComponent, Imag
 
 <style lang="scss">
 .boes{
-    .q-item{
-        &.q-item--active{
-            background: var(--q-color-primary)
-        }
-    }
-
-    .q-checkbox{
-        display: none;
-    }
-
-    a[data-wowhead]{
+    a.boe{
         font-size: 15px;
 
-        display: flex;
-        color: white;
+        display: block;
         text-decoration: none;
+
+        .q-item{
+            color: white;
+
+            &.q-item--active{
+                background: var(--q-color-primary)
+            }
+        }
+
+        .q-checkbox{
+            display: none;
+        }
     }
 }
 </style>

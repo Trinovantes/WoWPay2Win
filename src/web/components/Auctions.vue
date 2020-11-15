@@ -12,16 +12,17 @@
             <template #body-cell-itemId="props">
                 <q-td :props="props">
                     <a
-                        :href="`https://www.wowhead.com/item=${props.row.itemId}&bonus=${props.row.bonuses.join(':')}`"
+                        :href="getWowheadItemLink(props.row)"
                         :data-wowhead="`item=${props.row.itemId}`"
-                        class="item"
+                        class="boe"
+                        rel="noopener"
                         target="_blank"
                     >
                         <q-avatar
                             rounded
                             size="20px"
                         >
-                            <img :src="getItemIcon(props.row.itemId)">
+                            <img :src="getItemIcon(props.row.itemId)" :alt="getItemName(props.row.itemId)" width="20" height="20">
                         </q-avatar>
                         {{ getItemName(props.row.itemId) }}
                     </a>
@@ -41,10 +42,6 @@
             :max="numPages"
             boundary-links
             direction-links
-            icon-first="skip_previous"
-            icon-last="skip_next"
-            icon-prev="fast_rewind"
-            icon-next="fast_forward"
             input
             color="secondary"
         />
@@ -278,7 +275,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
         color: $text;
     }
 
-    a.item{
+    a.boe{
         .q-avatar{
             margin-right: $padding;
         }

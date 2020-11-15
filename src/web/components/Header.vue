@@ -1,8 +1,10 @@
 <template>
     <header id="header" class="row shadow-3">
         <q-toolbar class="col-3 sidebar">
-            <q-avatar>
-                <img :src="require('@img/token.jpg')">
+            <q-avatar
+                size="40px"
+            >
+                <img :src="require('@img/token.jpg')" :alt="title" width="40" height="40">
             </q-avatar>
             <h1 class="title">
                 {{ title }}
@@ -49,9 +51,9 @@ header#header{
         color: white;
         font-size: 27px;
         font-weight: bold;
-        line-height: 40px;
+        line-height: 1;
         margin: 0;
-        padding: $padding;
+        padding: 0 $padding;
     }
 
     .filter{
