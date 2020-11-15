@@ -1,10 +1,5 @@
 <template>
     <footer id="footer" class="group">
-        <p>
-            <strong>Backstory:</strong> At the beginning of the Ny'alotha raid in BfA, having the right corruption on gear drops (also available on BoEs) meant massive DPS increases.
-            The gap was so big that it was nearly impossible to compete against players with BiS.
-            As a result, many competitive players transferred to other realms and back just to buy their BiS for millions of gold.
-        </p>
         <p class="meme">
             {{ meme }}
         </p>

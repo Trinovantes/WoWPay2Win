@@ -1,129 +1,55 @@
-# On Remote Server
+# WoWPay2Win
 
-```
-sudo apt update
-sudo apt install -y nodejs npm
-sudo npm install -g parcel-bundler
-```
+At the beginning of the Ny'alotha raid in BfA, having the right corruption on gear drops (also available on BoEs) meant massive DPS increases. The gap was so big that it was nearly impossible to compete against players with BiS. As a result, many competitive players transferred to other realms and back just to buy their BiS for millions of gold.
 
-Create the nginx configuration file (`/etc/nginx/sites-available/wowpay2win.com`):
+Nowadays, this tool simply scans for BoEs in every auction house across the region.
 
-```
-#-------------------------------------------------------------------------------
-# wowpay2win.com
-#-------------------------------------------------------------------------------
+## Architecture
 
-server {
-    listen 80;
-    server_name wowpay2win.com www.wowpay2win.com;
+This app consists of two parts:
 
-    include /etc/nginx/snippets/letsencrypt.conf;
+1. **Website:** (`src/web`)
+    - This is a SPA built using Vue.js
+    - It is compiled by GitHub Actions and is hosted using GitHub Pages (see `gh-pages` branch)
 
-    location / {
-        return 301 https://www.wowpay2win.com$request_uri;
-    }
-}
+2. **Cron script:** (`src/cron`)
+    - This is a Node script responsible for fetching auction house data from Blizzard's API
+    - It is scheduled to run once every hour by GitHub Actions
+    - The GitHub Action also commits its generated data (`dist-web/data/*.json`) to the `gh-pages` branch
 
-server {
-    listen 443;
-    server_name wowpay2win.com;
+These two parts are completely independent from each other where their only communication channel is through the generated `json` data files.
 
-#    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
-#    ssl_trusted_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    include /etc/nginx/snippets/ssl.conf;
+## Dev Setup
 
-    location / {
-        return 301 https://www.wowpay2win.com$request_uri;
-    }
-}
+### Prereq
 
-server {
-    listen      443;
-    server_name www.wowpay2win.com;
-    autoindex   off;
+- `node`
+- `yarn`
 
-#    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
-#    ssl_trusted_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    include /etc/nginx/snippets/ssl.conf;
+### Commands
 
-    location / {
-        root /var/www/wowpay2win.com/;
-    }
-}
+```bash
+# Watches the src/cron directory and recompiles changes
+yarn cron
+
+# Starts webpack-dev-server on localhost:8080
+yarn web
+
+# Runs linter
+yarn lint
 ```
 
-The SSL options are initially commented out because those files do not exist yet. This will allow us to start nginx for the initial authentication without getting `FileDoesNotExist` errors.
+I recommend doing cron script development in VS Code because this repository is already configured to launch the scripts inside VS Code using `F5`. We just need to run `yarn cron` in a separate terminal first.
 
-Next symlink the config file to `sites-enabled`:
-```
-sudo ln -s /etc/nginx/sites-available/wowpay2win.com /etc/nginx/sites-enabled/
-```
+Note that the website requires game data from the API (localized item names and icon files) before it can be properly built. We just need to first compile the cron scripts `yarn buildCron` and get the game data `yarn fetchData` before running `yarn web`.
 
-Create the common nginx file (`/etc/nginx/snippets/ssl.conf`):
-```
-ssl on;
+## Building for Production
 
-# certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-ssl_session_timeout 1d;
-ssl_session_cache shared:SSL:50m;
-ssl_session_tickets off;
-
-# modern configuration. tweak to your needs.
-ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-ssl_ciphers AES256+EECDH:AES256+EDH:!aNULL;
-ssl_prefer_server_ciphers on;
-
-# HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
-add_header Strict-Transport-Security max-age=15768000;
-add_header X-Frame-Options DENY;
-add_header X-Content-Type-Options nosniff;
-
-# OCSP Stapling ---
-# fetch OCSP records from URL in ssl_certificate and cache them
-ssl_stapling on;
-ssl_stapling_verify on;
+```bash
+yarn buildCron     # Builds the cron scripts
+yarn fetchData     # Fetch game data (regions, connected realms, items)
+yarn fetchAuctions # Fetch auction house data
+yarn buildWeb      # Builds the website
 ```
 
-Create the common nginx file (`/etc/nginx/snippets/letsencrypt.conf`):
-```
-location ^~ /.well-known/acme-challenge/ {
-    default_type "text/plain";
-    root /var/www/letsencrypt;
-}
-```
-
-Now we can restart nginx (`sudo systemctl restart nginx`) to host the non-SSL version for Let's Encrypt authentication challenge.
-```
-sudo certbot certonly --webroot -d wowpay2win.com -d www.wowpay2win.com --webroot-path /var/www/letsencrypt
-```
-
-If we are behind Cloudflare, we need to create a Page Rule to ensure the authentication challenge is not being automatically redirected to https:
-```
-*wowpay2win.com/.well-known/acme-challenge/*
-SSL: Off
-```
-
-After this, go back to `/etc/nginx/sites-available/wowpay2win.com` and uncomment the SSL options.
-
-Next we need to add this line to `/etc/letsencrypt/cli.ini` to ensure nginx restarts whenever the auto renew script runs (automatically generated in `/etc/cron.d/certbot`).
-```
-deploy-hook = systemctl reload nginx
-```
-
-Finally, we can test auto renew with `certbot renew --dry-run`.
-
-# Cron
-
-Run `crontab -e` and add this line:
-```
-30 * * * * python3 /var/www/wowpay2win.com/auctions.py
-```
-
-# Deploy
-```
-./auctions.py
-npm run clean
-npm run build
-```
+Once everything is compiled, we just need to serve `dist-web` to the public.
