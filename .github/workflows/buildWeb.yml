@@ -47,7 +47,7 @@ jobs:
       - name: Build Cron
         run: yarn buildCron
 
-      - name: Run Cron (fetchData)
+      - name: Run fetchData
         run: yarn fetchData
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}

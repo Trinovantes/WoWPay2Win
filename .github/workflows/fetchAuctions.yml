@@ -14,8 +14,8 @@ env:
   AUCTIONS_DIR: "${BUILD_DIR}/data"
 
 jobs:
-  build_web:
-    name: Build Web
+  fetch_auctions:
+    name: Fetch Auctions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -45,7 +45,7 @@ jobs:
       - name: Build Cron
         run: yarn buildCron
 
-      - name: Run Cron (fetchAuctions)
+      - name: Run fetchAuctions
         timeout-minutes: 30
         run: |
           yarn fetchAuctions
