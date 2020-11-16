@@ -1,7 +1,7 @@
 <template>
     <div class="group">
         <h2>Tertiaries</h2>
-        <q-list>
+        <q-list dense>
             <q-item
                 v-for="tertiary of tertiaryOptions"
                 :key="tertiary.value"

@@ -33,7 +33,7 @@
                         </a>
                     </div>
                 </h2>
-                <q-list>
+                <q-list dense>
                     <a
                         v-for="id of category.ids"
                         :key="id"
@@ -178,9 +178,8 @@ export default class BoeFilter extends mixins(VuexComponent, DataComponent, Imag
     }
 
     a.boe{
-        font-size: 15px;
-
         display: block;
+        font-size: 15px;
         text-decoration: none;
 
         .q-item{

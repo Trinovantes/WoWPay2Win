@@ -14,7 +14,6 @@ a{
 
 aside#sidebar{
     font-size: 17px;
-    line-height: 1.5em;
 
     .group{
         border-bottom: 1px solid $bg-main;
@@ -49,9 +48,11 @@ aside#sidebar{
         margin-left: -$side-padding;
         margin-right: -$side-padding;
 
-        label.q-item{
-            padding-top: $padding;
-            padding-bottom: $padding;
+        &:not(.q-list--dense) {
+            label.q-item{
+                padding-top: $padding;
+                padding-bottom: $padding;
+            }
         }
 
         .q-item__label--caption{
