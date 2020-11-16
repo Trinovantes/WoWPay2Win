@@ -45,7 +45,9 @@ import Component from 'vue-class-component'
 
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(relativeTime)
+dayjs.extend(localizedFormat)
 
 @Component({
     components: {
@@ -79,7 +81,7 @@ export default class MainLayout extends VuexComponent {
 
     get lastUpdatedString(): string | null {
         if (this.lastModified) {
-            return dayjs(this.lastModified).toString()
+            return dayjs(this.lastModified).format('ll LT')
         } else {
             return null
         }
