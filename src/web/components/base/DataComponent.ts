@@ -62,7 +62,7 @@ export default class DataComponent extends VuexComponent {
         const itemFile = `item-${itemId}.json`
         if (!(itemFile in this.dataFiles)) {
             console.warn('Item data file not found during compilation', itemFile)
-            return ''
+            return `Item ${itemId}`
         }
 
         const itemCache = this.dataFiles[itemFile] as IItemCache

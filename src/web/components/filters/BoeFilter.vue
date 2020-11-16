@@ -60,7 +60,18 @@
                                     rounded
                                     size="40px"
                                 >
-                                    <img :src="getItemIcon(id)" :alt="getItemName(id)" width="40" height="40">
+                                    <img
+                                        v-if="getItemIcon(id)"
+                                        :src="getItemIcon(id)"
+                                        :alt="getItemName(id)"
+                                        width="40"
+                                        height="40"
+                                    >
+                                    <q-icon
+                                        v-else
+                                        name="error_outline"
+                                        size="40px"
+                                    />
                                 </q-avatar>
                             </q-item-section>
                             <q-item-section>

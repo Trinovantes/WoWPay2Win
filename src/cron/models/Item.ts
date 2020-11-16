@@ -2,7 +2,7 @@ import { existsSync, createWriteStream } from 'fs'
 import Axios from 'axios'
 import path from 'path'
 
-import { Locale } from '@common/Constants'
+import Constants, { Locale } from '@common/Constants'
 import { IItemMediaResponse, IItemResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { Region } from './Region'
@@ -82,24 +82,33 @@ export class Item extends Cacheable {
             return
         }
 
-        const itemResponse = await this.itemAccessor.fetch()
-        this.baseLevel = itemResponse.level
-        this.localizedName[this.region.config.locale] = itemResponse.name
+        try {
+            const itemResponse = await this.itemAccessor.fetch()
+            this.baseLevel = itemResponse.level
+            this.localizedName[this.region.config.locale] = itemResponse.name
 
-        if (!this.iconUrl || !existsSync(this.iconPath)) {
-            const itemMediaResponse = await this.itemMediaAccessor.fetch()
-            for (const asset of itemMediaResponse.assets) {
-                if (asset.key === 'icon') {
-                    this.iconUrl = asset.value
-                    break
+            if (!this.iconUrl || !existsSync(this.iconPath)) {
+                const itemMediaResponse = await this.itemMediaAccessor.fetch()
+                for (const asset of itemMediaResponse.assets) {
+                    if (asset.key === 'icon') {
+                        this.iconUrl = asset.value
+                        break
+                    }
                 }
+
+                await this.downloadMedia()
             }
 
-            await this.downloadMedia()
-        }
+            console.debug(`Saving item ${this.region.config.locale} ${this.id} to ${this.cacheFile}`)
+            await this.saveToCache()
+        } catch (err) {
+            const error = err as Error
 
-        console.debug(`Saving item ${this.region.config.locale} ${this.id} to ${this.cacheFile}`)
-        await this.saveToCache()
+            console.warn(error.message)
+            if (Constants.IS_DEV) {
+                console.warn(error.stack)
+            }
+        }
     }
 
     private async downloadMedia(): Promise<void> {
