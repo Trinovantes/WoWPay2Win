@@ -46,6 +46,10 @@ const WebConfig = merge(CommonConfig, {
             template: 'index.html',
             favicon: 'assets/img/favicon.ico',
         }),
+        new HtmlWebpackPlugin({
+            template: '404.html',
+            filename: '404.html',
+        }),
     ],
 })
 
