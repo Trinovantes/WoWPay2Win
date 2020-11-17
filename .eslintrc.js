@@ -98,7 +98,7 @@ module.exports = {
         }],
         '@typescript-eslint/consistent-type-assertions': ['error', {
             assertionStyle: 'as',
-            objectLiteralTypeAssertions: 'allow-as-parameter',
+            objectLiteralTypeAssertions: 'never',
         }],
         '@typescript-eslint/array-type': ['error', {
             default: 'generic',
