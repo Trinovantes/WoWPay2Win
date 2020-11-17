@@ -25,12 +25,17 @@ export default class Footer extends Vue {
 
     get meme(): string {
         const memes = [
-            'Does anybody else think we should delete pandas from the game? You should never trust pandas, horrible creatures!',
+            'Does anybody else think we should delete pandas from the game?',
             'Sometimes I wonder how much money I\'d make if I\'d put ads on this site',
+            'Imagine if I got a commission everytime somebody made a purchase because of this site',
             'Would you believe that this site only costs me $15 per year to run?',
             'Pull the cord, but not too hard so I still feel safe',
             'Isn\'t this just pay2win with extra steps?',
             'I bet there are still realms that have Realm First Kil\'Jaeden available',
+            'I\'m calling the overtime police',
+            'Y\'all got any more of them 3080s?',
+            'AH ↗ HA ↘ HA ↗ HA ↘ HA ↗ HA ↘',
+            'Bottom left ↙',
         ]
 
         return sample(memes) || ''
