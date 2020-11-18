@@ -150,88 +150,82 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
         tier: Tier.CastleNathria,
         name: 'Castle Nathria',
         iconPath: 'castle-nathria.png',
-        expiration: dayjs('2020-11-23'),
         boes: [
-            // {
-            //     label: 'Amulet',
-            //     ids: new Set([
-            //         184785,
-            //     ]),
-            // },
-            // {
-            //     label: 'Ring',
-            //     ids: new Set([
-            //         184784,
-            //         184783,
-            //     ]),
-            // },
-            // {
-            //     label: 'Cloak',
-            //     ids: new Set([
-            //         184782,
-            //         184781,
-            //         184778,
-            //     ]),
-            // },
-            // {
-            //     label: 'Trinket',
-            //     ids: new Set([
-            //         184807,
-            //     ]),
-            // },
-            // {
-            //     label: 'Weapon',
-            //     ids: new Set([
-            //         184805,
-            //         184798,
-            //         184797,
-            //         184799,
-            //         184800,
-            //         184801,
-            //         184803,
-            //         184806,
-            //         184804,
-            //         184802,
-            //     ]),
-            // },
-            // {
-            //     label: 'Cloth',
-            //     ids: new Set([
-            //         184786,
-            //         184787,
-            //         184788,
-            //     ]),
-            // },
-            // {
-            //     label: 'Leather',
-            //     ids: new Set([
-            //         184789,
-            //         184790,
-            //         184791,
-            //     ]),
-            // },
-            // {
-            //     label: 'Mail',
-            //     ids: new Set([
-            //         184792,
-            //         184793,
-            //         184794,
-            //     ]),
-            // },
-            // {
-            //     label: 'Plate',
-            //     ids: new Set([
-            //         184795,
-            //         184796,
-            //         184808,
-            //         184809,
-            //     ]),
-            // },
+            {
+                label: 'Trinket',
+                ids: new Set([
+                    184807,
+                ]),
+            },
+            {
+                label: 'Jewelry',
+                ids: new Set([
+                    184785,
+                    184784,
+                    184783,
+                ]),
+            },
+            {
+                label: 'Cloak',
+                ids: new Set([
+                    184782,
+                    184778,
+                    184781,
+                ]),
+            },
+            {
+                label: 'Weapon',
+                ids: new Set([
+                    184805,
+                    184798,
+                    184797,
+                    184799,
+                    184800,
+                    184801,
+                    184803,
+                    184806,
+                    184804,
+                    184802,
+                ]),
+            },
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    184786,
+                    184787,
+                    184788,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    184790,
+                    184791,
+                    184789,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    184793,
+                    184794,
+                    184792,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    184795,
+                    184796,
+                    184808,
+                    184809,
+                ]),
+            },
         ],
         ilvls: {
-            min: -1,
-            max: -1,
-            step: -1,
+            min: 190,
+            max: 207,
+            step: 1,
         },
     },
 }
