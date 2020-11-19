@@ -33,9 +33,11 @@ export default class Footer extends Vue {
             'Isn\'t this just pay2win with extra steps?',
             'I bet there are still realms that have Realm First Kil\'Jaeden available',
             'I\'m calling the overtime police',
-            'Y\'all got any more of them 3080s?',
+            'Y\'all got any more of them 3080\'s?',
+            'Anyone caught playing Classic will be gkicked',
+            'Please buff BDK',
             'AH ↗ HA ↘ HA ↗ HA ↘ HA ↗ HA ↘',
-            'Bottom left ↙',
+            'BOTTOM LEFT ↙',
         ]
 
         return sample(memes) || ''
