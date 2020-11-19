@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 'use strict'
 
+const path = require('path')
 const { merge } = require('webpack-merge')
 const CommonConfig = require('./webpack.config.common')
-const path = require('path')
 
 // ----------------------------------------------------------------------------
 // Cron

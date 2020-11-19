@@ -7,7 +7,7 @@
         "web":       "cross-env NODE_ENV=development webpack-dev-server --config scripts/webpack.config.web.js  --watch",
         "buildCron": "cross-env NODE_ENV=production  webpack            --config scripts/webpack.config.cron.js",
         "buildWeb":  "cross-env NODE_ENV=production  webpack            --config scripts/webpack.config.web.js",
-        "lint": "eslint --ext .ts,.vue ./src"
+        "lint": "eslint --ext .js,.ts,.vue ."
     },
     "dependencies": {
         "axios": "^0.21.0",
@@ -25,6 +25,7 @@
     "devDependencies": {
         "@types/lodash": "^4.14.165",
         "@types/node": "^14.11.7",
+        "@types/terser-webpack-plugin": "^5.0.2",
         "@types/webpack-env": "^1.15.3",
         "@typescript-eslint/eslint-plugin": "^4.4.0",
         "@typescript-eslint/parser": "^4.2.0",

@@ -33,6 +33,7 @@
         "dist*",
     ],
     "include": [
-        "src/**/*",
+        "**/*",
+        ".eslintrc.js"
     ],
 }
