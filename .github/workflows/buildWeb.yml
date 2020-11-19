@@ -39,7 +39,7 @@ jobs:
           path: |
             ${{ env.DATA_DIR }}
             ${{ env.ITEM_ICON_DIR }}
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/cron/**/*.ts') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/cron/**/*.ts', 'src/common/**/*.ts') }}
 
       - name: Install Dependencies
         run: yarn install
