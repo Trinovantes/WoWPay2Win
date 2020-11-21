@@ -6,7 +6,7 @@
                 <div class="main-sidebar">
                     <div class="group">
                         <p>
-                            This tool scans for BoEs in every auction house across the region. To buy an item, you need to either transfer a character with gold or buy tokens on that realm.
+                            {{ APP_DESC }}
                         </p>
                     </div>
                     <div v-if="region">
@@ -43,6 +43,8 @@
 import VuexComponent from './base/VuexComponent'
 import Component from 'vue-class-component'
 
+import Constants from '@common/Constants'
+
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
@@ -63,6 +65,8 @@ dayjs.extend(localizedFormat)
     },
 })
 export default class MainLayout extends VuexComponent {
+    readonly APP_DESC = Constants.APP_DESC
+
     get lastUpdated(): string {
         if (this.lastModified) {
             return dayjs(this.lastModified).fromNow()

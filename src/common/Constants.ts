@@ -6,6 +6,8 @@ const isDev = (process.env.NODE_ENV === 'development')
 export default {
     IS_DEV: isDev,
     APP_NAME: 'WoWPay2Win',
+    APP_DESC: 'This tool scans for BoEs in every auction house across the region. To buy an item, you need to either transfer a character with gold or buy tokens on that realm.',
+    OG_DESC: 'Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!',
 
     API_TIMEOUT: 30 * 1000, // in ms
     CONCURRENT_API_REQUESTS: isDev ? 1 : 50,
