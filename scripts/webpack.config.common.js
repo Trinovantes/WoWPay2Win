@@ -23,6 +23,7 @@ const CommonConfig = {
         extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
         alias: {
             // Need to match aliases in tsconfig.json
+            '@': path.resolve(__dirname, '../static'),
             '@common': path.resolve(__dirname, '../src/common'),
 
             '@components': path.resolve(__dirname, '../src/web/components'),

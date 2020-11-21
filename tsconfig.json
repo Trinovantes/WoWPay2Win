@@ -17,6 +17,7 @@
 
         "baseUrl": ".",
         "paths": {
+            "@/*": ["./static/*"],
             "@common/*": ["./src/common/*"],
 
             "@components/*": ["./src/web/components/*"],

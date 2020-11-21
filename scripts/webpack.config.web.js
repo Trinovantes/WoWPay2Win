@@ -8,6 +8,7 @@ const path = require('path')
 
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // ----------------------------------------------------------------------------
 // Web
@@ -43,10 +44,16 @@ const WebConfig = merge(CommonConfig, {
     },
 
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, '../static'),
+                },
+            ],
+        }),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             template: 'index.html',
-            favicon: 'assets/img/favicon.ico',
         }),
         new HtmlWebpackPlugin({
             template: '404.html',
