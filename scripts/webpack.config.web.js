@@ -2,32 +2,31 @@
 
 'use strict'
 
-const { merge } = require('webpack-merge')
-const CommonConfig = require('./webpack.config.common')
 const path = require('path')
-
+const { merge } = require('webpack-merge')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+const CommonConfig = require('./webpack.config.common')
+const isDev = (process.env.NODE_ENV === 'development')
+const srcDir = path.resolve(__dirname, '../src/web')
+const distDir = path.resolve(__dirname, '../dist-web')
+const staticDir = path.resolve(__dirname, '../static')
 
 // ----------------------------------------------------------------------------
 // Web
 // ----------------------------------------------------------------------------
 
-const SRC_DIR = path.resolve(__dirname, '../src/web')
-const DIST_DIR = path.resolve(__dirname, '../dist-web')
-
-const isDev = (process.env.NODE_ENV === 'development')
-
 const WebConfig = merge(CommonConfig, {
     target: 'web',
 
-    context: SRC_DIR,
+    context: srcDir,
     entry: {
         main: 'main.ts',
     },
     output: {
-        path: DIST_DIR,
+        path: distDir,
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
@@ -35,19 +34,19 @@ const WebConfig = merge(CommonConfig, {
 
     resolve: {
         modules: [
-            SRC_DIR,
+            srcDir,
         ],
     },
 
     devServer: {
-        contentBase: DIST_DIR,
+        contentBase: staticDir,
     },
 
     plugins: [
-        new CopyWebpackPlugin({
+        !isDev && new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, '../static'),
+                    from: staticDir,
                 },
             ],
         }),
@@ -59,7 +58,7 @@ const WebConfig = merge(CommonConfig, {
             template: '404.html',
             filename: '404.html',
         }),
-    ],
+    ].filter(Boolean),
 })
 
 module.exports = WebConfig

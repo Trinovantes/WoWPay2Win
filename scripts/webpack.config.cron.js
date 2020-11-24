@@ -4,30 +4,30 @@
 
 const path = require('path')
 const { merge } = require('webpack-merge')
+
 const CommonConfig = require('./webpack.config.common')
+const srcDir = path.resolve(__dirname, '../src/cron')
+const distDir = path.resolve(__dirname, '../dist-cron')
 
 // ----------------------------------------------------------------------------
 // Cron
 // ----------------------------------------------------------------------------
 
-const SRC_DIR = path.resolve(__dirname, '../src/cron')
-const DIST_DIR = path.resolve(__dirname, '../dist-cron')
-
 const CronConfig = merge(CommonConfig, {
     target: 'node',
 
-    context: SRC_DIR,
+    context: srcDir,
     entry: {
         fetchAuctions: 'fetchAuctions.ts',
         fetchData: 'fetchData.ts',
     },
     output: {
-        path: DIST_DIR,
+        path: distDir,
     },
 
     resolve: {
         modules: [
-            SRC_DIR,
+            srcDir,
         ],
     },
 })

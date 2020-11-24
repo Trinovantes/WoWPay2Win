@@ -4,14 +4,13 @@
 
 const path = require('path')
 const webpack = require('webpack')
-
 const TerserPlugin = require('terser-webpack-plugin')
+
+const isDev = (process.env.NODE_ENV === 'development')
 
 // ----------------------------------------------------------------------------
 // Common
 // ----------------------------------------------------------------------------
-
-const isDev = (process.env.NODE_ENV === 'development')
 
 const CommonConfig = {
     mode: process.env.NODE_ENV,
