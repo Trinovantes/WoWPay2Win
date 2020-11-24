@@ -37,7 +37,7 @@
                     <a
                         v-for="id of category.ids"
                         :key="id"
-                        :href="getWowheadItemLinkById(id)"
+                        :href="getWowheadItemLinkById(id, region)"
                         :data-wowhead="`item=${id}`"
                         class="boe"
                         rel="noopener"

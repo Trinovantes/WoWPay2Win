@@ -3,7 +3,7 @@ import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
 import { IItemAuctionCache, IItemCache, IRealmCache, IRegionCache } from '@common/ICache'
-import { getRegionLocale } from '@common/Constants'
+import { getRegionLocale, RegionSlug } from '@common/Constants'
 
 @Component
 export default class DataComponent extends VuexComponent {
@@ -70,12 +70,14 @@ export default class DataComponent extends VuexComponent {
         return itemCache.localizedName[locale] || ''
     }
 
-    getWowheadItemLink(item: IItemAuctionCache): string {
-        return `https://www.wowhead.com/item=${item.itemId}&bonus=${item.bonuses.join(':')}`
+    getWowheadItemLink(item: IItemAuctionCache, region: RegionSlug): string {
+        const domain = getWowheadDomain(region)
+        return `https://${domain}.wowhead.com/item=${item.itemId}&bonus=${item.bonuses.join(':')}`
     }
 
-    getWowheadItemLinkById(itemId: number): string {
-        return `https://www.wowhead.com/item=${itemId}`
+    getWowheadItemLinkById(itemId: number, region: RegionSlug): string {
+        const domain = getWowheadDomain(region)
+        return `https://${domain}.wowhead.com/item=${itemId}`
     }
 
     getConnectedRealmName(crId: number): string {
@@ -109,4 +111,15 @@ export function getDataFiles(): { [key: string]: unknown } {
     })
 
     return files
+}
+
+function getWowheadDomain(region: RegionSlug): string {
+    switch (region) {
+        case RegionSlug.TW:
+            return 'cn'
+        case RegionSlug.KR:
+            return 'ko'
+        default:
+            return 'www'
+    }
 }

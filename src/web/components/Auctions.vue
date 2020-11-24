@@ -12,7 +12,7 @@
             <template #body-cell-itemId="props">
                 <q-td :props="props">
                     <a
-                        :href="getWowheadItemLink(props.row)"
+                        :href="getWowheadItemLink(props.row, region)"
                         :data-wowhead="`item=${props.row.itemId}`"
                         class="boe"
                         rel="noopener"
