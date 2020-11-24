@@ -115,8 +115,6 @@ export function getDataFiles(): { [key: string]: unknown } {
 
 function getWowheadDomain(region: RegionSlug): string {
     switch (region) {
-        case RegionSlug.TW:
-            return 'cn'
         case RegionSlug.KR:
             return 'ko'
         default:
