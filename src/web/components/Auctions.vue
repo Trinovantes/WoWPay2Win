@@ -190,7 +190,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
         try {
             const response = await Axios.get(auctionsFile)
             const auctionsCache = response.data as IAuctionsCache
-    
+
             this.changeLastModified(auctionsCache.lastModified)
             this.auctions = auctionsCache.auctions
         } catch (err) {
