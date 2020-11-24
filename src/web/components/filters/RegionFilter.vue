@@ -16,17 +16,17 @@
 import Component from 'vue-class-component'
 import VuexComponent from '@components/base/VuexComponent'
 
-import { Region, RegionConfigs } from '@common/Constants'
+import { RegionSlug, RegionConfigs } from '@common/Constants'
 
 @Component
 export default class RegionFilter extends VuexComponent {
     readonly regions = RegionConfigs.map((regionConfig) => regionConfig.slug)
 
-    get selectedRegion(): Region | null {
+    get selectedRegion(): RegionSlug | null {
         return this.region
     }
 
-    set selectedRegion(regionSlug: Region | null) {
+    set selectedRegion(regionSlug: RegionSlug | null) {
         this.changeRegion(regionSlug)
     }
 }

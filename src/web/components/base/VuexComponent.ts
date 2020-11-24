@@ -2,7 +2,7 @@ import Component from 'vue-class-component'
 import Vue from 'vue'
 import { mapMutations, mapState } from 'vuex'
 
-import { Region, Tertiary, Tier } from '@common/Constants'
+import { RegionSlug, Tertiary, Tier } from '@common/Constants'
 import { IIlvlRange } from '@store/AppStore'
 
 @Component({
@@ -38,8 +38,8 @@ import { IIlvlRange } from '@store/AppStore'
     },
 })
 export default class VuexComponent extends Vue {
-    region!: Region | null
-    changeRegion!: (region: Region | null) => void
+    region!: RegionSlug | null
+    changeRegion!: (region: RegionSlug | null) => void
     realm!: number | null
     changeRealm!: (realm: number | null) => void
     lastModified!: number | null

@@ -18,7 +18,7 @@ import { Watch } from 'vue-property-decorator'
 
 import _ from 'lodash'
 
-import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, Region, Tertiary, Tier } from '@common/Constants'
+import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tertiary, Tier } from '@common/Constants'
 import { SavedFilters } from '@store/AppStore'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
@@ -63,8 +63,8 @@ export default class App extends VuexComponent {
 
     private importFilters(savedFilters: SavedFilters): void {
         if (savedFilters.region) {
-            const validRegions = Object.values(Region)
-            const region = savedFilters.region as Region
+            const validRegions = Object.values(RegionSlug)
+            const region = savedFilters.region as RegionSlug
             if (validRegions.includes(region)) {
                 this.changeRegion(region)
             }

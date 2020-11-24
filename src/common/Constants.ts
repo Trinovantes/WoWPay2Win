@@ -22,7 +22,7 @@ export default {
 // Region
 // ----------------------------------------------------------------------------
 
-export enum Region {
+export enum RegionSlug {
     US = 'us',
     EU = 'eu',
     TW = 'tw',
@@ -37,7 +37,7 @@ export enum Locale {
 }
 
 export interface RegionConfig {
-    readonly slug: Region
+    readonly slug: RegionSlug
     readonly locale: Locale,
     readonly apiHost: string,
     readonly oauthEndpoint: string,
@@ -45,32 +45,32 @@ export interface RegionConfig {
 
 export const RegionConfigs: Array<RegionConfig> = [
     {
-        slug: Region.US,
+        slug: RegionSlug.US,
         locale: Locale.EN_US,
         apiHost: 'https://us.api.blizzard.com',
         oauthEndpoint: 'https://us.battle.net/oauth/token',
     },
     {
-        slug: Region.EU,
+        slug: RegionSlug.EU,
         locale: Locale.EN_GB,
         apiHost: 'https://eu.api.blizzard.com',
         oauthEndpoint: 'https://eu.battle.net/oauth/token',
     },
     {
-        slug: Region.TW,
+        slug: RegionSlug.TW,
         locale: Locale.ZH_TW,
         apiHost: 'https://tw.api.blizzard.com',
         oauthEndpoint: 'https://apac.battle.net/oauth/token',
     },
     {
-        slug: Region.KR,
+        slug: RegionSlug.KR,
         locale: Locale.KO_KR,
         apiHost: 'https://kr.api.blizzard.com',
         oauthEndpoint: 'https://apac.battle.net/oauth/token',
     },
 ]
 
-export function getRegionLocale(regionSlug: Region): Locale {
+export function getRegionLocale(regionSlug: RegionSlug): Locale {
     for (const regionConfig of RegionConfigs) {
         if (regionConfig.slug === regionSlug) {
             return regionConfig.locale

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-import Constants, { getIlvlRange, Region, Tertiary, Tier } from '@common/Constants'
+import Constants, { getIlvlRange, RegionSlug, Tertiary, Tier } from '@common/Constants'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -31,7 +31,7 @@ export type SavedFilters = {
 }
 
 export interface IRootState {
-    region: Region | null
+    region: RegionSlug | null
     realm: number | null
     lastModified: number | null
 
@@ -71,7 +71,7 @@ const store = new Vuex.Store<IRootState>({
     },
 
     mutations: {
-        changeRegion(state: IRootState, region: Region | null): void {
+        changeRegion(state: IRootState, region: RegionSlug | null): void {
             state.region = region
             state.realm = null
         },
