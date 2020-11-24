@@ -19,7 +19,7 @@ export abstract class Cacheable {
         this.cacheFile = path.resolve(process.env.CACHE_DIR, cacheFile)
     }
 
-    abstract async fetch(): Promise<void>
+    abstract fetch(): Promise<void>
 
     protected abstract import(fileContents: string): boolean
 
