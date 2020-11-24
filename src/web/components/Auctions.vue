@@ -185,7 +185,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
             return
         }
 
-        const auctionsFile = `${process.env.DATA_URL}/auctions-${this.region}.json`
+        const auctionsFile = `${process.env.AUCTIONS_URL}/auctions-${this.region}.json`
 
         try {
             const response = await Axios.get(auctionsFile)

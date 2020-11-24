@@ -81,13 +81,13 @@ export class Region extends Cacheable {
     }
 
     async fetchAuctions(): Promise<void> {
-        const dataDir = process.env.DATA_DIR
-        if (!dataDir) {
-            throw new Error('Cannot find DATA_DIR in env')
+        const auctionsDir = process.env.AUCTIONS_DIR
+        if (!auctionsDir) {
+            throw new Error('Cannot find AUCTIONS_DIR in env')
         }
-        if (!existsSync(dataDir)) {
-            console.debug('DATA_DIR does not exist. Attempting to mkdir', dataDir)
-            mkdirSync(dataDir, { recursive: true })
+        if (!existsSync(auctionsDir)) {
+            console.debug('AUCTIONS_DIR does not exist. Attempting to mkdir', auctionsDir)
+            mkdirSync(auctionsDir, { recursive: true })
         }
 
         console.info(`Region::fetchAuctions ${this.toString()}`)
@@ -109,7 +109,7 @@ export class Region extends Cacheable {
             }
         }
 
-        const auctionCacheFile = path.resolve(dataDir, `auctions-${this.config.slug}.json`)
+        const auctionCacheFile = path.resolve(auctionsDir, `auctions-${this.config.slug}.json`)
         console.debug(`Saving ${totalAuctions} auctions to ${auctionCacheFile}`)
         await Cacheable.saveToCache(auctionCacheFile, auctionsCache)
     }

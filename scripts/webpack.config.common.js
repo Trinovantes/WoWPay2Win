@@ -106,8 +106,8 @@ const CommonConfig = {
 
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.DATA_URL': JSON.stringify('/data'),
-            'process.env.DATA_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
+            'process.env.AUCTIONS_URL': JSON.stringify('/data'),
+            'process.env.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
             'process.env.CACHE_DIR': JSON.stringify(path.resolve(__dirname, '../src/web/assets/data')),
             'process.env.IMAGE_DIR': JSON.stringify(path.resolve(__dirname, '../src/web/assets/img')),
         }),
