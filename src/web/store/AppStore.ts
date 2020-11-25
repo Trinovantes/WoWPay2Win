@@ -44,11 +44,8 @@ export interface IRootState {
     tertiaries: Set<Tertiary>
 }
 
-const store = new Vuex.Store<IRootState>({
-    // Checks state changes only happen in mutation handlers
-    strict: Constants.IS_DEV,
-
-    state: {
+export function createDefaultState(): IRootState {
+    return {
         region: null,
         realm: null,
         lastModified: null,
@@ -62,13 +59,20 @@ const store = new Vuex.Store<IRootState>({
         // Therefore we will keep things simple and reset the tier-related item states whenever we change tiers
         boes: new Set(),
         ilvlRange: {
-            min: -1,
-            max: -1,
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
         },
         maxBuyout: Constants.GOLD_CAP,
         mustHaveSocket: false,
         tertiaries: new Set(),
-    },
+    }
+}
+
+const AppStore = new Vuex.Store<IRootState>({
+    // Checks state changes only happen in mutation handlers
+    strict: Constants.IS_DEV,
+
+    state: createDefaultState(),
 
     mutations: {
         changeRegion(state: IRootState, region: RegionSlug | null): void {
@@ -112,4 +116,4 @@ const store = new Vuex.Store<IRootState>({
     },
 })
 
-export default store
+export default AppStore

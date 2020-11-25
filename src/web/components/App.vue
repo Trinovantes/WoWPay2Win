@@ -19,7 +19,7 @@ import { Watch } from 'vue-property-decorator'
 import _ from 'lodash'
 
 import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tertiary, Tier } from '@common/Constants'
-import { SavedFilters } from '@store/AppStore'
+import { createDefaultState, SavedFilters } from '@store/AppStore'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','
@@ -62,61 +62,79 @@ export default class App extends VuexComponent {
     }
 
     private importFilters(savedFilters: SavedFilters): void {
+        const importedState = createDefaultState()
+
         if (savedFilters.region) {
             const validRegions = Object.values(RegionSlug)
             const region = savedFilters.region as RegionSlug
             if (validRegions.includes(region)) {
-                this.changeRegion(region)
+                importedState.region = region
             }
         }
+
         if (savedFilters.realm) {
             const realm = parseInt(savedFilters.realm)
-            this.changeRealm(realm)
+            if (!isNaN(realm)) {
+                importedState.realm = realm
+            }
         }
 
         if (savedFilters.tier) {
             const validTiers = Object.values(Tier)
             const tier = savedFilters.tier as Tier
             if (validTiers.includes(tier)) {
-                this.changeTier(tier)
+                importedState.tier = tier
             }
         }
-        if (this.tier === null) {
-            this.changeTier(getDefaultTier())
+        if (importedState.tier === null) {
+            importedState.tier = getDefaultTier()
         }
 
         if (savedFilters.boes) {
-            const validBoeIds = getTierBoeIds(this.tier)
+            const validBoeIds = getTierBoeIds(importedState.tier)
             const boeIds = importArray(savedFilters.boes).filter((boeId) => {
                 return validBoeIds.includes(boeId)
             })
-
-            this.changeBoes(new Set(boeIds))
+            importedState.boes = new Set(boeIds)
         }
+
+        const defaultIlvlRange = getIlvlRange(importedState.tier)
+        importedState.ilvlRange = defaultIlvlRange
         if (savedFilters.ilvlRange) {
             const [min, max] = savedFilters.ilvlRange.split(DELIMITER).map((ilvl) => parseInt(ilvl))
-            const defaultIlvlRange = getIlvlRange(this.tier)
-
-            this.changeIlvlRange({
+            importedState.ilvlRange = {
                 min: isNaN(min) ? defaultIlvlRange.min : Math.max(min, defaultIlvlRange.min),
                 max: isNaN(max) ? defaultIlvlRange.max : Math.min(max, defaultIlvlRange.max),
-            })
+            }
         }
+
         if (savedFilters.maxBuyout) {
             const maxBuyout = parseInt(savedFilters.maxBuyout)
-            this.changeMaxBuyout(isNaN(maxBuyout) ? Constants.GOLD_CAP : _.clamp(maxBuyout, 0, Constants.GOLD_CAP))
+            if (!isNaN(maxBuyout)) {
+                importedState.maxBuyout = _.clamp(maxBuyout, 0, Constants.GOLD_CAP)
+            }
         }
+
         if (savedFilters.mustHaveSocket) {
-            this.changeMustHaveSocket(savedFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
+            importedState.mustHaveSocket = (savedFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
         }
+
         if (savedFilters.tertiaries) {
             const validTertiaries = Object.values(Tertiary)
             const tertiaries = importArray(savedFilters.tertiaries).filter((tertiary) => {
                 return validTertiaries.includes(tertiary)
             })
-
-            this.changeTertiaries(new Set(tertiaries))
+            importedState.tertiaries = new Set(tertiaries)
         }
+
+        this.changeRegion(importedState.region)
+        this.changeRealm(importedState.realm)
+        this.changeTier(importedState.tier)
+        this.changeBoes(importedState.boes)
+        this.changeIlvlRange(importedState.ilvlRange)
+        this.changeMaxBuyout(importedState.maxBuyout)
+        this.changeMustHaveSocket(importedState.mustHaveSocket)
+        this.changeTertiaries(importedState.tertiaries)
     }
 
     private exportFilters(): SavedFilters {
