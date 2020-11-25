@@ -114,7 +114,7 @@ const AppStore = new Vuex.Store<IRootState>({
             state.boes = boes
         },
 
-        changeIlvlRange(state: IRootState, ilvlRange: { min: number, max: number }): void {
+        changeIlvlRange(state: IRootState, ilvlRange: IIlvlRange): void {
             if (state.ilvlRange.min === ilvlRange.min && state.ilvlRange.max === ilvlRange.max) {
                 return
             }
