@@ -1,4 +1,5 @@
 import Constants, { getBoeIds, RegionConfigs } from '@common/Constants'
+import { batchRequests } from '@common/utils'
 import { Item } from './models/Item'
 import { Region } from './models/Region'
 
@@ -17,10 +18,10 @@ async function fetchRegions() {
 async function fetchItems(region: Region) {
     const boeIds = getBoeIds()
 
-    for (const id of boeIds) {
-        const item = new Item(region, id)
+    await batchRequests(boeIds.length, async(idx) => {
+        const item = new Item(region, boeIds[idx])
         await item.fetch()
-    }
+    })
 }
 
 async function main() {
