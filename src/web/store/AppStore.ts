@@ -76,11 +76,19 @@ const AppStore = new Vuex.Store<IRootState>({
 
     mutations: {
         changeRegion(state: IRootState, region: RegionSlug | null): void {
+            if (state.region === region) {
+                return
+            }
+
             state.region = region
             state.realm = null
         },
 
         changeRealm(state: IRootState, realm: number | null): void {
+            if (state.realm === realm) {
+                return
+            }
+
             state.realm = realm
         },
 
@@ -89,31 +97,69 @@ const AppStore = new Vuex.Store<IRootState>({
         },
 
         changeTier(state: IRootState, tier: Tier | null): void {
+            if (state.tier === tier) {
+                return
+            }
+
             state.tier = tier
             state.boes = new Set()
             state.ilvlRange = getIlvlRange(tier)
         },
 
         changeBoes(state: IRootState, boes: Set<number>): void {
+            if (setEq(state.boes, boes)) {
+                return
+            }
+
             state.boes = boes
         },
 
         changeIlvlRange(state: IRootState, ilvlRange: { min: number, max: number }): void {
+            if (state.ilvlRange.min === ilvlRange.min && state.ilvlRange.max === ilvlRange.max) {
+                return
+            }
+
             state.ilvlRange = ilvlRange
         },
 
         changeMaxBuyout(state: IRootState, maxBuyout: number): void {
+            if (state.maxBuyout === maxBuyout) {
+                return
+            }
+
             state.maxBuyout = maxBuyout
         },
 
         changeMustHaveSocket(state: IRootState, mustHaveSocket: boolean) {
+            if (state.mustHaveSocket === mustHaveSocket) {
+                return
+            }
+
             state.mustHaveSocket = mustHaveSocket
         },
 
         changeTertiaries(state: IRootState, tertiaries: Set<Tertiary>) {
+            if (setEq(state.tertiaries, tertiaries)) {
+                return
+            }
+
             state.tertiaries = tertiaries
         },
     },
 })
+
+function setEq<T>(s1: Set<T>, s2: Set<T>) {
+    if (s1.size !== s2.size) {
+        return false
+    }
+
+    for (const el of s1) {
+        if (!s2.has(el)) {
+            return false
+        }
+    }
+
+    return true
+}
 
 export default AppStore
