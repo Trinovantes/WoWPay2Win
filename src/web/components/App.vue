@@ -31,14 +31,27 @@ const DELIMITER = ','
 })
 export default class App extends VuexComponent {
     ready = false
+    pendingQuery = false
 
     created(): void {
         document.title = Constants.APP_NAME
-
-        const savedFilters = this.$route.query as SavedFilters
-        this.importFilters(savedFilters)
-
+        this.importFilters(this.$route.query)
         this.ready = true
+    }
+
+    @Watch('$route.query')
+    updateState(newFilters: SavedFilters, oldFilters: SavedFilters): void {
+        // Skip query changes that we initiated
+        // This watcher only cares about changes that the user manually made
+        if (this.pendingQuery) {
+            return
+        }
+
+        if (_.isEqual(newFilters, oldFilters)) {
+            return
+        }
+
+        this.importFilters(newFilters)
     }
 
     @Watch('region')
@@ -49,16 +62,19 @@ export default class App extends VuexComponent {
     @Watch('maxBuyout')
     @Watch('mustHaveSocket')
     @Watch('tertiaries')
-    updateQuery(): void {
+    async updateQuery(): Promise<void> {
         const newFilters = this.exportFilters()
+        const oldFilters = this.$router.currentRoute.query
 
-        if (_.isEqual(this.$router.currentRoute.query, newFilters)) {
+        if (_.isEqual(newFilters, oldFilters)) {
             return
         }
 
-        void this.$router.replace({
+        this.pendingQuery = true
+        await this.$router.replace({
             query: newFilters,
         })
+        this.pendingQuery = false
     }
 
     private importFilters(savedFilters: SavedFilters): void {
