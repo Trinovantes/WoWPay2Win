@@ -39,7 +39,7 @@ const WebConfig = merge(CommonConfig, {
     },
 
     devServer: {
-        contentBase: staticDir,
+        contentBase: [staticDir, distDir],
     },
 
     plugins: [
