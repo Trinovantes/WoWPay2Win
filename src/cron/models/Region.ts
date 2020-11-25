@@ -3,7 +3,7 @@ import { existsSync, mkdirSync } from 'fs'
 
 import { RegionConfig } from '@common/Constants'
 import { IAuctionsCache, ICache, IRegionCache } from '@common/ICache'
-import { batchRequests } from '@common/utils'
+import { batchRequests, tryExponentialBackoff } from '@common/utils'
 import { IRegionResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { ConnectedRealm } from './ConnectedRealm'
@@ -64,17 +64,24 @@ export class Region extends Cacheable {
             return
         }
 
-        const regionResponse = await this.regionAccessor.fetch()
-        await batchRequests(regionResponse.connected_realms.length, async(idx) => {
-            const { href } = regionResponse.connected_realms[idx]
-            const re = /\/data\/wow\/connected-realm\/(\d+)/
-            const matches = re.exec(href)
-            if (matches) {
-                const connectedRealm = new ConnectedRealm(this, parseInt(matches[1]))
-                await connectedRealm.fetch()
-                this.connectedRealms.push(connectedRealm)
-            }
+        const regionResponse = await tryExponentialBackoff(async() => {
+            return await this.regionAccessor.fetch()
         })
+
+        if (regionResponse) {
+            await batchRequests(regionResponse.connected_realms.length, async(idx) => {
+                const { href } = regionResponse.connected_realms[idx]
+                const re = /\/data\/wow\/connected-realm\/(\d+)/
+                const matches = re.exec(href)
+                if (matches) {
+                    const connectedRealm = new ConnectedRealm(this, parseInt(matches[1]))
+                    await tryExponentialBackoff(async() => {
+                        await connectedRealm.fetch()
+                    })
+                    this.connectedRealms.push(connectedRealm)
+                }
+            })
+        }
 
         console.debug(`Saving ${this.connectedRealms.length} realms to ${this.cacheFile}`)
         await this.saveToCache()

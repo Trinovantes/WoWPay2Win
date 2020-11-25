@@ -2,13 +2,14 @@ import { existsSync, createWriteStream } from 'fs'
 import Axios from 'axios'
 import path from 'path'
 
-import Constants, { Locale } from '@common/Constants'
+import { Locale } from '@common/Constants'
 import { IItemMediaResponse, IItemResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { Region } from './Region'
 import { ICache, IItemCache } from '@common/ICache'
 import { IncomingMessage } from 'http'
 import { Cacheable } from './Cacheable'
+import { tryExponentialBackoff } from '@common/utils'
 
 export class Item extends Cacheable {
     readonly iconFile: string
@@ -82,7 +83,7 @@ export class Item extends Cacheable {
             return
         }
 
-        try {
+        await tryExponentialBackoff(async() => {
             const itemResponse = await this.itemAccessor.fetch()
             this.baseLevel = itemResponse.level
             this.localizedName[this.region.config.locale] = itemResponse.name
@@ -101,31 +102,25 @@ export class Item extends Cacheable {
 
             console.debug(`Saving item ${this.region.config.locale} ${this.id} to ${this.cacheFile}`)
             await this.saveToCache()
-        } catch (err) {
-            const error = err as Error
-
-            console.warn(error.message)
-            if (Constants.IS_DEV) {
-                console.warn(error.stack)
-            }
-        }
+        })
     }
 
     private async downloadMedia(): Promise<void> {
-        if (!this.iconUrl) {
+        const iconUrl = this.iconUrl
+        if (!iconUrl) {
             console.warn('Cannot download media because iconUrl does not exist')
             return
         }
 
         const fileWriter = createWriteStream(this.iconPath)
-        const response = await Axios.get(this.iconUrl, {
-            responseType: 'stream',
+        const response = await tryExponentialBackoff(async() => {
+            return await Axios.get(iconUrl, {
+                responseType: 'stream',
+            })
         })
 
-        const stream = response.data as IncomingMessage
-        stream.pipe(fileWriter)
-
-        return new Promise((resolve, reject) => {
+        // Register listeners first
+        const fileWriterResult = new Promise<void>((resolve, reject) => {
             fileWriter.on('finish', () => {
                 console.debug(`Downloaded ${this.iconUrl} to ${this.iconPath}`)
                 resolve()
@@ -135,6 +130,16 @@ export class Item extends Cacheable {
                 reject(error)
             })
         })
+
+        // Then run the fileWriter
+        if (response) {
+            const stream = response.data as IncomingMessage
+            stream.pipe(fileWriter)
+        } else {
+            fileWriter.close()
+        }
+
+        return fileWriterResult
     }
 
     toString(): string {
