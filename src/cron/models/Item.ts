@@ -42,7 +42,7 @@ export class Item extends Cacheable {
         this.region = region
         this.id = id
         this.localizedName = {}
-        this.baseLevel = -1
+        this.baseLevel = NaN
         this.iconUrl = null
     }
 
