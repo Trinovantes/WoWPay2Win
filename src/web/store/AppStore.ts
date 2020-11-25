@@ -58,10 +58,7 @@ export function createDefaultState(): IRootState {
         // In addition, there's probably no sellers for non-current tier items so it's also pointless to compare
         // Therefore we will keep things simple and reset the tier-related item states whenever we change tiers
         boes: new Set(),
-        ilvlRange: {
-            min: Number.MIN_SAFE_INTEGER,
-            max: Number.MAX_SAFE_INTEGER,
-        },
+        ilvlRange: getIlvlRange(null),
         maxBuyout: Constants.GOLD_CAP,
         mustHaveSocket: false,
         tertiaries: new Set(),

@@ -1,7 +1,12 @@
+import { IIlvlRange } from '@store/AppStore'
 import dayjs, { Dayjs } from 'dayjs'
 import _ from 'lodash'
 
 const isDev = (process.env.NODE_ENV === 'development')
+
+// ----------------------------------------------------------------------------
+// Default
+// ----------------------------------------------------------------------------
 
 export default {
     IS_DEV: isDev,
@@ -248,11 +253,11 @@ export function getDefaultTier(): Tier {
     return DEFAULT_TIER
 }
 
-export function getIlvlRange(tier: Tier | null): { min: number, max: number } {
+export function getIlvlRange(tier: Tier | null): IIlvlRange {
     if (!tier) {
         return {
-            min: -1,
-            max: -1,
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
         }
     }
 
