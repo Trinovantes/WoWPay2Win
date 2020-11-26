@@ -50,6 +50,7 @@ module.exports = {
 
     // Disable warnings for variables that are accessed but not defined in same file
     globals: {
+        DEFINE: 'readonly',
     },
 
     rules: {

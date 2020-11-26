@@ -185,7 +185,11 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
             return
         }
 
-        const auctionsFile = `${process.env.AUCTIONS_URL}/auctions-${this.region}.json`
+        if (!DEFINE.AUCTIONS_URL) {
+            throw new Error('DEFINE.AUCTIONS_URL is not set by the preprocessor')
+        }
+
+        const auctionsFile = `${DEFINE.AUCTIONS_URL}/auctions-${this.region}.json`
 
         try {
             const response = await Axios.get(auctionsFile)

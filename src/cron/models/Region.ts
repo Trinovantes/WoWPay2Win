@@ -84,12 +84,12 @@ export class Region extends Cacheable {
     }
 
     async fetchAuctions(): Promise<void> {
-        const auctionsDir = process.env.AUCTIONS_DIR
+        const auctionsDir = DEFINE.AUCTIONS_DIR
         if (!auctionsDir) {
-            throw new Error('Cannot find AUCTIONS_DIR in env')
+            throw new Error('DEFINE.AUCTIONS_DIR is not set by the preprocessor')
         }
         if (!existsSync(auctionsDir)) {
-            console.debug('AUCTIONS_DIR does not exist. Attempting to mkdir', auctionsDir)
+            console.debug(`${auctionsDir} does not exist. Attempting to mkdir`)
             mkdirSync(auctionsDir, { recursive: true })
         }
 

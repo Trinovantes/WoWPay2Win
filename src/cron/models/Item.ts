@@ -24,12 +24,12 @@ export class Item extends Cacheable {
     constructor(region: Region, id: number) {
         super(`item-${id}.json`)
 
-        if (!process.env.IMAGE_DIR) {
-            throw new Error('Cannot find IMAGE_DIR in env')
+        if (!DEFINE.IMAGE_DIR) {
+            throw new Error('DEFINE.IMAGE_DIR is not set by the preprocessor')
         }
 
         this.iconFile = `${id}.jpg`
-        this.iconPath = path.resolve(process.env.IMAGE_DIR, 'items', this.iconFile)
+        this.iconPath = path.resolve(DEFINE.IMAGE_DIR, 'items', this.iconFile)
 
         const itemEndpoint = `${region.config.apiHost}/data/wow/item/${id}`
         this.itemAccessor = new APIAccessor(itemEndpoint, false, region)

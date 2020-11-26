@@ -100,10 +100,10 @@ export default {
 
     plugins: [
         new DefinePlugin({
-            'process.env.AUCTIONS_URL': JSON.stringify('/data'),
-            'process.env.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
-            'process.env.CACHE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/data')),
-            'process.env.IMAGE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/img')),
+            'DEFINE.AUCTIONS_URL': JSON.stringify('/data'),
+            'DEFINE.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
+            'DEFINE.CACHE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/data')),
+            'DEFINE.IMAGE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/img')),
         }),
     ],
 

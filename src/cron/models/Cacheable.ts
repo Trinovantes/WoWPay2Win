@@ -12,11 +12,11 @@ export abstract class Cacheable {
     readonly cacheFile: string
 
     constructor(cacheFile: string) {
-        if (!process.env.CACHE_DIR) {
-            throw new Error('Cannot find CACHE_DIR in env')
+        if (!DEFINE.CACHE_DIR) {
+            throw new Error('DEFINE.CACHE_DIR is not set by the preprocessor')
         }
 
-        this.cacheFile = path.resolve(process.env.CACHE_DIR, cacheFile)
+        this.cacheFile = path.resolve(DEFINE.CACHE_DIR, cacheFile)
     }
 
     abstract fetch(): Promise<void>
