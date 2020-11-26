@@ -58,7 +58,8 @@ export class ConnectedRealm {
         const auctionsResponse = await this.auctionsAccessor.fetch()
         if (!auctionsResponse?.auctions) {
             // Sometimes the API returns a malformed 200 response and we need to retry
-            throw new Error(`No auctions found for ${this.toString()}`)
+            console.warn(`No auctions found for ${this.toString()}`)
+            return
         }
 
         const boeIds: Array<number> = getBoeIds()
