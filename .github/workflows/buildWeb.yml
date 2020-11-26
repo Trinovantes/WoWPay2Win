@@ -12,8 +12,8 @@ env:
   BOT_NAME: Build Web
   WORKTREE_DIR: gh-pages
   BUILD_DIR: dist-web
-  DATA_DIR: src/web/assets/data
-  ITEM_ICON_DIR: src/web/assets/img/items
+  CACHE_DIR: src/web/assets/data
+  IMAGE_DIR: src/web/assets/img/items
 
 jobs:
   build_web:
@@ -37,8 +37,8 @@ jobs:
           cache-name: cache-data
         with:
           path: |
-            ${{ env.DATA_DIR }}
-            ${{ env.ITEM_ICON_DIR }}
+            ${{ env.CACHE_DIR }}
+            ${{ env.IMAGE_DIR }}
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/cron/**/*.ts', 'src/common/**/*.ts') }}
 
       - name: Install Dependencies
