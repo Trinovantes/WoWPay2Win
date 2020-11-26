@@ -24,8 +24,8 @@
             "@router/*": ["./src/web/router/*"],
             "@store/*": ["./src/web/store/*"],
 
-            "@img/*": ["./src/web/assets/img/*"],
             "@css/*": ["./src/web/assets/css/*"],
+            "@img/*": ["./src/web/assets/img/*"],
             "@data/*": ["./src/web/assets/data/*"],
         },
     },

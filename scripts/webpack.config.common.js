@@ -1,18 +1,16 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 'use strict'
 
-const path = require('path')
-const webpack = require('webpack')
-const TerserPlugin = require('terser-webpack-plugin')
+import path from 'path'
+import { DefinePlugin } from 'webpack'
+import TerserPlugin from 'terser-webpack-plugin'
 
-const isDev = (process.env.NODE_ENV === 'development')
+import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './constants'
 
 // ----------------------------------------------------------------------------
 // Common
 // ----------------------------------------------------------------------------
 
-const CommonConfig = {
+export default {
     mode: process.env.NODE_ENV,
     devtool: isDev
         ? 'source-map'
@@ -22,16 +20,15 @@ const CommonConfig = {
         extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
         alias: {
             // Need to match aliases in tsconfig.json
-            '@': path.resolve(__dirname, '../static'),
-            '@common': path.resolve(__dirname, '../src/common'),
+            '@': staticDir,
+            '@common': path.resolve(srcDir, 'common'),
 
-            '@components': path.resolve(__dirname, '../src/web/components'),
-            '@router': path.resolve(__dirname, '../src/web/router'),
-            '@store': path.resolve(__dirname, '../src/web/store'),
-
-            '@img': path.resolve(__dirname, '../src/web/assets/img'),
-            '@css': path.resolve(__dirname, '../src/web/assets/css'),
-            '@data': path.resolve(__dirname, '../src/web/assets/data'),
+            '@components': path.resolve(srcWebDir, 'components'),
+            '@router': path.resolve(srcWebDir, 'router'),
+            '@store': path.resolve(srcWebDir, 'store'),
+            '@css': path.resolve(srcWebDir, 'assets/css'),
+            '@img': path.resolve(srcWebDir, 'assets/img'),
+            '@data': path.resolve(srcWebDir, 'assets/data'),
 
             // https://github.com/vuejs-templates/webpack/issues/215
             vue: isDev
@@ -40,11 +37,9 @@ const CommonConfig = {
         },
         modules: [
             'node_modules',
+            srcWebDir,
+            srcCronDir,
         ],
-    },
-
-    output: {
-        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     },
 
     module: {
@@ -104,11 +99,11 @@ const CommonConfig = {
     },
 
     plugins: [
-        new webpack.DefinePlugin({
+        new DefinePlugin({
             'process.env.AUCTIONS_URL': JSON.stringify('/data'),
             'process.env.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
-            'process.env.CACHE_DIR': JSON.stringify(path.resolve(__dirname, '../src/web/assets/data')),
-            'process.env.IMAGE_DIR': JSON.stringify(path.resolve(__dirname, '../src/web/assets/img')),
+            'process.env.CACHE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/data')),
+            'process.env.IMAGE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/img')),
         }),
     ],
 
@@ -124,5 +119,3 @@ const CommonConfig = {
         ],
     },
 }
-
-module.exports = CommonConfig

@@ -3,11 +3,16 @@
     "scripts": {
         "fetchData": "    node -r dotenv/config dist-cron/fetchData.js",
         "fetchAuctions": "node -r dotenv/config dist-cron/fetchAuctions.js",
-        "cron": "     cross-env NODE_ENV=development webpack            --config scripts/webpack.config.cron.js --watch",
-        "web": "      cross-env NODE_ENV=development webpack-dev-server --config scripts/webpack.config.web.js  --watch",
-        "buildCron": "cross-env NODE_ENV=production  webpack            --config scripts/webpack.config.cron.js",
-        "buildWeb": " cross-env NODE_ENV=production  webpack            --config scripts/webpack.config.web.js",
+        "cron": "     cross-env NODE_ENV=development webpack             -r @babel/register --config scripts/webpack.config.cron.js --watch",
+        "web": "      cross-env NODE_ENV=development webpack-dev-server  -r @babel/register --config scripts/webpack.config.web.js  --watch",
+        "buildCron": "cross-env NODE_ENV=production  webpack             -r @babel/register --config scripts/webpack.config.cron.js",
+        "buildWeb": " cross-env NODE_ENV=production  webpack             -r @babel/register --config scripts/webpack.config.web.js",
         "lint": "eslint --ext .js,.ts,.vue ."
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-env"
+        ]
     },
     "dependencies": {
         "axios": "^0.21.0",
@@ -23,6 +28,9 @@
         "vuex": "^3.5.1"
     },
     "devDependencies": {
+        "@babel/core": "^7.12.9",
+        "@babel/preset-env": "^7.12.7",
+        "@babel/register": "^7.12.1",
         "@types/copy-webpack-plugin": "^6.3.0",
         "@types/lodash": "^4.14.165",
         "@types/node": "^14.11.7",

@@ -1,45 +1,36 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 'use strict'
 
-const path = require('path')
-const { merge } = require('webpack-merge')
-const { VueLoaderPlugin } = require('vue-loader')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+import { merge } from 'webpack-merge'
+import { VueLoaderPlugin } from 'vue-loader'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
-const CommonConfig = require('./webpack.config.common')
-const isDev = (process.env.NODE_ENV === 'development')
-const srcDir = path.resolve(__dirname, '../src/web')
-const distDir = path.resolve(__dirname, '../dist-web')
-const staticDir = path.resolve(__dirname, '../static')
+import CommonConfig from './webpack.config.common'
+import { isDev, staticDir, srcWebDir, distWebDir } from './constants'
 
 // ----------------------------------------------------------------------------
 // Web
 // ----------------------------------------------------------------------------
 
-const WebConfig = merge(CommonConfig, {
+export default merge(CommonConfig, {
     target: 'web',
 
-    context: srcDir,
+    context: srcWebDir,
     entry: {
         main: 'main.ts',
     },
     output: {
-        path: distDir,
+        path: distWebDir,
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
     },
 
-    resolve: {
-        modules: [
-            srcDir,
-        ],
-    },
-
     devServer: {
-        contentBase: [staticDir, distDir],
+        contentBase: [
+            staticDir, // Static assets
+            distWebDir, // Auctions data files
+        ],
     },
 
     plugins: [
@@ -60,5 +51,3 @@ const WebConfig = merge(CommonConfig, {
         }),
     ].filter(Boolean),
 })
-
-module.exports = WebConfig

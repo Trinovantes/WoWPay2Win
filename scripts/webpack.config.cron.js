@@ -1,35 +1,26 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 'use strict'
 
-const path = require('path')
-const { merge } = require('webpack-merge')
+import { merge } from 'webpack-merge'
 
-const CommonConfig = require('./webpack.config.common')
-const srcDir = path.resolve(__dirname, '../src/cron')
-const distDir = path.resolve(__dirname, '../dist-cron')
+import CommonConfig from './webpack.config.common'
+import { srcCronDir, distCronDir } from './constants'
 
 // ----------------------------------------------------------------------------
 // Cron
 // ----------------------------------------------------------------------------
 
-const CronConfig = merge(CommonConfig, {
+export default merge(CommonConfig, {
     target: 'node',
 
-    context: srcDir,
+    context: srcCronDir,
     entry: {
         fetchAuctions: 'fetchAuctions.ts',
         fetchData: 'fetchData.ts',
     },
     output: {
-        path: distDir,
-    },
+        path: distCronDir,
 
-    resolve: {
-        modules: [
-            srcDir,
-        ],
+        // Needed by VSCode debugger to find original aliased paths
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     },
 })
-
-module.exports = CronConfig
