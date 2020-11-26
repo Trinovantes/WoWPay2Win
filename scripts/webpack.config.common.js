@@ -4,7 +4,7 @@ import path from 'path'
 import { DefinePlugin } from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 
-import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './constants'
+import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------
 // Common

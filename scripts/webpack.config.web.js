@@ -6,7 +6,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 import CommonConfig from './webpack.config.common'
-import { isDev, staticDir, srcWebDir, distWebDir } from './constants'
+import { isDev, staticDir, srcWebDir, distWebDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------
 // Web

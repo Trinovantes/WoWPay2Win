@@ -3,7 +3,7 @@
 import { merge } from 'webpack-merge'
 
 import CommonConfig from './webpack.config.common'
-import { srcCronDir, distCronDir } from './constants'
+import { srcCronDir, distCronDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------
 // Cron
