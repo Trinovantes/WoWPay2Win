@@ -31,14 +31,15 @@ async function main() {
         for (const region of regions) {
             await fetchItems(region)
         }
+
+        console.info('Cron Script Finished')
     } catch (err) {
         const error = err as Error
         console.error('Cron Script Failed:', error.message)
         if (Constants.IS_DEV) {
             console.error(error.stack)
         }
-    } finally {
-        console.info('Cron Script Finished')
+        process.exit(1)
     }
 }
 
