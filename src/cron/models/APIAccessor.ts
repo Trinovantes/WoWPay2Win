@@ -1,8 +1,10 @@
-import Axios from 'axios'
+import Axios, { AxiosResponse } from 'axios'
 import querystring from 'querystring'
 
 import { Region } from './Region'
 import Constants from '@common/Constants'
+import { sleep } from '@common/utils'
+import { IncomingMessage } from 'http'
 
 export class APIAccessor<T> {
     readonly endpoint: string
@@ -32,35 +34,81 @@ export class APIAccessor<T> {
 
         console.debug('Fetching', this.region.config.oauthEndpoint)
 
-        const response = await Axios.post(this.region.config.oauthEndpoint, querystring.stringify({
-            grant_type: 'client_credentials',
-        }), {
-            auth: {
-                username: user,
-                password: pass,
-            },
+        const response = await tryExponentialBackoff(async() => {
+            return await Axios.post(this.region.config.oauthEndpoint, querystring.stringify({
+                grant_type: 'client_credentials',
+            }), {
+                timeout: Constants.API_TIMEOUT,
+                auth: {
+                    username: user,
+                    password: pass,
+                },
+            })
         })
 
-        const data = response.data as { 'access_token': string }
-        return data.access_token
+        if (response) {
+            const data = response.data as { 'access_token': string }
+            return data.access_token
+        } else {
+            return ''
+        }
     }
 
-    async fetch(): Promise<T> {
+    async fetch(): Promise<T | null> {
         console.debug('Fetching', this.endpoint.replace(this.region.config.apiHost, ''))
 
         // This will throw an error if status is not 200
-        const response = await Axios.get(this.endpoint, {
-            timeout: Constants.API_TIMEOUT,
-            headers: {
-                Authorization: `Bearer ${this.accessToken}`,
-            },
-            params: {
-                regionSlug: this.region.config.slug,
-                locale: this.region.config.locale,
-                namespace: `${this.isDynamic ? 'dynamic' : 'static'}-${this.region.config.slug}`,
-            },
+        const response = await tryExponentialBackoff(async() => {
+            return await Axios.get(this.endpoint, {
+                timeout: Constants.API_TIMEOUT,
+                headers: {
+                    Authorization: `Bearer ${this.accessToken}`,
+                },
+                params: {
+                    regionSlug: this.region.config.slug,
+                    locale: this.region.config.locale,
+                    namespace: `${this.isDynamic ? 'dynamic' : 'static'}-${this.region.config.slug}`,
+                },
+            })
         })
 
-        return response.data as T
+        return response?.data as T
     }
+
+    static async fetchFile(fileUrl: string): Promise<IncomingMessage | null> {
+        const response = await tryExponentialBackoff(async() => {
+            return await Axios.get(fileUrl, {
+                timeout: Constants.API_TIMEOUT,
+                responseType: 'stream',
+            })
+        })
+
+        return response?.data as IncomingMessage
+    }
+}
+
+async function tryExponentialBackoff(request: () => Promise<AxiosResponse | null>): Promise<AxiosResponse | null> {
+    // Retry with exponential back-off if server is temporarily unavilable
+    for (let attempt = 0; attempt < Constants.MAX_API_RETRIES; attempt++) {
+        try {
+            // If errorProneFunction didn't throw, then we can exit the loop early
+            return await request()
+        } catch (err) {
+            const error = err as Error
+            const delay = Math.round(Math.exp(attempt) * 1000)
+
+            const isMaxAttempts = (attempt === Constants.MAX_API_RETRIES - 1)
+            const retryMsg = isMaxAttempts ? '' : `Retrying after ${delay}ms`
+
+            console.warn(error.message, retryMsg)
+            if (Constants.IS_DEV) {
+                console.warn(error.stack)
+            }
+
+            await sleep(delay)
+        }
+    }
+
+    // If after all our attempts and the op fails, the script should proceed assuming no data
+    return null
 }

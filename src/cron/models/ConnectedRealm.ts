@@ -1,6 +1,5 @@
 import { getBoeIds } from '@common/Constants'
 import { IConnectedRealmCache } from '@common/ICache'
-import { tryExponentialBackoff } from '@common/utils'
 import { IAuctionsResponse, IConnectedRealmResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { ItemAuction } from './ItemAuctions'
@@ -43,45 +42,43 @@ export class ConnectedRealm {
     }
 
     async fetch(): Promise<void> {
-        await tryExponentialBackoff(async() => {
-            const connectedRealmResponse = await this.connectedRealmAccessor.fetch()
+        const connectedRealmResponse = await this.connectedRealmAccessor.fetch()
 
+        if (connectedRealmResponse) {
             for (const { id, name } of connectedRealmResponse.realms) {
                 const realm = new Realm(this.region, id, name)
                 this.realms.push(realm)
             }
+        }
 
-            console.debug(`Fetched ${this.toString()}`)
-        })
+        console.debug(`Fetched ${this.toString()}`)
     }
 
     async fetchAuctions(): Promise<void> {
-        await tryExponentialBackoff(async() => {
-            const auctionsResponse = await this.auctionsAccessor.fetch()
-            if (!auctionsResponse.auctions) {
-                // Sometimes the API returns a malformed 200 response and we need to retry
-                throw new Error(`No auctions found for ${this.toString()}`)
+        const auctionsResponse = await this.auctionsAccessor.fetch()
+        if (!auctionsResponse?.auctions) {
+            // Sometimes the API returns a malformed 200 response and we need to retry
+            throw new Error(`No auctions found for ${this.toString()}`)
+        }
+
+        const boeIds: Array<number> = getBoeIds()
+        for (const auctionResponse of auctionsResponse.auctions) {
+            const itemId = auctionResponse.item.id
+            if (!boeIds.includes(itemId)) {
+                continue
             }
 
-            const boeIds: Array<number> = getBoeIds()
-            for (const auctionResponse of auctionsResponse.auctions) {
-                const itemId = auctionResponse.item.id
-                if (!boeIds.includes(itemId)) {
-                    continue
-                }
+            const id = auctionResponse.id
+            const buyout = Math.round((auctionResponse.buyout || 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
+            const bonuses = auctionResponse.item.bonus_lists || []
 
-                const id = auctionResponse.id
-                const buyout = Math.round((auctionResponse.buyout || 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
-                const bonuses = auctionResponse.item.bonus_lists || []
-
-                if (buyout > 0) {
-                    const auction = new ItemAuction(id, this.id, itemId, buyout, bonuses)
-                    this.auctions.push(auction)
-                }
+            if (buyout > 0) {
+                const auction = new ItemAuction(id, this.id, itemId, buyout, bonuses)
+                this.auctions.push(auction)
             }
+        }
 
-            console.debug(`Saved ${this.auctions.length.toString().padStart(4, ' ')} auctions from ${this.toString()}`)
-        })
+        console.debug(`Saved ${this.auctions.length.toString().padStart(4, ' ')} auctions from ${this.toString()}`)
     }
 
     toString(): string {

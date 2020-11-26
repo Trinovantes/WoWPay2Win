@@ -1,5 +1,4 @@
 import { existsSync, createWriteStream } from 'fs'
-import Axios from 'axios'
 import path from 'path'
 
 import { Locale } from '@common/Constants'
@@ -7,9 +6,7 @@ import { IItemMediaResponse, IItemResponse } from './API'
 import { APIAccessor } from './APIAccessor'
 import { Region } from './Region'
 import { ICache, IItemCache } from '@common/ICache'
-import { IncomingMessage } from 'http'
 import { Cacheable } from './Cacheable'
-import { tryExponentialBackoff } from '@common/utils'
 
 export class Item extends Cacheable {
     readonly iconFile: string
@@ -79,30 +76,34 @@ export class Item extends Cacheable {
         console.info(`Item::fetch ${this.toString()}`)
 
         if (await this.loadFromCache()) {
-            console.debug(`Loaded item ${this.region.config.locale} ${this.id} from ${this.cacheFile}`)
+            console.debug(`Loaded ${this.toString()} from ${this.cacheFile}`)
             return
         }
 
-        await tryExponentialBackoff(async() => {
-            const itemResponse = await this.itemAccessor.fetch()
-            this.baseLevel = itemResponse.level
-            this.localizedName[this.region.config.locale] = itemResponse.name
+        const itemResponse = await this.itemAccessor.fetch()
+        if (!itemResponse) {
+            console.warn(`Failed to fetch ${this.toString()}`)
+            return
+        }
 
-            if (!this.iconUrl || !existsSync(this.iconPath)) {
-                const itemMediaResponse = await this.itemMediaAccessor.fetch()
-                for (const asset of itemMediaResponse.assets) {
-                    if (asset.key === 'icon') {
-                        this.iconUrl = asset.value
-                        break
-                    }
+        this.baseLevel = itemResponse.level
+        this.localizedName[this.region.config.locale] = itemResponse.name
+
+        if (!this.iconUrl || !existsSync(this.iconPath)) {
+            const itemMediaResponse = await this.itemMediaAccessor.fetch()
+            const assets = itemMediaResponse?.assets || []
+            for (const asset of assets) {
+                if (asset.key === 'icon') {
+                    this.iconUrl = asset.value
+                    break
                 }
-
-                await this.downloadMedia()
             }
 
-            console.debug(`Saving item ${this.region.config.locale} ${this.id} to ${this.cacheFile}`)
-            await this.saveToCache()
-        })
+            await this.downloadMedia()
+        }
+
+        console.debug(`Saving ${this.toString()} to ${this.cacheFile}`)
+        await this.saveToCache()
     }
 
     private async downloadMedia(): Promise<void> {
@@ -112,30 +113,28 @@ export class Item extends Cacheable {
             return
         }
 
+        const cmd = `${this.iconUrl} to ${this.iconPath}`
         const fileWriter = createWriteStream(this.iconPath)
-        const response = await tryExponentialBackoff(async() => {
-            return await Axios.get(iconUrl, {
-                responseType: 'stream',
-            })
-        })
+        const stream = await APIAccessor.fetchFile(iconUrl)
 
         // Register listeners first
         const fileWriterResult = new Promise<void>((resolve, reject) => {
             fileWriter.on('finish', () => {
-                console.debug(`Downloaded ${this.iconUrl} to ${this.iconPath}`)
+                console.debug(`File writer closed ${this.iconPath}`)
                 resolve()
             })
             fileWriter.on('error', (error) => {
-                console.warn(`Failed to download ${this.iconUrl} to ${this.iconPath}`)
+                console.warn(`File writer encountered an error ${this.iconPath}`)
                 reject(error)
             })
         })
 
         // Then run the fileWriter
-        if (response) {
-            const stream = response.data as IncomingMessage
+        if (stream) {
+            console.debug(`Starting to download ${cmd}`)
             stream.pipe(fileWriter)
         } else {
+            console.debug(`Failed to obtain stream for ${this.iconUrl}`)
             fileWriter.close()
         }
 
@@ -143,6 +142,6 @@ export class Item extends Cacheable {
     }
 
     toString(): string {
-        return `[Item:${this.id}]`
+        return `[Item:${this.id} ${this.region.config.locale}]`
     }
 }
