@@ -58,7 +58,7 @@ export class ConnectedRealm {
         const errorMessage = `No auctions found for ${this.toString()}`
         const auctionsResponse = await this.auctionsAccessor.fetch((data) => {
             // Sometimes the API returns a malformed 200 response and we need to retry
-            if (data?.auctions) {
+            if (!data?.auctions) {
                 return errorMessage
             }
 
