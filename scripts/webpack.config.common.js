@@ -20,12 +20,14 @@ export default {
         extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
         alias: {
             // Need to match aliases in tsconfig.json
-            '@': staticDir,
+            '@static': staticDir,
             '@common': path.resolve(srcDir, 'common'),
 
             '@components': path.resolve(srcWebDir, 'components'),
+
             '@router': path.resolve(srcWebDir, 'router'),
             '@store': path.resolve(srcWebDir, 'store'),
+
             '@css': path.resolve(srcWebDir, 'assets/css'),
             '@img': path.resolve(srcWebDir, 'assets/img'),
             '@data': path.resolve(srcWebDir, 'assets/data'),

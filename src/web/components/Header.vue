@@ -4,7 +4,7 @@
             <q-avatar
                 size="40px"
             >
-                <img :src="require('@/token.jpg')" :alt="title" width="40" height="40">
+                <img src="@static/token.jpg" :alt="title" width="40" height="40">
             </q-avatar>
             <h1 class="title">
                 {{ title }}

@@ -17,10 +17,12 @@
 
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./static/*"],
+            // Need to match aliases in scripts/webpack.config.common.js
+            "@static/*": ["./static/*"],
             "@common/*": ["./src/common/*"],
 
             "@components/*": ["./src/web/components/*"],
+
             "@router/*": ["./src/web/router/*"],
             "@store/*": ["./src/web/store/*"],
 
