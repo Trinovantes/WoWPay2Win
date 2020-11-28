@@ -4,8 +4,12 @@ Vue.use(VueRouter)
 
 import routes from './routes'
 
-const router = new VueRouter({
+// ----------------------------------------------------------------------------
+// Router
+// ----------------------------------------------------------------------------
+
+const AppRouter = new VueRouter({
     routes,
 })
 
-export default router
+export default AppRouter
