@@ -31,13 +31,13 @@ Vue.use(Quasar, {
 
 import '@css/main.scss'
 import App from '@components/App.vue'
-import store from '@store/AppStore'
-import router from '@router/AppRouter'
+import AppRouter from '@router/AppRouter'
+import AppStore from '@store/AppStore'
 import Constants from '@common/Constants'
 
 const app = new App({
-    store: store,
-    router: router,
+    router: AppRouter,
+    store: AppStore,
 })
 
 try {
