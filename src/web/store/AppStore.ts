@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 import Constants, { getIlvlRange, RegionSlug, Tertiary, Tier } from '@common/Constants'
+import { setEq } from '@common/utils'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -144,19 +145,5 @@ const AppStore = new Vuex.Store<IRootState>({
         },
     },
 })
-
-function setEq<T>(s1: Set<T>, s2: Set<T>) {
-    if (s1.size !== s2.size) {
-        return false
-    }
-
-    for (const el of s1) {
-        if (!s2.has(el)) {
-            return false
-        }
-    }
-
-    return true
-}
 
 export default AppStore
