@@ -54,12 +54,12 @@ export class APIAccessor<T> {
         }
     }
 
-    async fetch(): Promise<T | null> {
+    async fetch(shouldRetry?: (data: T | null) => string | null): Promise<T | null> {
         console.debug('Fetching', this.endpoint.replace(this.region.config.apiHost, ''))
 
         // This will throw an error if status is not 200
         const response = await tryExponentialBackoff(async() => {
-            return await Axios.get(this.endpoint, {
+            const response = await Axios.get(this.endpoint, {
                 timeout: Constants.API_TIMEOUT,
                 headers: {
                     Authorization: `Bearer ${this.accessToken}`,
@@ -70,6 +70,15 @@ export class APIAccessor<T> {
                     namespace: `${this.isDynamic ? 'dynamic' : 'static'}-${this.region.config.slug}`,
                 },
             })
+
+            if (shouldRetry) {
+                const errorMessage = shouldRetry(response?.data)
+                if (errorMessage) {
+                    throw new Error(errorMessage)
+                }
+            }
+
+            return response
         })
 
         return response?.data as T

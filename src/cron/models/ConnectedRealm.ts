@@ -55,10 +55,18 @@ export class ConnectedRealm {
     }
 
     async fetchAuctions(): Promise<void> {
-        const auctionsResponse = await this.auctionsAccessor.fetch()
-        if (!auctionsResponse?.auctions) {
+        const errorMessage = `No auctions found for ${this.toString()}`
+        const auctionsResponse = await this.auctionsAccessor.fetch((data) => {
             // Sometimes the API returns a malformed 200 response and we need to retry
-            console.warn(`No auctions found for ${this.toString()}`)
+            if (data?.auctions) {
+                return errorMessage
+            }
+
+            return null
+        })
+
+        if (!auctionsResponse?.auctions) {
+            console.warn(errorMessage)
             return
         }
 
