@@ -6,7 +6,8 @@ on:
     branches:
       - master
     paths:
-      - src/**
+      - src/common/**
+      - src/web/**
 
 env:
   BOT_NAME: Build Web
