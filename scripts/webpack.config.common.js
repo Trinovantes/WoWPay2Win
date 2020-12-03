@@ -87,14 +87,14 @@ export default {
                         loader: 'url-loader',
                         options: {
                             limit: 10 * 1024 * 1024,
-                            name: 'imgs/[name]--[folder].[ext]',
+                            name: 'img/[name].[contenthash].[ext]',
                             esModule: false,
                         },
                     },
                 ],
             },
             {
-                test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                test: /\.(ttf|eot|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'url-loader',
             },
         ],
