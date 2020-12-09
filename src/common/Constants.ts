@@ -104,6 +104,7 @@ export enum Tier {
     Nyalotha = 't26',
 
     // Shadowlands
+    Shadowlands = 'shadowlands',
     CastleNathria = 't27',
 }
 
@@ -153,10 +154,11 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
             step: 15,
         },
     },
-    [Tier.CastleNathria]: {
-        tier: Tier.CastleNathria,
-        name: 'Castle Nathria',
-        iconPath: 'castle-nathria.png',
+    [Tier.Shadowlands]: {
+        tier: Tier.Shadowlands,
+        name: 'Shadowlands World Drops',
+        iconPath: 'shadowlands.png',
+        expiration: dayjs('2020-12-09'),
         boes: [
             {
                 label: 'Trinket',
@@ -233,6 +235,54 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
             min: 190,
             max: 207,
             step: 1,
+        },
+    },
+    [Tier.CastleNathria]: {
+
+        tier: Tier.Shadowlands,
+        name: 'Castle Nathria',
+        iconPath: 'castle-nathria.png',
+        boes: [
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    183008,
+                    183017,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    183010,
+                    182978,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    182990,
+                    182982,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    183013,
+                    183031,
+                ]),
+            },
+            {
+                label: 'Misc.',
+                ids: new Set([
+                    183035,
+                    181393,
+                ]),
+            },
+        ],
+        ilvls: {
+            min: 187,
+            max: 226,
+            step: 13,
         },
     },
 }
