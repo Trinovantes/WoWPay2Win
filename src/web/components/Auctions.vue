@@ -269,6 +269,9 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
 
 <style lang="scss">
 .auctions{
+    position: sticky;
+    top: 0;
+
     th,
     td{
         padding: $padding ($side-padding);
