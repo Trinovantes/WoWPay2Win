@@ -104,7 +104,8 @@ export enum Tier {
     Nyalotha = 't26',
 
     // Shadowlands
-    Shadowlands = 'shadowlands',
+    Shadowlands190 = 'shadowlands190',
+    Shadowlands207 = 'shadowlands207',
     CastleNathria = 't27',
 }
 
@@ -152,30 +153,20 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
             step: 15,
         },
     },
-    [Tier.Shadowlands]: {
-        name: 'Shadowlands World Drops',
+    [Tier.Shadowlands190]: {
+        name: 'Shadowlands World Drops (190)',
         iconPath: 'shadowlands.png',
         expiration: dayjs('2020-12-09'),
         boes: [
             {
-                label: 'Trinket',
-                ids: new Set([
-                    184807,
-                ]),
-            },
-            {
                 label: 'Jewelry',
                 ids: new Set([
-                    184785,
-                    184784,
                     184783,
                 ]),
             },
             {
                 label: 'Cloak',
                 ids: new Set([
-                    184782,
-                    184778,
                     184781,
                 ]),
             },
@@ -192,37 +183,30 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
                     184806,
                     184804,
                     184802,
+                    181393,
                 ]),
             },
             {
                 label: 'Cloth',
                 ids: new Set([
-                    184786,
-                    184787,
                     184788,
                 ]),
             },
             {
                 label: 'Leather',
                 ids: new Set([
-                    184790,
-                    184791,
                     184789,
                 ]),
             },
             {
                 label: 'Mail',
                 ids: new Set([
-                    184793,
-                    184794,
                     184792,
                 ]),
             },
             {
                 label: 'Plate',
                 ids: new Set([
-                    184795,
-                    184796,
                     184808,
                     184809,
                 ]),
@@ -230,6 +214,65 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
         ],
         ilvls: {
             min: 190,
+            max: 190,
+            step: 1,
+        },
+    },
+    [Tier.Shadowlands207]: {
+        name: 'Shadowlands Datamined World Drops (207)',
+        iconPath: 'shadowlands.png',
+        expiration: dayjs('2020-12-09'),
+        boes: [
+            {
+                label: 'Trinket',
+                ids: new Set([
+                    184807,
+                ]),
+            },
+            {
+                label: 'Jewelry',
+                ids: new Set([
+                    184785,
+                    184784,
+                ]),
+            },
+            {
+                label: 'Cloak',
+                ids: new Set([
+                    184782,
+                ]),
+            },
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    184786,
+                    184787,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    184790,
+                    184791,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    184793,
+                    184794,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    184795,
+                    184796,
+                ]),
+            },
+        ],
+        ilvls: {
+            min: 207,
             max: 207,
             step: 1,
         },
@@ -270,7 +313,7 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
                 label: 'Misc.',
                 ids: new Set([
                     183035,
-                    181393,
+                    184778,
                 ]),
             },
         ],
