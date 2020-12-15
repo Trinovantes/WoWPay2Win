@@ -116,7 +116,6 @@ export interface IBoeCategory {
 }
 
 export interface TierConfig {
-    readonly tier: Tier,
     readonly name: string,
     readonly iconPath: string
     readonly expiration?: Dayjs
@@ -130,7 +129,6 @@ export interface TierConfig {
 
 export const TierConfigs: { [key in Tier]: TierConfig} = {
     [Tier.Nyalotha]: {
-        tier: Tier.Nyalotha,
         name: "Ny'alotha, the Waking City",
         iconPath: 'nyalotha.png',
         expiration: dayjs('2020-11-23'),
@@ -155,7 +153,6 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
         },
     },
     [Tier.Shadowlands]: {
-        tier: Tier.Shadowlands,
         name: 'Shadowlands World Drops',
         iconPath: 'shadowlands.png',
         expiration: dayjs('2020-12-09'),
@@ -238,8 +235,6 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
         },
     },
     [Tier.CastleNathria]: {
-
-        tier: Tier.Shadowlands,
         name: 'Castle Nathria',
         iconPath: 'castle-nathria.png',
         boes: [
