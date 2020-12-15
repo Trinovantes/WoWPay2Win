@@ -1,17 +1,6 @@
-import Constants, { RegionConfigs } from '@common/Constants'
-import { Region } from './models/Region'
-
-async function fetchRegions() {
-    const regions: Array<Region> = []
-
-    for (const regionConfig of RegionConfigs) {
-        const region = new Region(regionConfig)
-        await region.fetch()
-        regions.push(region)
-    }
-
-    return regions
-}
+import Constants from '@common/Constants'
+import fetchRegions from './fetchRegions'
+import unrecognizedBonusIdTracker from './models/UnrecognizedBonusIdTracker'
 
 async function main() {
     try {
@@ -22,6 +11,10 @@ async function main() {
         }
 
         console.info('Cron Script Finished')
+
+        if (Constants.IS_DEV) {
+            unrecognizedBonusIdTracker.print()
+        }
     } catch (err) {
         const error = err as Error
         console.error('Cron Script Failed:', error.message)

@@ -1,19 +1,8 @@
-import Constants, { getBoeIds, RegionConfigs } from '@common/Constants'
+import Constants, { getBoeIds } from '@common/Constants'
 import { batchRequests } from '@common/utils'
+import fetchRegions from './fetchRegions'
 import { Item } from './models/Item'
 import { Region } from './models/Region'
-
-async function fetchRegions() {
-    const regions: Array<Region> = []
-
-    for (const regionConfig of RegionConfigs) {
-        const region = new Region(regionConfig)
-        await region.fetch()
-        regions.push(region)
-    }
-
-    return regions
-}
 
 async function fetchItems(region: Region) {
     const boeIds = getBoeIds()
