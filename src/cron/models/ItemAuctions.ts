@@ -54,7 +54,8 @@ export class ItemAuction {
                     break
 
                 case 1808:
-                case 6514:
+                case 6514: // Nyalotha
+                case 6935: // Castle Nathria
                     this.hasSocket = true
                     break
 
