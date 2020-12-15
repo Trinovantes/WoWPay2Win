@@ -2,22 +2,24 @@
     <div class="group">
         <h2>Realm Filter</h2>
         <q-select
-            v-model="selectedRealm"
+            v-model="selectedRealms"
             :options="filteredRealms"
-            map-options
             emit-value
+            multiple
+            use-input
+            use-chips
+            map-options
+            option-label="name"
+            option-value="id"
+
             filled
-            clearable
             label="Realm"
             color="secondary"
             label-color="white"
-            option-label="name"
-            option-value="id"
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="250"
             spellcheck="false"
+            input-debounce="250"
+            clearable
+
             @filter="filterFn"
         >
             <template #no-option>
@@ -32,15 +34,14 @@
 </template>
 
 <script lang="ts">
-import Component, { mixins } from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import Component from 'vue-class-component'
 import DataComponent from '@components/base/DataComponent'
 import { Watch } from 'vue-property-decorator'
 
 import { IRealmCache } from '@common/ICache'
 
 @Component
-export default class RealmFilter extends mixins(VuexComponent, DataComponent) {
+export default class RealmFilter extends DataComponent {
     filteredRealms: Array<IRealmCache> = []
 
     created(): void {
@@ -49,22 +50,22 @@ export default class RealmFilter extends mixins(VuexComponent, DataComponent) {
 
     @Watch('realms')
     updateFilteredRealms(): void {
-        this.filteredRealms = this.realms
+        this.filteredRealms = this.regionRealms
     }
 
     filterFn(val: string, doneFn: (callbackFn: () => void) => void): void {
         doneFn(() => {
             const needle = val.toLowerCase()
-            this.filteredRealms = this.realms.filter((realm) => realm.name.toLowerCase().indexOf(needle) > -1)
+            this.filteredRealms = this.regionRealms.filter((realm) => realm.name.toLowerCase().indexOf(needle) > -1)
         })
     }
 
-    get selectedRealm(): number | null {
-        return this.realm
+    get selectedRealms(): Array<number> {
+        return [...this.realms.values()]
     }
 
-    set selectedRealm(realmId: number | null) {
-        this.changeRealm(realmId)
+    set selectedRealms(selectedRealms: Array<number>) {
+        this.changeRealms(new Set(selectedRealms))
     }
 }
 

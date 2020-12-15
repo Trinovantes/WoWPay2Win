@@ -241,8 +241,15 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
                 return false
             }
 
-            if (this.realm && this.realmToConnectedRealmMap[this.realm] !== auction.crId) {
-                return false
+            if (this.realms.size > 0) {
+                const connectedRealms = new Set<number>()
+                for (const realm of this.realms) {
+                    connectedRealms.add(this.realmToConnectedRealmMap[realm])
+                }
+
+                if (!connectedRealms.has(auction.crId)) {
+                    return false
+                }
             }
 
             return true

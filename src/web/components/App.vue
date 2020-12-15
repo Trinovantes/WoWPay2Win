@@ -13,13 +13,13 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
 import { Watch } from 'vue-property-decorator'
 
 import _ from 'lodash'
 
 import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tertiary, Tier } from '@common/Constants'
 import { createDefaultState, SavedFilters } from '@store/AppStore'
+import DataComponent from './base/DataComponent'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','
@@ -29,7 +29,7 @@ const DELIMITER = ','
         Auctions: () => import('@components/Auctions.vue'),
     },
 })
-export default class App extends VuexComponent {
+export default class App extends DataComponent {
     ready = false
     pendingQuery = false
 
@@ -55,7 +55,7 @@ export default class App extends VuexComponent {
     }
 
     @Watch('region')
-    @Watch('realm')
+    @Watch('realms')
     @Watch('tier')
     @Watch('boes')
     @Watch('ilvlRange')
@@ -87,13 +87,18 @@ export default class App extends VuexComponent {
                 importedState.region = region
             }
         }
+        this.changeRegion(importedState.region)
 
-        if (savedFilters.realm) {
-            const realm = parseInt(savedFilters.realm)
-            if (!isNaN(realm)) {
-                importedState.realm = realm
-            }
+        if (savedFilters.realms) {
+            this.fetchRealms()
+            const validRealms = Object.values(this.regionRealms).map((realm) => realm.id)
+            const realms = importArray(savedFilters.realms).filter((realm) => {
+                return validRealms.includes(realm)
+            })
+
+            importedState.realms = new Set(realms)
         }
+        this.changeRealms(importedState.realms)
 
         if (savedFilters.tier) {
             const validTiers = Object.values(Tier)
@@ -105,6 +110,7 @@ export default class App extends VuexComponent {
         if (importedState.tier === null) {
             importedState.tier = getDefaultTier()
         }
+        this.changeTier(importedState.tier)
 
         if (savedFilters.boes) {
             const validBoeIds = getTierBoeIds(importedState.tier)
@@ -113,6 +119,7 @@ export default class App extends VuexComponent {
             })
             importedState.boes = new Set(boeIds)
         }
+        this.changeBoes(importedState.boes)
 
         const defaultIlvlRange = getIlvlRange(importedState.tier)
         importedState.ilvlRange = defaultIlvlRange
@@ -123,6 +130,7 @@ export default class App extends VuexComponent {
                 max: isNaN(max) ? defaultIlvlRange.max : Math.min(max, defaultIlvlRange.max),
             }
         }
+        this.changeIlvlRange(importedState.ilvlRange)
 
         if (savedFilters.maxBuyout) {
             const maxBuyout = parseInt(savedFilters.maxBuyout)
@@ -130,10 +138,12 @@ export default class App extends VuexComponent {
                 importedState.maxBuyout = _.clamp(maxBuyout, 0, Constants.GOLD_CAP)
             }
         }
+        this.changeMaxBuyout(importedState.maxBuyout)
 
         if (savedFilters.mustHaveSocket) {
             importedState.mustHaveSocket = (savedFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
         }
+        this.changeMustHaveSocket(importedState.mustHaveSocket)
 
         if (savedFilters.tertiaries) {
             const validTertiaries = Object.values(Tertiary)
@@ -142,14 +152,6 @@ export default class App extends VuexComponent {
             })
             importedState.tertiaries = new Set(tertiaries)
         }
-
-        this.changeRegion(importedState.region)
-        this.changeRealm(importedState.realm)
-        this.changeTier(importedState.tier)
-        this.changeBoes(importedState.boes)
-        this.changeIlvlRange(importedState.ilvlRange)
-        this.changeMaxBuyout(importedState.maxBuyout)
-        this.changeMustHaveSocket(importedState.mustHaveSocket)
         this.changeTertiaries(importedState.tertiaries)
     }
 
@@ -159,8 +161,8 @@ export default class App extends VuexComponent {
         if (this.region) {
             savedFilters.region = this.region
         }
-        if (this.realm) {
-            savedFilters.realm = this.realm.toString()
+        if (this.realms.size > 0) {
+            savedFilters.realms = exportSet(this.realms)
         }
 
         if (this.tier) {

@@ -9,7 +9,7 @@ import { IIlvlRange } from '@store/AppStore'
     computed: {
         ...mapState([
             'region',
-            'realm',
+            'realms',
             'lastModified',
 
             'tier',
@@ -24,7 +24,7 @@ import { IIlvlRange } from '@store/AppStore'
     methods: {
         ...mapMutations([
             'changeRegion',
-            'changeRealm',
+            'changeRealms',
             'changeLastModified',
 
             'changeTier',
@@ -40,8 +40,8 @@ import { IIlvlRange } from '@store/AppStore'
 export default class VuexComponent extends Vue {
     region!: RegionSlug | null
     changeRegion!: (region: RegionSlug | null) => void
-    realm!: number | null
-    changeRealm!: (realm: number | null) => void
+    realms!: Set<number>
+    changeRealms!: (realms: Set<number>) => void
     lastModified!: number | null
     changeLastModified!: (lastModified: number | null) => void
 

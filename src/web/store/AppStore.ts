@@ -16,7 +16,7 @@ export interface IIlvlRange {
 
 export enum SavedFiltersFields {
     region = 'region',
-    realm = 'realm',
+    realms = 'realms',
 
     tier = 'tier',
 
@@ -33,7 +33,7 @@ export type SavedFilters = {
 
 export interface IRootState {
     region: RegionSlug | null
-    realm: number | null
+    realms: Set<number>
     lastModified: number | null
 
     tier: Tier | null
@@ -48,7 +48,7 @@ export interface IRootState {
 export function createDefaultState(): IRootState {
     return {
         region: null,
-        realm: null,
+        realms: new Set(),
         lastModified: null,
 
         tier: null,
@@ -79,15 +79,15 @@ const AppStore = new Vuex.Store<IRootState>({
             }
 
             state.region = region
-            state.realm = null
+            state.realms = new Set()
         },
 
-        changeRealm(state: IRootState, realm: number | null): void {
-            if (state.realm === realm) {
+        changeRealms(state: IRootState, realms: Set<number>): void {
+            if (setEq(state.realms, realms)) {
                 return
             }
 
-            state.realm = realm
+            state.realms = realms
         },
 
         changeLastModified(state: IRootState, lastModified: number | null): void {

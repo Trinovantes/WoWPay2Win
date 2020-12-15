@@ -8,7 +8,7 @@ import { getRegionLocale, RegionSlug } from '@common/Constants'
 @Component
 export default class DataComponent extends VuexComponent {
     readonly dataFiles = getDataFiles()
-    protected realms: Array<IRealmCache> = []
+    protected regionRealms: Array<IRealmCache> = []
     protected realmToConnectedRealmMap: { [key: number]: number } = {}
 
     created(): void {
@@ -17,7 +17,7 @@ export default class DataComponent extends VuexComponent {
 
     @Watch('region')
     fetchRealms(): void {
-        this.realms = []
+        this.regionRealms = []
         this.realmToConnectedRealmMap = {}
 
         if (!this.region) {
@@ -33,12 +33,12 @@ export default class DataComponent extends VuexComponent {
         const regionCache: IRegionCache = this.dataFiles[regionFile] as IRegionCache
         for (const connectedRealm of regionCache.connectedRealms) {
             for (const realm of connectedRealm.realms) {
-                this.realms.push(realm)
+                this.regionRealms.push(realm)
                 this.realmToConnectedRealmMap[realm.id] = connectedRealm.id
             }
         }
 
-        this.realms = this.realms.sort((a, b) => {
+        this.regionRealms = this.regionRealms.sort((a, b) => {
             return a.name.localeCompare(b.name)
         })
     }
