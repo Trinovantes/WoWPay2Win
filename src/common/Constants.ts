@@ -104,8 +104,7 @@ export enum Tier {
     Nyalotha = 't26',
 
     // Shadowlands
-    Shadowlands190 = 'shadowlands190',
-    Shadowlands207 = 'shadowlands207',
+    Shadowlands = 'shadowlands',
     CastleNathria = 't27',
 }
 
@@ -153,20 +152,29 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
             step: 15,
         },
     },
-    [Tier.Shadowlands190]: {
-        name: 'Shadowlands World Drops (190)',
+    [Tier.Shadowlands]: {
+        name: 'Shadowlands World Drops',
         iconPath: 'shadowlands.png',
         expiration: dayjs('2020-12-09'),
         boes: [
             {
+                label: 'Trinket',
+                ids: new Set([
+                    184807,
+                ]),
+            },
+            {
                 label: 'Jewelry',
                 ids: new Set([
+                    184785,
+                    184784,
                     184783,
                 ]),
             },
             {
                 label: 'Cloak',
                 ids: new Set([
+                    184782,
                     184781,
                 ]),
             },
@@ -189,64 +197,9 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
             {
                 label: 'Cloth',
                 ids: new Set([
-                    184788,
-                ]),
-            },
-            {
-                label: 'Leather',
-                ids: new Set([
-                    184789,
-                ]),
-            },
-            {
-                label: 'Mail',
-                ids: new Set([
-                    184792,
-                ]),
-            },
-            {
-                label: 'Plate',
-                ids: new Set([
-                    184808,
-                    184809,
-                ]),
-            },
-        ],
-        ilvls: {
-            min: 190,
-            max: 190,
-            step: 1,
-        },
-    },
-    [Tier.Shadowlands207]: {
-        name: 'Shadowlands World Drops (207)',
-        iconPath: 'shadowlands.png',
-        expiration: dayjs('2020-12-09'),
-        boes: [
-            {
-                label: 'Trinket',
-                ids: new Set([
-                    184807,
-                ]),
-            },
-            {
-                label: 'Jewelry',
-                ids: new Set([
-                    184785,
-                    184784,
-                ]),
-            },
-            {
-                label: 'Cloak',
-                ids: new Set([
-                    184782,
-                ]),
-            },
-            {
-                label: 'Cloth',
-                ids: new Set([
                     184786,
                     184787,
+                    184788,
                 ]),
             },
             {
@@ -254,6 +207,7 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
                 ids: new Set([
                     184790,
                     184791,
+                    184789,
                 ]),
             },
             {
@@ -261,6 +215,7 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
                 ids: new Set([
                     184793,
                     184794,
+                    184792,
                 ]),
             },
             {
@@ -268,11 +223,13 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
                 ids: new Set([
                     184795,
                     184796,
+                    184808,
+                    184809,
                 ]),
             },
         ],
         ilvls: {
-            min: 207,
+            min: 190,
             max: 207,
             step: 1,
         },
