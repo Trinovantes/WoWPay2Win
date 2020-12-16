@@ -219,7 +219,7 @@ export const TierConfigs: { [key in Tier]: TierConfig} = {
         },
     },
     [Tier.Shadowlands207]: {
-        name: 'Shadowlands Datamined World Drops (207)',
+        name: 'Shadowlands World Drops (207)',
         iconPath: 'shadowlands.png',
         expiration: dayjs('2020-12-09'),
         boes: [
