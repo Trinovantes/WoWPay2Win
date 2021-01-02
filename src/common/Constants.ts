@@ -127,7 +127,7 @@ export interface TierConfig {
     }
 }
 
-export const TierConfigs: { [key in Tier]: TierConfig} = {
+export const TierConfigs: {[key in Tier]: TierConfig} = {
     [Tier.Nyalotha]: {
         name: "Ny'alotha, the Waking City",
         iconPath: 'nyalotha.png',
