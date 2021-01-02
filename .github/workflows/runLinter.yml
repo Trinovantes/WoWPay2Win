@@ -3,8 +3,6 @@ name: Run Linter
 on:
   workflow_dispatch:
   push:
-    paths:
-      - src/**
 
 jobs:
   run_linter:
