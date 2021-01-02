@@ -45,9 +45,5 @@ export default merge(CommonConfig, {
         new HtmlWebpackPlugin({
             template: 'index.html',
         }),
-        new HtmlWebpackPlugin({
-            template: '404.html',
-            filename: '404.html',
-        }),
     ].filter(Boolean),
 })
