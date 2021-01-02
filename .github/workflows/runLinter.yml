@@ -15,10 +15,10 @@ jobs:
       - name: Cache node_modules
         uses: actions/cache@v2
         env:
-          cache-name: cache-node-modules
+          CACHE_NAME: cache-node-modules
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.CACHE_NAME }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
 
       - name: Install Dependencies
         run: yarn install
