@@ -3,6 +3,7 @@
 import path from 'path'
 import { DefinePlugin } from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './webpack.constants'
 
@@ -17,7 +18,7 @@ export default {
         : false,
 
     resolve: {
-        extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
+        extensions: ['.ts', '.js', '.vue', '.json', '.scss', '.css'],
         alias: {
             // Need to match aliases in tsconfig.json
             '@static': staticDir,
@@ -63,7 +64,7 @@ export default {
             {
                 test: /\.s(a|c)ss$/,
                 use: [
-                    'style-loader',
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     {
                         loader: 'sass-loader',
@@ -76,7 +77,7 @@ export default {
             {
                 test: /\.css$/,
                 use: [
-                    'style-loader',
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                 ],
             },
@@ -101,6 +102,14 @@ export default {
     },
 
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: isDev
+                ? '[name].css'
+                : '[name].[contenthash].css',
+            chunkFilename: isDev
+                ? '[id].css'
+                : '[id].[contenthash].css',
+        }),
         new DefinePlugin({
             'DEFINE.AUCTIONS_URL': JSON.stringify('/data'),
             'DEFINE.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
