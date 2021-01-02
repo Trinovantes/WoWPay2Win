@@ -102,6 +102,7 @@ server {
     root        /var/www/wowpay2win.com/dist-web/;
     expires     1d;
     add_header  Cache-Control public;
+    error_page  404 = @redirect;
 
 #    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
 #    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
@@ -110,6 +111,10 @@ server {
 
     location ~* ^/data/.+\.json$ {
         expires modified +1h;
+    }
+
+    location @redirect {
+        return 301 /;
     }
 }
 ```
