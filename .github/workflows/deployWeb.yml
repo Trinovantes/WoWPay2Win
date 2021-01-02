@@ -6,6 +6,7 @@ on:
     branches:
       - master
     paths:
+      - scripts/**
       - src/common/**
       - src/web/**
 
