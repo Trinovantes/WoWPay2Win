@@ -21,6 +21,7 @@ export default merge(CommonConfig, {
     },
     output: {
         path: distWebDir,
+        publicPath: '/',
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
