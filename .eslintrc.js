@@ -1,3 +1,5 @@
+/* eslint-disable quote-props */
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 
@@ -25,33 +27,24 @@ module.exports = {
         node: true,
     },
 
-    // Rules order is important, please avoid shuffling them
-    extends: [
-        // Base ESLint recommended rules
-        // 'eslint:recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-
-        // Uncomment any of the lines below to choose desired strictness, but leave only one uncommented!
-        // See https://eslint.vuejs.org/rules/#available-rules
-        // 'plugin:vue/essential', // Priority A: Essential (Error Prevention)
-        // 'plugin:vue/strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
-        'plugin:vue/recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
-
-        'standard',
-    ],
-
-    plugins: [
-        // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-file
-        // required to lint *.vue files
-        '@typescript-eslint',
-        'vue',
-    ],
-
     // Disable warnings for variables that are accessed but not defined in same file
     globals: {
         DEFINE: 'readonly',
     },
+
+    // Rules order is important, please avoid shuffling them
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'plugin:vue/recommended',
+        'standard',
+    ],
+
+    plugins: [
+        '@typescript-eslint',
+        'vue',
+    ],
 
     rules: {
         'generator-star-spacing': ['error', 'before'],
@@ -73,7 +66,7 @@ module.exports = {
 
         'comma-dangle': ['error', 'always-multiline'],
         'space-before-function-paren': ['error', 'never'],
-        indent: ['error', 4, {
+        'indent': ['error', 4, {
             SwitchCase: 1,
         }],
 
@@ -105,7 +98,7 @@ module.exports = {
             default: 'generic',
         }],
 
-        semi: 'off',
+        'semi': 'off',
         '@typescript-eslint/semi': ['error', 'never'],
 
         // allow debugger during development only
