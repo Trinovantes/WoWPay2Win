@@ -15,7 +15,6 @@
         ]
     },
     "dependencies": {
-        "@types/mini-css-extract-plugin": "^1.2.2",
         "axios": "^0.21.0",
         "dayjs": "^1.9.5",
         "lodash": "^4.17.20",
@@ -35,6 +34,7 @@
         "@babel/register": "^7.12.1",
         "@types/copy-webpack-plugin": "^6.3.0",
         "@types/lodash": "^4.14.165",
+        "@types/mini-css-extract-plugin": "^1.2.2",
         "@types/node": "^14.11.7",
         "@types/terser-webpack-plugin": "^4",
         "@types/webpack-env": "^1.15.3",
