@@ -70,7 +70,7 @@ jobs:
       - name: Deploy Frontend to Server
         run: |
           ssh -o StrictHostKeyChecking=no -o SendEnv=REMOTE_DIR -o SendEnv=WEB_DIR "$SSH_USER@$SSH_HOST" "find $REMOTE_DIR/$WEB_DIR -type f -not -path */data/* | xargs -t rm -f"
-          rsync -e "ssh -o StrictHostKeyChecking=no" -r "$WEB_DIR"  "$SSH_USER@$SSH_HOST:$REMOTE_DIR"
+          rsync -e "ssh -o StrictHostKeyChecking=no" -r "$WEB_DIR" "$SSH_USER@$SSH_HOST:$REMOTE_DIR"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
