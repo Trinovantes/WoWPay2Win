@@ -10,9 +10,6 @@ module.exports = {
     root: true,
 
     parserOptions: {
-        // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/parser#configuration
-        // https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
-        // Needed to make the parser take into account 'vue' files
         extraFileExtensions: ['.vue'],
         parser: '@typescript-eslint/parser',
         project: path.resolve(__dirname, './tsconfig.json'),
@@ -34,14 +31,15 @@ module.exports = {
 
     // Rules order is important, please avoid shuffling them
     extends: [
+        'standard',
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
         'plugin:vue/recommended',
-        'standard',
     ],
 
     plugins: [
+        'standard',
         '@typescript-eslint',
         'vue',
     ],
