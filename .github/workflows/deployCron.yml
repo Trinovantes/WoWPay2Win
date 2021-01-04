@@ -33,9 +33,12 @@ jobs:
 
       - name: Compile Cron on Server
         run: |
-          ssh -o StrictHostKeyChecking=no -o SendEnv=REMOTE_DIR "$SSH_USER@$SSH_HOST" "cd $REMOTE_DIR && git pull --rebase origin master"
-          ssh -o StrictHostKeyChecking=no -o SendEnv=REMOTE_DIR "$SSH_USER@$SSH_HOST" "cd $REMOTE_DIR && yarn buildCron"
-          ssh -o StrictHostKeyChecking=no -o SendEnv=REMOTE_DIR "$SSH_USER@$SSH_HOST" "cd $REMOTE_DIR && yarn fetchData"
+          ssh -o StrictHostKeyChecking=no -o SendEnv=REMOTE_DIR "$SSH_USER@$SSH_HOST" "cd $REMOTE_DIR
+            && git pull --rebase origin master
+            && yarn install
+            && yarn buildCron
+            && yarn fetchData
+            "
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
