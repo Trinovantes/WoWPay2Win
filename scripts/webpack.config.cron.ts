@@ -2,14 +2,14 @@
 
 import { merge } from 'webpack-merge'
 
-import CommonConfig from './webpack.config.common'
+import commonConfig from './webpack.config.common'
 import { srcCronDir, distCronDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------
 // Cron
 // ----------------------------------------------------------------------------
 
-export default merge(CommonConfig, {
+export default merge(commonConfig, {
     target: 'node',
 
     context: srcCronDir,

@@ -4,15 +4,16 @@ import { merge } from 'webpack-merge'
 import { VueLoaderPlugin } from 'vue-loader'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import { WebpackPluginInstance } from 'webpack'
 
-import CommonConfig from './webpack.config.common'
+import commonConfig from './webpack.config.common'
 import { isDev, staticDir, srcWebDir, distWebDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------
 // Web
 // ----------------------------------------------------------------------------
 
-export default merge(CommonConfig, {
+export default merge(commonConfig, {
     target: 'web',
 
     context: srcWebDir,
@@ -46,5 +47,5 @@ export default merge(CommonConfig, {
         new HtmlWebpackPlugin({
             template: 'index.html',
         }),
-    ].filter(Boolean),
+    ].filter(Boolean) as Array<WebpackPluginInstance>,
 })

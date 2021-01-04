@@ -22,7 +22,6 @@
             "@common/*": ["./src/common/*"],
 
             "@components/*": ["./src/web/components/*"],
-
             "@router/*": ["./src/web/router/*"],
             "@store/*": ["./src/web/store/*"],
 

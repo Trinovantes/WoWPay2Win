@@ -1,7 +1,7 @@
 'use strict'
 
 import path from 'path'
-import { DefinePlugin } from 'webpack'
+import webpack, { DefinePlugin } from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
@@ -11,8 +11,8 @@ import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './webpack.const
 // Common
 // ----------------------------------------------------------------------------
 
-export default {
-    mode: process.env.NODE_ENV,
+const commonConfig: webpack.Configuration = {
+    mode: process.env.NODE_ENV as 'development' | 'production',
     devtool: isDev
         ? 'source-map'
         : false,
@@ -25,7 +25,6 @@ export default {
             '@common': path.resolve(srcDir, 'common'),
 
             '@components': path.resolve(srcWebDir, 'components'),
-
             '@router': path.resolve(srcWebDir, 'router'),
             '@store': path.resolve(srcWebDir, 'store'),
 
@@ -113,6 +112,7 @@ export default {
         new DefinePlugin({
             'DEFINE.AUCTIONS_URL': JSON.stringify('/data'),
             'DEFINE.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
+
             'DEFINE.CACHE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/data')),
             'DEFINE.IMAGE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/img')),
         }),
@@ -130,3 +130,5 @@ export default {
         ],
     },
 }
+
+export default commonConfig
