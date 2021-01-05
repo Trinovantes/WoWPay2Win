@@ -27,7 +27,7 @@ export abstract class Cacheable {
 
     protected async loadFromCache(): Promise<boolean> {
         if (!this.cacheFile || !existsSync(this.cacheFile)) {
-            console.warn(`Cache file ${this.cacheFile} not found`)
+            console.info(`Cache file ${this.cacheFile} not found`)
             return false
         }
 
@@ -35,7 +35,7 @@ export abstract class Cacheable {
         const now = dayjs()
         const modDate = dayjs(stat.mtime)
         if (modDate.isBefore(now.subtract(1, 'week'))) {
-            console.warn(`Cache file ${this.cacheFile} is too old: ${modDate.fromNow()}`)
+            console.info(`Cache file ${this.cacheFile} is too old: ${modDate.fromNow()}`)
             return false
         }
 
@@ -50,7 +50,7 @@ export abstract class Cacheable {
 
     protected static async saveToCache(cacheFile: string, cachedContents: ICache): Promise<boolean> {
         if (!cacheFile) {
-            console.warn(`Failed to save cache file ${cacheFile}`)
+            console.warn(`No cache file provided ${cacheFile}`)
             return false
         }
 

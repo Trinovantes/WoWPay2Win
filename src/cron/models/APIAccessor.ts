@@ -109,11 +109,7 @@ async function tryExponentialBackoff(request: () => Promise<AxiosResponse | null
             const isMaxAttempts = (attempt === Constants.MAX_API_RETRIES - 1)
             const retryMsg = isMaxAttempts ? '' : `Retrying after ${delay}ms`
 
-            console.warn(error.message, retryMsg)
-            if (Constants.IS_DEV) {
-                console.warn(error.stack)
-            }
-
+            console.info(error.message, retryMsg)
             await sleep(delay)
         }
     }
