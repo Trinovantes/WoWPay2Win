@@ -97,7 +97,7 @@ export class APIAccessor<T> {
 }
 
 async function tryExponentialBackoff(request: () => Promise<AxiosResponse | null>): Promise<AxiosResponse | null> {
-    // Retry with exponential back-off if server is temporarily unavilable
+    // Retry with exponential backoff if server is temporarily unavilable
     for (let attempt = 0; attempt < Constants.MAX_API_RETRIES; attempt++) {
         try {
             // If errorProneFunction didn't throw, then we can exit the loop early
