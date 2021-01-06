@@ -12,7 +12,9 @@ import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './webpack.const
 // ----------------------------------------------------------------------------
 
 const commonConfig: webpack.Configuration = {
-    mode: process.env.NODE_ENV as 'development' | 'production',
+    mode: isDev
+        ? 'development'
+        : 'production',
     devtool: isDev
         ? 'source-map'
         : false,
