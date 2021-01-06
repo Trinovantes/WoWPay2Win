@@ -64,7 +64,7 @@ Create `production` environment with the following secrets:
 
 ## Setting up Nginx
 
-Create the nginx configuration file (`/etc/nginx/sites-available/wowpay2win.com`). The SSL options are initially commented out because those files do not exist yet. This will allow us to start nginx for the initial authentication without getting `FileDoesNotExist` errors.
+Create the nginx configuration file (`/etc/nginx/sites-available/wowpay2win.com`). We will not add SSL options yet because our certificate files do not exist yet.
 ```
 #-------------------------------------------------------------------------------
 # wowpay2win.com
@@ -78,43 +78,6 @@ server {
 
     location / {
         return 301 https://www.wowpay2win.com$request_uri;
-    }
-}
-
-server {
-    listen 443 ssl;
-    server_name wowpay2win.com;
-
-#    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
-#    ssl_trusted_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    include /etc/nginx/snippets/ssl.conf;
-
-    location / {
-        return 301 https://www.wowpay2win.com$request_uri;
-    }
-}
-
-server {
-    listen      443 ssl;
-    server_name www.wowpay2win.com;
-    autoindex   off;
-    root        /var/www/wowpay2win.com/dist-web/;
-    expires     1d;
-    add_header  Cache-Control public;
-    error_page  404 = @redirect;
-
-#    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
-#    ssl_trusted_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
-#    include /etc/nginx/snippets/ssl.conf;
-
-    location ~* ^/data/.+\.json$ {
-        expires modified +1h;
-    }
-
-    location @redirect {
-        return 301 /;
     }
 }
 ```
@@ -155,15 +118,51 @@ location ^~ /.well-known/acme-challenge/ {
 }
 ```
 
-Now we can restart nginx to host the non-SSL version for Let's Encrypt authentication challenge.
+Now we can restart nginx to host Let's Encrypt authentication challenge. We can then test auto renew with `certbot renew --dry-run`. **Important:** If we are behind Cloudflare, we need to ensure "Always Use HTTPS" is disabled.
 ```
 sudo systemctl restart nginx
 sudo certbot certonly --webroot -d wowpay2win.com -d www.wowpay2win.com --webroot-path /var/www/letsencrypt
 ```
 
-**Important:** If we are behind Cloudflare, we need to ensure "Always Use HTTPS" is disabled.
+After successfully creating our certificates, we can go back to `/etc/nginx/sites-available/wowpay2win.com` and add our SSL options.
+```
+server {
+    listen 443 ssl;
+    server_name wowpay2win.com;
 
-After successfully creating new certificates, we can go back to `/etc/nginx/sites-available/wowpay2win.com` and uncomment the SSL options. We can also test auto renew with `certbot renew --dry-run`.
+    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
+    include /etc/nginx/snippets/ssl.conf;
+
+    location / {
+        return 301 https://www.wowpay2win.com$request_uri;
+    }
+}
+
+server {
+    listen      443 ssl;
+    server_name www.wowpay2win.com;
+    autoindex   off;
+    root        /var/www/wowpay2win.com/dist-web/;
+    expires     1d;
+    add_header  Cache-Control public;
+    error_page  404 = @redirect;
+
+    ssl_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/wowpay2win.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/wowpay2win.com/fullchain.pem;
+    include /etc/nginx/snippets/ssl.conf;
+
+    location ~* ^/data/.+\.json$ {
+        expires modified +1h;
+    }
+
+    location @redirect {
+        return 301 /;
+    }
+}
+```
 
 Next we need to add this line to `/etc/letsencrypt/cli.ini` to ensure nginx reloads whenever we renew our certificates.
 ```
