@@ -2,10 +2,12 @@ import { existsSync, createWriteStream } from 'fs'
 import path from 'path'
 
 import { Locale } from '@common/Constants'
-import { IItemMediaResponse, IItemResponse } from './API'
-import { APIAccessor } from './APIAccessor'
-import { Region } from './Region'
 import { ICache, IItemCache } from '@common/ICache'
+
+import { IItemMediaResponse, IItemResponse } from '@cron/api/API'
+import { APIAccessor } from '@cron/api/APIAccessor'
+
+import { Region } from './Region'
 import { Cacheable } from './Cacheable'
 
 export class Item extends Cacheable {

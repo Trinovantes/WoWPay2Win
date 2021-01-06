@@ -1,8 +1,8 @@
 import Constants, { getBoeIds } from '@common/Constants'
 import { batchRequests } from '@common/utils'
-import fetchRegions from './fetchRegions'
 import { Item } from './models/Item'
 import { Region } from './models/Region'
+import fetchRegions from './utils/fetchRegions'
 
 async function fetchItems(region: Region) {
     const boeIds = getBoeIds()

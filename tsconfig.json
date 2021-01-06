@@ -20,6 +20,8 @@
             // Need to match aliases in scripts/webpack.config.common
             "@static/*": ["./static/*"],
             "@common/*": ["./src/common/*"],
+            "@cron/*": ["./src/cron/*"],
+            "@web/*": ["./src/web/*"],
 
             "@components/*": ["./src/web/components/*"],
             "@router/*": ["./src/web/router/*"],

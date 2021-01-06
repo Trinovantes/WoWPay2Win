@@ -23,6 +23,8 @@ const commonConfig: webpack.Configuration = {
             // Need to match aliases in tsconfig.json
             '@static': staticDir,
             '@common': path.resolve(srcDir, 'common'),
+            '@cron': path.resolve(srcDir, 'cron'),
+            '@web': path.resolve(srcDir, 'web'),
 
             '@components': path.resolve(srcWebDir, 'components'),
             '@router': path.resolve(srcWebDir, 'router'),

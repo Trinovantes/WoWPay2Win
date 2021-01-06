@@ -1,7 +1,7 @@
 import Axios, { AxiosResponse } from 'axios'
 import querystring from 'querystring'
 
-import { Region } from './Region'
+import { Region } from '../models/Region'
 import Constants from '@common/Constants'
 import { sleep } from '@common/utils'
 import { IncomingMessage } from 'http'

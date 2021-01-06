@@ -1,6 +1,6 @@
 import { Tertiary } from '@common/Constants'
 import { IItemAuctionCache } from '@common/ICache'
-import unrecognizedBonusIdTracker from './UnrecognizedBonusIdTracker'
+import unrecognizedBonusIdTracker from '@cron/utils/UnrecognizedBonusIdTracker'
 
 export class ItemAuction {
     readonly id: number

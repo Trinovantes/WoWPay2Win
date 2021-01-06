@@ -1,5 +1,5 @@
 import Constants, { RegionConfigs } from '@common/Constants'
-import { Region } from './models/Region'
+import { Region } from '@cron/models/Region'
 
 export default async function fetchRegions(): Promise<Array<Region>> {
     const regions: Array<Region> = []

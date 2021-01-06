@@ -1,4 +1,4 @@
-import { ItemAuction } from './ItemAuctions'
+import { ItemAuction } from '@cron/models/ItemAuctions'
 
 class UnrecognizedBonusIdTracker {
     private readonly unrecognizedIds: { [bonusId: number]: Array<ItemAuction> } = {}

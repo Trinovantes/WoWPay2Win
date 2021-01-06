@@ -4,8 +4,11 @@ import { existsSync, mkdirSync } from 'fs'
 import { RegionConfig } from '@common/Constants'
 import { IAuctionsCache, ICache, IRegionCache } from '@common/ICache'
 import { batchRequests } from '@common/utils'
-import { IRegionResponse } from './API'
-import { APIAccessor } from './APIAccessor'
+
+import { IRegionResponse } from '@cron/api/API'
+import { APIAccessor } from '@cron/api/APIAccessor'
+import { saveCacheToFile } from '@cron/utils'
+
 import { ConnectedRealm } from './ConnectedRealm'
 import { Cacheable } from './Cacheable'
 import { Realm } from './Realm'
@@ -114,7 +117,7 @@ export class Region extends Cacheable {
 
         const auctionCacheFile = path.resolve(auctionsDir, `auctions-${this.config.slug}.json`)
         console.debug(`Saving ${totalAuctions} auctions to ${auctionCacheFile}`)
-        await Cacheable.saveToCache(auctionCacheFile, auctionsCache)
+        await saveCacheToFile(auctionCacheFile, auctionsCache)
     }
 
     toString(): string {

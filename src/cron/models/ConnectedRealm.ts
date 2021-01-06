@@ -1,7 +1,9 @@
 import { getBoeIds } from '@common/Constants'
 import { IConnectedRealmCache } from '@common/ICache'
-import { IAuctionsResponse, IConnectedRealmResponse } from './API'
-import { APIAccessor } from './APIAccessor'
+
+import { IAuctionsResponse, IConnectedRealmResponse } from '@cron/api/API'
+import { APIAccessor } from '@cron/api/APIAccessor'
+
 import { ItemAuction } from './ItemAuctions'
 import { Realm } from './Realm'
 import { Region } from './Region'

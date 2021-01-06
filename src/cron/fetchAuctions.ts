@@ -1,6 +1,6 @@
 import Constants from '@common/Constants'
-import fetchRegions from './fetchRegions'
-import unrecognizedBonusIdTracker from './models/UnrecognizedBonusIdTracker'
+import fetchRegions from './utils/fetchRegions'
+import unrecognizedBonusIdTracker from './utils/UnrecognizedBonusIdTracker'
 
 async function main() {
     try {
