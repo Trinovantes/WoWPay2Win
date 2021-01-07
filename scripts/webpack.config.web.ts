@@ -29,6 +29,7 @@ export default merge(commonConfig, {
     },
 
     devServer: {
+        historyApiFallback: true,
         contentBase: [
             staticDir, // Static assets
             distWebDir, // Auctions data files
