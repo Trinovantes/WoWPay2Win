@@ -102,7 +102,7 @@ export default class DataComponent extends VuexComponent {
     }
 }
 
-export function getDataFiles(): { [key: string]: unknown } {
+function getDataFiles(): { [key: string]: unknown } {
     const req = require.context('@data', false, /\.(json)$/)
     const files: { [key: string]: unknown } = {}
 
