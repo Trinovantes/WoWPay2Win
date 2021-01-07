@@ -2,39 +2,39 @@
 
 export interface IRegionResponse {
     connected_realms: Array<{
-        href: string,
+        href: string
     }>
 }
 
 export interface IConnectedRealmResponse {
-    id: number,
+    id: number
     realms: Array<{
-        id: number,
-        name: string,
+        id: number
+        name: string
     }>
 }
 
 export interface IItemResponse {
-    id: number,
-    name: string,
-    level: number,
+    id: number
+    name: string
+    level: number
 }
 
 export interface IItemMediaResponse {
-    id: number,
+    id: number
     assets: Array<{
-        key: string,
-        value: string,
+        key: string
+        value: string
     }>
 }
 
 export interface IAuctionsResponse {
     auctions?: Array<{
-        id: number,
+        id: number
         item: {
-            id: number,
+            id: number
             bonus_lists?: Array<number>
-        },
-        buyout?: number,
+        }
+        buyout?: number
     }>
 }

@@ -38,7 +38,7 @@ export interface IItemCache extends ICache {
 
 export interface IItemAuctionCache {
     id: number
-    crId: number,
+    crId: number
     itemId: number
     buyout: number
     bonuses: Array<number>
@@ -49,6 +49,6 @@ export interface IItemAuctionCache {
 }
 
 export interface IAuctionsCache extends ICache {
-    lastModified: number,
-    auctions: Array<IItemAuctionCache>,
+    lastModified: number
+    auctions: Array<IItemAuctionCache>
 }

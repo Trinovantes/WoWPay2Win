@@ -43,9 +43,9 @@ export enum Locale {
 
 export interface RegionConfig {
     readonly slug: RegionSlug
-    readonly locale: Locale,
-    readonly apiHost: string,
-    readonly oauthEndpoint: string,
+    readonly locale: Locale
+    readonly apiHost: string
+    readonly oauthEndpoint: string
 }
 
 export const RegionConfigs: Array<RegionConfig> = [
@@ -111,19 +111,19 @@ export enum Tier {
 const DEFAULT_TIER = Tier.CastleNathria
 
 export interface IBoeCategory {
-    label: string,
+    label: string
     ids: Set<number>
 }
 
 export interface TierConfig {
-    readonly name: string,
+    readonly name: string
     readonly iconPath: string
     readonly expiration?: Dayjs
     readonly boes: Array<IBoeCategory>
     readonly ilvls: {
-        min: number,
-        max: number,
-        step: number,
+        min: number
+        max: number
+        step: number
     }
 }
 

@@ -10,8 +10,8 @@ import { setEq } from '@common/utils'
 // ----------------------------------------------------------------------------
 
 export interface IIlvlRange {
-    min: number,
-    max: number,
+    min: number
+    max: number
 }
 
 export enum SavedFiltersFields {

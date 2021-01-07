@@ -32,7 +32,7 @@ import { Tertiary } from '@common/Constants'
 
 @Component
 export default class TertiaryFilter extends VuexComponent {
-    readonly tertiaryOptions: Array<{ label: string, value: number }> = []
+    readonly tertiaryOptions: Array<{ label: string; value: number }> = []
 
     constructor() {
         super()

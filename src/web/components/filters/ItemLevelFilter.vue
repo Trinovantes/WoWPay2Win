@@ -22,7 +22,7 @@ import { IIlvlRange } from '@store/AppStore'
 
 @Component
 export default class ItemLevelFilter extends VuexComponent {
-    get ilvls(): { min: number, max: number, step: number } {
+    get ilvls(): { min: number; max: number; step: number } {
         if (this.tier === null) {
             return {
                 min: 0,

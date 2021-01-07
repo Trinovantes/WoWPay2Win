@@ -96,6 +96,17 @@ module.exports = {
             default: 'generic',
         }],
 
+        '@typescript-eslint/member-delimiter-style': ['error', {
+            multiline: {
+                delimiter: 'none',
+                requireLast: true,
+            },
+            singleline: {
+                delimiter: 'semi',
+                requireLast: false,
+            },
+        }],
+
         'semi': 'off',
         '@typescript-eslint/semi': ['error', 'never'],
 
