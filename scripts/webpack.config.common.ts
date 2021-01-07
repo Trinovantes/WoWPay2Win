@@ -72,7 +72,11 @@ const commonConfig: webpack.Configuration = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            additionalData: '@import "@css/variables.scss";',
+                            additionalData: (content: string, loaderContext: { resourcePath: string }): string => {
+                                return (loaderContext.resourcePath.endsWith('sass'))
+                                    ? '@import "@css/variables.scss"\n' + content
+                                    : '@import "@css/variables.scss";' + content
+                            },
                         },
                     },
                 ],

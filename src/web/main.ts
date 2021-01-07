@@ -5,23 +5,12 @@ import Vue from 'vue'
 // ----------------------------------------------------------------------------
 
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import 'quasar/dist/quasar.min.css'
+import 'quasar/src/css/index.sass'
 import Quasar from 'quasar'
 
 Vue.use(Quasar, {
     config: {
         dark: true,
-        brand: {
-            primary: '#297acc',
-            secondary: '#41a4fa',
-            accent: '#9C27B0',
-            dark: '#222',
-
-            positive: '#2e8743',
-            negative: '#C10015',
-            info: '#31CCEC',
-            warning: '#F2C037',
-        },
     },
 })
 

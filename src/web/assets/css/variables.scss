@@ -1,7 +1,16 @@
-$text          : #aaa;
-$header        : var(--q-color-dark);
-$bg-side       : #333;
-$bg-main       : lighten($bg-side, 5);
+$primary    : #297acc;
+$secondary  : #41a4fa;
+$accent     : #9C27B0;
+$dark       : #222;
+$positive   : #2e8743;
+$negative   : #C10015;
+$info       : #31CCEC;
+$warning    : #F2C037;
+
+$text       : #aaa;
+$header     : var(--q-color-dark);
+$bg-side    : #333;
+$bg-main    : lighten($bg-side, 5);
 
 $padding: 12px;
 $side-padding: $padding * 2;
