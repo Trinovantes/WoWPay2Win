@@ -246,14 +246,14 @@ export const TierConfigs: {[key in Tier]: TierConfig} = {
                 ]),
             },
             {
-                label: 'Mail',
+                label: 'Leather',
                 ids: new Set([
                     183010,
                     182978,
                 ]),
             },
             {
-                label: 'Leather',
+                label: 'Mail',
                 ids: new Set([
                     182990,
                     182982,
