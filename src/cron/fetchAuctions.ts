@@ -1,4 +1,3 @@
-import Constants from '@common/Constants'
 import fetchRegions from './utils/fetchRegions'
 import unrecognizedBonusIdTracker from './utils/UnrecognizedBonusIdTracker'
 
@@ -12,13 +11,13 @@ async function main() {
 
         console.info('Cron Script Finished')
 
-        if (Constants.IS_DEV) {
+        if (DEFINE.IS_DEV) {
             unrecognizedBonusIdTracker.print()
         }
     } catch (err) {
         const error = err as Error
         console.error('Cron Script Failed:', error.message)
-        if (Constants.IS_DEV) {
+        if (DEFINE.IS_DEV) {
             console.error(error.stack)
         }
         process.exit(1)

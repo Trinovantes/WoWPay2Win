@@ -3,7 +3,6 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
-import Constants from '@common/Constants'
 import { ICache } from '@common/ICache'
 
 export async function loadCacheFromFile(cacheFile: string, onLoad: (fileContents: string) => boolean): Promise<boolean> {
@@ -31,7 +30,7 @@ export async function saveCacheToFile(cacheFile: string, cachedContents: ICache)
     }
 
     let fileContents: string
-    if (Constants.IS_DEV) {
+    if (DEFINE.IS_DEV) {
         fileContents = JSON.stringify(cachedContents, null, 4)
     } else {
         fileContents = JSON.stringify(cachedContents)

@@ -22,7 +22,6 @@ import '@css/main.scss'
 import App from '@components/App.vue'
 import AppRouter from '@router/AppRouter'
 import AppStore from '@store/AppStore'
-import Constants from '@common/Constants'
 
 const app = new App({
     router: AppRouter,
@@ -34,7 +33,7 @@ try {
 } catch (err) {
     const error = err as Error
     console.error(error.message)
-    if (Constants.IS_DEV) {
+    if (DEFINE.IS_DEV) {
         console.error(error.stack)
     }
 }

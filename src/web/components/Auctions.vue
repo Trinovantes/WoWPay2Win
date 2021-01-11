@@ -201,7 +201,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
         } catch (err) {
             const error = err as Error
             console.warn('Failed to fetchAuctions', auctionsFile, error.message)
-            if (Constants.IS_DEV) {
+            if (DEFINE.IS_DEV) {
                 console.warn(error.stack)
             }
         }

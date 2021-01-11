@@ -1,4 +1,4 @@
-import Constants, { getBoeIds } from '@common/Constants'
+import { getBoeIds } from '@common/Constants'
 import { batchRequests } from '@common/utils'
 import { Item } from './models/Item'
 import { Region } from './models/Region'
@@ -25,7 +25,7 @@ async function main() {
     } catch (err) {
         const error = err as Error
         console.error('Cron Script Failed:', error.message)
-        if (Constants.IS_DEV) {
+        if (DEFINE.IS_DEV) {
             console.error(error.stack)
         }
         process.exit(1)

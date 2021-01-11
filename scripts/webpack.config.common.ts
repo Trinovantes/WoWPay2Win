@@ -118,6 +118,8 @@ const commonConfig: webpack.Configuration = {
                 : '[id].[contenthash].css',
         }),
         new DefinePlugin({
+            'DEFINE.IS_DEV': JSON.stringify(isDev),
+
             'DEFINE.AUCTIONS_URL': JSON.stringify('/data'),
             'DEFINE.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist-web/data')),
 

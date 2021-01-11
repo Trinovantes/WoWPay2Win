@@ -69,7 +69,7 @@ export function createDefaultState(): IRootState {
 
 const AppStore = new Vuex.Store<IRootState>({
     // Checks state changes only happen in mutation handlers
-    strict: Constants.IS_DEV,
+    strict: DEFINE.IS_DEV,
 
     state: createDefaultState(),
 
