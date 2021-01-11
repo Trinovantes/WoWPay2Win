@@ -191,20 +191,11 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
         }
 
         const auctionsFile = `${DEFINE.AUCTIONS_URL}/auctions-${this.region}.json`
+        const response = await Axios.get(auctionsFile)
+        const auctionsCache = response.data as IAuctionsCache
 
-        try {
-            const response = await Axios.get(auctionsFile)
-            const auctionsCache = response.data as IAuctionsCache
-
-            this.changeLastModified(auctionsCache.lastModified)
-            this.auctions = auctionsCache.auctions
-        } catch (err) {
-            const error = err as Error
-            console.warn('Failed to fetchAuctions', auctionsFile, error.message)
-            if (DEFINE.IS_DEV) {
-                console.warn(error.stack)
-            }
-        }
+        this.changeLastModified(auctionsCache.lastModified)
+        this.auctions = auctionsCache.auctions
     }
 
     get filteredAuctions(): Array<IItemAuctionCache> {

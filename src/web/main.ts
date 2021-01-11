@@ -28,12 +28,4 @@ const app = new App({
     store: AppStore,
 })
 
-try {
-    app.$mount('#app')
-} catch (err) {
-    const error = err as Error
-    console.error(error.message)
-    if (DEFINE.IS_DEV) {
-        console.error(error.stack)
-    }
-}
+app.$mount('#app')
