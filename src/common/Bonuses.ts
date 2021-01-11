@@ -8,20 +8,6 @@ export function checkIsBonusIlvl(bonusId: number): number | undefined {
         return bonusId - ZERO_ILVL
     }
 
-    switch (bonusId) {
-        case 4825: // LFR
-            return 0
-
-        case 4822: // Normal
-            return 15
-
-        case 4823: // Heroic
-            return 30
-
-        case 4824: // Mythic
-            return 45
-    }
-
     return undefined
 }
 
