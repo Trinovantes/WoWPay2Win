@@ -59,7 +59,8 @@ import { Watch } from 'vue-property-decorator'
 import Axios from 'axios'
 
 import { IAuctionsCache, IItemAuctionCache } from '@common/ICache'
-import Constants, { getTierBoeIds, Tertiary } from '@common/Constants'
+import Constants, { getTierBoeIds } from '@common/Constants'
+import { Tertiary } from '@common/Bonuses'
 
 @Component
 export default class Auctions extends mixins(VuexComponent, DataComponent, ImageComponent, FormatterComponent) {

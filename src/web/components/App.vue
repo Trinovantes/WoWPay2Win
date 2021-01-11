@@ -17,9 +17,10 @@ import { Watch } from 'vue-property-decorator'
 
 import _ from 'lodash'
 
-import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tertiary, Tier } from '@common/Constants'
+import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tier } from '@common/Constants'
 import { createDefaultState, SavedFilters } from '@store/AppStore'
 import DataComponent from './base/DataComponent'
+import { Tertiary } from '@common/Bonuses'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','

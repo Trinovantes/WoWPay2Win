@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-import Constants, { getIlvlRange, RegionSlug, Tertiary, Tier } from '@common/Constants'
+import Constants, { getIlvlRange, RegionSlug, Tier } from '@common/Constants'
+import { Tertiary } from '@common/Bonuses'
 import { setEq } from '@common/utils'
 
 // ----------------------------------------------------------------------------

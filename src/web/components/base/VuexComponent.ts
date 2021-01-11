@@ -2,7 +2,8 @@ import Component from 'vue-class-component'
 import Vue from 'vue'
 import { mapMutations, mapState } from 'vuex'
 
-import { RegionSlug, Tertiary, Tier } from '@common/Constants'
+import { RegionSlug, Tier } from '@common/Constants'
+import { Tertiary } from '@common/Bonuses'
 import { IIlvlRange } from '@store/AppStore'
 
 @Component({

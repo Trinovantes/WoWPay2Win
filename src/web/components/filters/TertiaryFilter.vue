@@ -28,7 +28,7 @@
 import Component from 'vue-class-component'
 import VuexComponent from '@components/base/VuexComponent'
 
-import { Tertiary } from '@common/Constants'
+import { Tertiary } from '@common/Bonuses'
 
 @Component
 export default class TertiaryFilter extends VuexComponent {

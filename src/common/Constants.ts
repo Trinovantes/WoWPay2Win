@@ -335,14 +335,3 @@ export function getBoeIds(): Array<number> {
 
     return boeIds
 }
-
-// ----------------------------------------------------------------------------
-// Item Bonus IDs
-// ----------------------------------------------------------------------------
-
-export enum Tertiary {
-    Avoidance = 40,
-    Leech = 41,
-    Speed = 42,
-    Indestructible = 43
-}
