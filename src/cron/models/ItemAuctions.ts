@@ -14,9 +14,9 @@ export class ItemAuction {
     readonly bonuses: Array<number>
 
     // Technically these can be computed on the frontend but it's simplier to compute these on the backend
-    readonly bonusIlvl: number
-    readonly hasSocket: boolean
-    readonly tertiary: Tertiary | null
+    readonly bonusIlvl?: number
+    readonly hasSocket?: boolean
+    readonly tertiary?: Tertiary
 
     constructor(id: number, connectedRealmId: number, itemId: number, buyout: number, bonuses: Array<number>) {
         this.id = id
@@ -24,10 +24,6 @@ export class ItemAuction {
         this.itemId = itemId
         this.buyout = buyout
         this.bonuses = bonuses
-
-        this.bonusIlvl = 0
-        this.hasSocket = false
-        this.tertiary = null
 
         for (const bonusId of bonuses) {
             if (isCorruptionBonusId(bonusId)) {

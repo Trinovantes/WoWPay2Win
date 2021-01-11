@@ -44,9 +44,9 @@ export interface IItemAuctionCache {
     buyout: number
     bonuses: Array<number>
 
-    bonusIlvl: number
-    hasSocket: boolean
-    tertiary: Tertiary | null
+    bonusIlvl?: number
+    hasSocket?: boolean
+    tertiary?: Tertiary
 }
 
 export interface IAuctionsCache extends ICache {

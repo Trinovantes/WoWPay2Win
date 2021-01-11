@@ -94,7 +94,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
             name: 'bonusIlvl',
             label: 'Level',
             sortable: true,
-            field: (auction: IItemAuctionCache): number => this.getBaseIlvl(auction.itemId) + auction.bonusIlvl,
+            field: (auction: IItemAuctionCache): number => this.getBaseIlvl(auction.itemId) + (auction.bonusIlvl || 0),
             classes: 'sm-col',
             headerClasses: 'sm-col',
         },
@@ -103,7 +103,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
             label: 'Has Socket',
             sortable: true,
             align: 'left',
-            field: (auction: IItemAuctionCache): boolean => auction.hasSocket,
+            field: (auction: IItemAuctionCache): boolean => Boolean(auction.hasSocket),
             format: (val: boolean): string => val ? 'Socket' : '',
             classes: 'sm-col',
             headerClasses: 'sm-col',
@@ -113,8 +113,8 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
             label: 'Tertiary',
             sortable: true,
             align: 'left',
-            field: (auction: IItemAuctionCache): number | null => auction.tertiary,
-            format: (val: number): string => Tertiary[val],
+            field: (auction: IItemAuctionCache): number | undefined => auction.tertiary,
+            format: (val: number | undefined): string => val ? Tertiary[val] : '',
             classes: 'sm-col',
             headerClasses: 'sm-col',
         },
@@ -225,7 +225,7 @@ export default class Auctions extends mixins(VuexComponent, DataComponent, Image
                 return false
             }
 
-            const ilvl = this.getBaseIlvl(auction.itemId) + auction.bonusIlvl
+            const ilvl = this.getBaseIlvl(auction.itemId) + (auction.bonusIlvl || 0)
             if (ilvl < this.ilvlRange.min || ilvl > this.ilvlRange.max) {
                 return false
             }
