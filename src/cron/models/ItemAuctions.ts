@@ -13,7 +13,7 @@ export class ItemAuction {
     readonly buyout: number
     readonly bonuses: Array<number>
 
-    // Technically these can be computed on the frontend but it's simplier to compute these on the backend
+    // Technically these can be computed on the frontend but it's simpler to compute these on the backend
     readonly bonusIlvl?: number
     readonly hasSocket?: boolean
     readonly tertiary?: Tertiary
