@@ -14,22 +14,26 @@ async function fetchItems(region: Region) {
 }
 
 async function main() {
-    try {
-        const regions = await fetchRegions()
+    const regions = await fetchRegions()
 
-        for (const region of regions) {
-            await fetchItems(region)
-        }
+    for (const region of regions) {
+        await fetchItems(region)
+    }
 
-        console.info('Cron Script Finished')
-    } catch (err) {
+    console.info('Cron Script Finished')
+}
+
+main()
+    .then(() => {
+        process.exit(0)
+    })
+    .catch((err) => {
         const error = err as Error
-        console.error('Cron Script Failed:', error.message)
+        console.error('Cron Script Failed:', error.name, error.message)
+
         if (DEFINE.IS_DEV) {
             console.error(error.stack)
         }
-        process.exit(1)
-    }
-}
 
-void main()
+        process.exit(1)
+    })
