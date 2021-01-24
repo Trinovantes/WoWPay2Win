@@ -1,4 +1,4 @@
-import Axios, { AxiosResponse } from 'axios'
+import Axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import querystring from 'querystring'
 
 import { Region } from '../models/Region'
@@ -34,16 +34,16 @@ export class APIAccessor<T> {
 
         console.debug('Fetching', this.region.config.oauthEndpoint)
 
-        const response = await tryExponentialBackoff(async() => {
-            return await Axios.post(this.region.config.oauthEndpoint, querystring.stringify({
+        const response = await tryExponentialBackoff({
+            method: 'POST',
+            url: this.region.config.oauthEndpoint,
+            data: querystring.stringify({
                 grant_type: 'client_credentials',
-            }), {
-                timeout: Constants.API_TIMEOUT,
-                auth: {
-                    username: user,
-                    password: pass,
-                },
-            })
+            }),
+            auth: {
+                username: user,
+                password: pass,
+            },
         })
 
         if (response) {
@@ -54,54 +54,63 @@ export class APIAccessor<T> {
         }
     }
 
-    async fetch(shouldRetry?: (data: T | null) => string | null): Promise<T | null> {
-        console.debug('Fetching', this.endpoint.replace(this.region.config.apiHost, ''))
+    async fetch(isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
+        const url = this.endpoint.replace(this.region.config.apiHost, '')
+        console.debug('Fetching', url)
 
         // This will throw an error if status is not 200
-        const response = await tryExponentialBackoff(async() => {
-            const response = await Axios.get(this.endpoint, {
-                timeout: Constants.API_TIMEOUT,
-                headers: {
-                    Authorization: `Bearer ${this.accessToken}`,
-                },
-                params: {
-                    regionSlug: this.region.config.slug,
-                    locale: this.region.config.locale,
-                    namespace: `${this.isDynamic ? 'dynamic' : 'static'}-${this.region.config.slug}`,
-                },
-            })
-
-            if (shouldRetry) {
-                const errorMessage = shouldRetry(response?.data)
-                if (errorMessage) {
-                    throw new Error(errorMessage)
-                }
-            }
-
-            return response
-        })
+        const response = await tryExponentialBackoff({
+            method: 'GET',
+            url: this.endpoint,
+            headers: {
+                Authorization: `Bearer ${this.accessToken}`,
+            },
+            params: {
+                regionSlug: this.region.config.slug,
+                locale: this.region.config.locale,
+                namespace: `${this.isDynamic ? 'dynamic' : 'static'}-${this.region.config.slug}`,
+            },
+        }, isValidResponse)
 
         return response?.data as T
     }
 
     static async fetchFile(fileUrl: string): Promise<IncomingMessage | null> {
-        const response = await tryExponentialBackoff(async() => {
-            return await Axios.get(fileUrl, {
-                timeout: Constants.API_TIMEOUT,
-                responseType: 'stream',
-            })
+        const response = await tryExponentialBackoff({
+            method: 'GET',
+            url: fileUrl,
+            responseType: 'stream',
         })
 
         return response?.data as IncomingMessage
     }
 }
 
-async function tryExponentialBackoff(request: () => Promise<AxiosResponse | null>): Promise<AxiosResponse | null> {
+async function tryExponentialBackoff<T>(config: AxiosRequestConfig, isValidResponse?: (data: T | null) => string | null): Promise<AxiosResponse | null> {
     // Retry with exponential backoff if server is temporarily unavilable
     for (let attempt = 0; attempt < Constants.MAX_API_RETRIES; attempt++) {
         try {
-            // If errorProneFunction didn't throw, then we can exit the loop early
-            return await request()
+            return await new Promise((resolve, reject) => {
+                const timeoutId = setTimeout(() => {
+                    reject(new Error(`Request timeout: ${config.url}`))
+                }, Constants.API_TIMEOUT)
+
+                // If errorProneFunction didn't throw, then we can exit the loop early
+                Axios(config)
+                    .then((response) => {
+                        const errorMessage = isValidResponse?.(response?.data)
+                        if (errorMessage) {
+                            throw new Error(errorMessage)
+                        }
+                        resolve(response)
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
+                    .finally(() => {
+                        clearTimeout(timeoutId)
+                    })
+            })
         } catch (err) {
             const error = err as Error
             const delay = Math.round(Math.exp(attempt) * 1000)
