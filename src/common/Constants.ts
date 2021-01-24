@@ -12,7 +12,7 @@ export default {
     OG_DESC: 'Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!',
 
     API_TIMEOUT: 30 * 1000, // in ms
-    CONCURRENT_API_REQUESTS: DEFINE.IS_DEV ? 1 : 20,
+    CONCURRENT_API_REQUESTS: DEFINE.IS_DEV ? 1 : 10,
     MAX_API_RETRIES: DEFINE.IS_DEV ? 1 : 5,
 
     GOLD_CAP: 10 * 1000 * 1000,
