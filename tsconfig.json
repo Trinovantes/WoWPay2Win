@@ -23,7 +23,7 @@
             "@cron/*": ["./src/cron/*"],
             "@web/*": ["./src/web/*"],
 
-            "@components/*": ["./src/web/components/*"],
+            "@views/*": ["src/web/views/*"],
             "@router/*": ["./src/web/router/*"],
             "@store/*": ["./src/web/store/*"],
 

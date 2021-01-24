@@ -19,17 +19,17 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import Constants from '@common/Constants'
 
 @Component({
     components: {
-        RegionFilter: () => import('@components/filters/RegionFilter.vue'),
-        TierFilter: () => import('@components/filters/TierFilter.vue'),
+        RegionFilter: () => import('@views/filters/RegionFilter.vue'),
+        TierFilter: () => import('@views/filters/TierFilter.vue'),
     },
 })
-export default class Header extends VuexComponent {
+export default class Header extends VuexAccessor {
     readonly title = Constants.APP_NAME
 }
 </script>

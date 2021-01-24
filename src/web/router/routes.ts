@@ -1,16 +1,13 @@
 import { RouteConfig } from 'vue-router'
 
-import MainLayout from '@components/MainLayout.vue'
-import Auctions from '@components/Auctions.vue'
-
 const routes: Array<RouteConfig> = [
     {
         path: '/',
-        component: MainLayout,
+        component: () => import('@views/layouts/MainLayout.vue'),
         children: [
             {
                 path: '',
-                component: Auctions,
+                component: () => import('@views/pages/AuctionsPage.vue'),
             },
         ],
     },

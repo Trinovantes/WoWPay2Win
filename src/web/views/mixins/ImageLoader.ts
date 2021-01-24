@@ -4,7 +4,7 @@ import Vue from 'vue'
 import { Tier, TierConfigs } from '@common/Constants'
 
 @Component
-export default class ImageComponent extends Vue {
+export class ImageLoader extends Vue {
     readonly itemIcons = getItemIcons()
     readonly tierIcons = getTierIcons()
 

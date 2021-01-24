@@ -1,5 +1,5 @@
 <template>
-    <div class="app">
+    <div id="app">
         <router-view
             v-if="ready"
             class="full-width full-height"
@@ -12,14 +12,14 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
+import Component, { mixins } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
 import _ from 'lodash'
 
 import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tier } from '@common/Constants'
 import { createDefaultState, SavedFilters } from '@store/AppStore'
-import DataComponent from './base/DataComponent'
+import { AuctionDataAccessor } from '@views/mixins/AuctionDataAccessor'
 import { Tertiary } from '@common/Bonuses'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
@@ -27,10 +27,10 @@ const DELIMITER = ','
 
 @Component({
     components: {
-        Auctions: () => import('@components/Auctions.vue'),
+        Auctions: () => import('@views/pages/AuctionsPage.vue'),
     },
 })
-export default class App extends DataComponent {
+export default class App extends mixins(AuctionDataAccessor) {
     ready = false
     pendingQuery = false
 
@@ -206,12 +206,12 @@ function importArray(setString: string): Array<number> {
 
 <style lang="scss">
 html,
-body{
-    height: 100%;
+body,
+#app{
+    min-height: 100vh;
 }
 
-.app{
-    height: 100%;
+#app{
     display: flex;
     align-items: center;
     justify-content: center;

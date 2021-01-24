@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue, { ComponentOptions, CreateElement } from 'vue'
 
 // ----------------------------------------------------------------------------
 // Quasar
@@ -19,13 +19,19 @@ Vue.use(Quasar, {
 // ----------------------------------------------------------------------------
 
 import '@css/main.scss'
-import App from '@components/App.vue'
+import App from '@views/App.vue'
 import AppRouter from '@router/AppRouter'
 import AppStore from '@store/AppStore'
 
-const app = new App({
+const appOptions: ComponentOptions<Vue> = {
     router: AppRouter,
     store: AppStore,
-})
+    render: (createElement: CreateElement) => {
+        return createElement(App)
+    },
+}
 
-app.$mount('#app')
+const app = new Vue(appOptions)
+AppRouter.onReady(() => {
+    app.$mount('#app', true)
+})

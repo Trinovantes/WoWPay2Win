@@ -22,10 +22,10 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 @Component
-export default class SocketFilter extends VuexComponent {
+export default class SocketFilter extends VuexAccessor {
     get selectedMustHaveSocket(): boolean {
         return this.mustHaveSocket
     }

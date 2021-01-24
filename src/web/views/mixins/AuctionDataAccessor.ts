@@ -1,4 +1,4 @@
-import VuexComponent from './VuexComponent'
+import { VuexAccessor } from './VuexAccessor'
 import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
@@ -6,7 +6,7 @@ import { IItemAuctionCache, IItemCache, IRealmCache, IRegionCache } from '@commo
 import { getRegionLocale, RegionSlug } from '@common/Constants'
 
 @Component
-export default class DataComponent extends VuexComponent {
+export class AuctionDataAccessor extends VuexAccessor {
     readonly dataFiles = getDataFiles()
     protected regionRealms: Array<IRealmCache> = []
     protected realmToConnectedRealmMap: { [key: number]: number } = {}

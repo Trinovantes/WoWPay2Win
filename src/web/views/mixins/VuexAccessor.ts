@@ -38,7 +38,7 @@ import { IIlvlRange } from '@store/AppStore'
         ]),
     },
 })
-export default class VuexComponent extends Vue {
+export class VuexAccessor extends Vue {
     region!: RegionSlug | null
     changeRegion!: (region: RegionSlug | null) => void
     realms!: Set<number>

@@ -27,7 +27,7 @@ export const commonConfig: webpack.Configuration = {
             '@cron': path.resolve(srcDir, 'cron'),
             '@web': path.resolve(srcDir, 'web'),
 
-            '@components': path.resolve(srcWebDir, 'components'),
+            '@views': path.resolve(srcWebDir, 'views'),
             '@router': path.resolve(srcWebDir, 'router'),
             '@store': path.resolve(srcWebDir, 'store'),
 

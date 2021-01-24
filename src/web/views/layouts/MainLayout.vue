@@ -1,7 +1,7 @@
 <template>
-    <div class="column">
+    <main id="main-layout">
         <Header />
-        <main class="row col">
+        <div class="row col">
             <aside id="sidebar" class="col-3">
                 <div class="main-sidebar">
                     <div class="group">
@@ -9,6 +9,7 @@
                             {{ APP_DESC }}
                         </p>
                     </div>
+
                     <div v-if="region">
                         <div class="group">
                             <p>
@@ -32,16 +33,17 @@
                 </div>
                 <Footer />
             </aside>
+
             <article class="col">
                 <router-view />
             </article>
-        </main>
-    </div>
+        </div>
+    </main>
 </template>
 
 <script lang="ts">
-import VuexComponent from './base/VuexComponent'
-import Component from 'vue-class-component'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
+import Component, { mixins } from 'vue-class-component'
 
 import Constants from '@common/Constants'
 
@@ -53,18 +55,18 @@ dayjs.extend(localizedFormat)
 
 @Component({
     components: {
-        Header: () => import('@components/Header.vue'),
-        Footer: () => import('@components/Footer.vue'),
+        Header: () => import('@views/layouts/Header.vue'),
+        Footer: () => import('@views/layouts/Footer.vue'),
 
-        RealmFilter: () => import('@components/filters/RealmFilter.vue'),
-        BoeFilter: () => import('@components/filters/BoeFilter.vue'),
-        ItemLevelFilter: () => import('@components/filters/ItemLevelFilter.vue'),
-        MaxBuyoutFilter: () => import('@components/filters/MaxBuyoutFilter.vue'),
-        SocketFilter: () => import('@components/filters/SocketFilter.vue'),
-        TertiaryFilter: () => import('@components/filters/TertiaryFilter.vue'),
+        RealmFilter: () => import('@views/filters/RealmFilter.vue'),
+        BoeFilter: () => import('@views/filters/BoeFilter.vue'),
+        ItemLevelFilter: () => import('@views/filters/ItemLevelFilter.vue'),
+        MaxBuyoutFilter: () => import('@views/filters/MaxBuyoutFilter.vue'),
+        SocketFilter: () => import('@views/filters/SocketFilter.vue'),
+        TertiaryFilter: () => import('@views/filters/TertiaryFilter.vue'),
     },
 })
-export default class MainLayout extends VuexComponent {
+export default class MainLayout extends mixins(VuexAccessor) {
     readonly APP_DESC = Constants.APP_DESC
 
     get lastUpdated(): string {
@@ -94,16 +96,28 @@ export default class MainLayout extends VuexComponent {
 </script>
 
 <style lang="scss">
-#sidebar{
-    background: $bg-side;
-    min-width: $sidebar-min-width;
-    max-width: $sidebar-max-width;
+html,
+body,
+#app,
+#main-layout{
+    min-height: 100vh;
+}
 
+#main-layout{
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
 
-    .main-sidebar{
-        flex: 1;
+    #sidebar{
+        background: $bg-side;
+        min-width: $sidebar-min-width;
+        max-width: $sidebar-max-width;
+
+        display: flex;
+        flex-direction: column;
+
+        .main-sidebar{
+            flex: 1;
+        }
     }
 }
 </style>

@@ -14,12 +14,12 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import { RegionSlug, RegionConfigs } from '@common/Constants'
 
 @Component
-export default class RegionFilter extends VuexComponent {
+export default class RegionFilter extends VuexAccessor {
     readonly regions = RegionConfigs.map((regionConfig) => regionConfig.slug)
 
     get selectedRegion(): RegionSlug | null {

@@ -32,13 +32,13 @@
 
 <script lang="ts">
 import Component, { mixins } from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
-import ImageComponent from '@components/base/ImageComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
+import { ImageLoader } from '@views/mixins/ImageLoader'
 
 import { Tier, TierConfigs } from '@common/Constants'
 
 @Component
-export default class TierFilter extends mixins(VuexComponent, ImageComponent) {
+export default class TierFilter extends mixins(VuexAccessor, ImageLoader) {
     readonly tiers: Array<Tier> = Object.keys(TierConfigs).map((key) => key as Tier)
 
     get selectedTier(): Tier | null {

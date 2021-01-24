@@ -15,14 +15,14 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import _ from 'lodash'
 
 import Constants from '@common/Constants'
 
 @Component
-export default class MaxBuyoutFilter extends VuexComponent {
+export default class MaxBuyoutFilter extends VuexAccessor {
     readonly MAX_SLIDER = 100
     readonly SLIDER_TIERS = [
         [25, 100 * 1000],

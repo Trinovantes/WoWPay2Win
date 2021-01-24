@@ -16,12 +16,12 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 import { TierConfigs } from '@common/Constants'
 import { IIlvlRange } from '@store/AppStore'
 
 @Component
-export default class ItemLevelFilter extends VuexComponent {
+export default class ItemLevelFilter extends VuexAccessor {
     get ilvls(): { min: number; max: number; step: number } {
         if (this.tier === null) {
             return {

@@ -26,12 +26,12 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import { Tertiary } from '@common/Bonuses'
 
 @Component
-export default class TertiaryFilter extends VuexComponent {
+export default class TertiaryFilter extends VuexAccessor {
     readonly tertiaryOptions: Array<{ label: string; value: number }> = []
 
     constructor() {

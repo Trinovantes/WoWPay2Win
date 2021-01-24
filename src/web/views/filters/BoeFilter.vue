@@ -92,14 +92,14 @@
 
 <script lang="ts">
 import Component, { mixins } from 'vue-class-component'
-import VuexComponent from '@components/base/VuexComponent'
-import DataComponent from '@components/base/DataComponent'
-import ImageComponent from '@components/base/ImageComponent'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
+import { AuctionDataAccessor } from '@views/mixins/AuctionDataAccessor'
+import { ImageLoader } from '@views/mixins/ImageLoader'
 
 import { TierConfigs, IBoeCategory } from '@common/Constants'
 
 @Component
-export default class BoeFilter extends mixins(VuexComponent, DataComponent, ImageComponent) {
+export default class BoeFilter extends mixins(VuexAccessor, AuctionDataAccessor, ImageLoader) {
     get categories(): Array<IBoeCategory> {
         if (this.tier) {
             return TierConfigs[this.tier].boes
