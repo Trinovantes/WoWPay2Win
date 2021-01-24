@@ -1,5 +1,3 @@
-'use strict'
-
 import { merge } from 'webpack-merge'
 import { VueLoaderPlugin } from 'vue-loader'
 import HtmlWebpackPlugin from 'html-webpack-plugin'

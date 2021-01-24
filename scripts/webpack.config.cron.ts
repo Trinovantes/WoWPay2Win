@@ -1,5 +1,3 @@
-'use strict'
-
 import { merge } from 'webpack-merge'
 
 import { commonConfig } from './webpack.config.common'
