@@ -30,8 +30,8 @@ export function checkIsSocket(bonusId: number): true | undefined {
 // Tertiary
 // ----------------------------------------------------------------------------
 
-// These values don't need to match the actual bonuses since it's checked inside ItemAuction's constructor
-// We store them with their actual bonus instead of starting from 0 for simplicity and to avoid confusion (since the enum values are used in url params too)
+// These values don't need to match the actual bonuses since it's checked by calling checkIsTertiary()
+// We store enums with their actual bonus ids instead of starting from 0 for simplicity and to avoid confusion (since the enum values are used in url params too)
 export enum Tertiary {
     Avoidance = 40,
     Leech = 41,
