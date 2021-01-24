@@ -2,7 +2,7 @@
 
 import { merge } from 'webpack-merge'
 
-import commonConfig from './webpack.config.common'
+import { commonConfig } from './webpack.config.common'
 import { srcCronDir, distCronDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------

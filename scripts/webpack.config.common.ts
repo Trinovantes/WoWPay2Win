@@ -11,7 +11,7 @@ import { isDev, staticDir, srcDir, srcWebDir } from './webpack.constants'
 // Common
 // ----------------------------------------------------------------------------
 
-const commonConfig: webpack.Configuration = {
+export const commonConfig: webpack.Configuration = {
     mode: isDev
         ? 'development'
         : 'production',
@@ -135,5 +135,3 @@ const commonConfig: webpack.Configuration = {
         ],
     },
 }
-
-export default commonConfig
