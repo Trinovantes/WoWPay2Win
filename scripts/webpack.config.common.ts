@@ -18,6 +18,7 @@ export const commonConfig: webpack.Configuration = {
         : false,
 
     resolve: {
+        symlinks: false,
         extensions: ['.ts', '.js', '.vue', '.json', '.scss', '.css'],
         alias: {
             // Need to match aliases in tsconfig.json
