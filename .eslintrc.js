@@ -110,7 +110,6 @@ module.exports = {
         'semi': 'off',
         '@typescript-eslint/semi': ['error', 'never'],
 
-        // allow debugger during development only
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-debugger': 'error',
     },
 }
