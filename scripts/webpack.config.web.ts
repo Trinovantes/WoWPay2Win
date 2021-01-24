@@ -16,9 +16,8 @@ import { isDev, staticDir, srcWebDir, distWebDir } from './webpack.constants'
 export default merge(commonConfig, {
     target: 'web',
 
-    context: srcWebDir,
     entry: {
-        main: 'main.ts',
+        main: `${srcWebDir}/main.ts`,
     },
     output: {
         path: distWebDir,
@@ -46,7 +45,7 @@ export default merge(commonConfig, {
         }),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: `${srcWebDir}/index.html`,
         }),
     ].filter(Boolean) as Array<WebpackPluginInstance>,
 })

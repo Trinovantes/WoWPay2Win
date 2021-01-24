@@ -12,10 +12,9 @@ import { srcCronDir, distCronDir } from './webpack.constants'
 export default merge(commonConfig, {
     target: 'node',
 
-    context: srcCronDir,
     entry: {
-        fetchAuctions: 'fetchAuctions.ts',
-        fetchData: 'fetchData.ts',
+        fetchAuctions: `${srcCronDir}/fetchAuctions.ts`,
+        fetchData: `${srcCronDir}/fetchData.ts`,
     },
     output: {
         path: distCronDir,

@@ -5,7 +5,7 @@ import webpack, { DefinePlugin } from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
-import { isDev, staticDir, srcDir, srcWebDir, srcCronDir } from './webpack.constants'
+import { isDev, staticDir, srcDir, srcWebDir } from './webpack.constants'
 
 // ----------------------------------------------------------------------------
 // Common
@@ -41,11 +41,6 @@ const commonConfig: webpack.Configuration = {
                 ? 'vue/dist/vue.js'
                 : 'vue/dist/vue.min.js',
         },
-        modules: [
-            'node_modules',
-            srcWebDir,
-            srcCronDir,
-        ],
     },
 
     module: {
