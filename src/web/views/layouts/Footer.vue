@@ -24,6 +24,9 @@ export default class Footer extends Vue {
     readonly year = new Date().getUTCFullYear()
 
     get meme(): string {
+        const DAYS_OF_WEEK = 7
+        const daysSinceTues = (DAYS_OF_WEEK - new Date().getDay() - 2) % DAYS_OF_WEEK
+
         const memes = [
             'Does anybody else think we should delete pandas from the game?',
             'Sometimes I wonder how much money I\'d make if I\'d put ads on this site',
@@ -34,6 +37,7 @@ export default class Footer extends Vue {
             'I\'m calling the overtime police',
             'Anyone caught playing Classic will be gkicked',
             'Please buff BDK',
+            `${daysSinceTues} ${daysSinceTues === 1 ? 'day' : 'days'} since last wipe on Shriekwing`,
         ]
 
         return sample(memes) || ''
