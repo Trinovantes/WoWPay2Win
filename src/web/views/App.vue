@@ -34,9 +34,12 @@ export default class App extends Mixins(GameDataAccessor) {
     pendingQuery = false
 
     created(): void {
-        document.title = Constants.APP_NAME
         this.importFilters(this.$route.query)
         this.ready = true
+    }
+
+    mounted(): void {
+        document.title = Constants.APP_NAME
     }
 
     @Watch('$route.query')
