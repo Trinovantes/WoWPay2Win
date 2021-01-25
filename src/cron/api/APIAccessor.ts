@@ -95,13 +95,14 @@ async function tryExponentialBackoff<T>(config: AxiosRequestConfig, isValidRespo
                     reject(new Error(`Request timeout: ${config.url}`))
                 }, Constants.API_TIMEOUT)
 
-                // If errorProneFunction didn't throw, then we can exit the loop early
                 Axios(config)
                     .then((response) => {
                         const errorMessage = isValidResponse?.(response?.data)
                         if (errorMessage) {
                             throw new Error(errorMessage)
                         }
+
+                        // If the request didn't throw, then we can exit the loop early
                         resolve(response)
                     })
                     .catch((err) => {
