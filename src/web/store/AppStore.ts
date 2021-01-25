@@ -36,7 +36,7 @@ export type SavedFilters = {
 export interface IRootState {
     region: RegionSlug | null
     realms: Set<number>
-    lastModified: number | null
+    lastUpdate: number | null
 
     tier: Tier | null
 
@@ -51,7 +51,7 @@ export function createDefaultState(): IRootState {
     return {
         region: null,
         realms: new Set(),
-        lastModified: null,
+        lastUpdate: null,
 
         tier: null,
 
@@ -92,8 +92,8 @@ const AppStore = new Vuex.Store<IRootState>({
             state.realms = realms
         },
 
-        changeLastModified(state: IRootState, lastModified: number | null): void {
-            state.lastModified = lastModified
+        changeLastUpdate(state: IRootState, lastUpdate: number | null): void {
+            state.lastUpdate = lastUpdate
         },
 
         changeTier(state: IRootState, tier: Tier | null): void {

@@ -50,6 +50,6 @@ export interface IItemAuctionCache {
 }
 
 export interface IAuctionsCache extends ICache {
-    lastModified: number
+    lastUpdate: number
     auctions: Array<IItemAuctionCache>
 }

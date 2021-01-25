@@ -178,7 +178,7 @@ export default class AuctionsPage extends Mixins(VuexAccessor, GameDataAccessor,
     @Watch('region')
     @Watch('tier')
     async fetchAuctions(): Promise<void> {
-        this.changeLastModified(null)
+        this.changeLastUpdate(null)
         this.auctions = []
 
         if (!this.region) {
@@ -193,7 +193,7 @@ export default class AuctionsPage extends Mixins(VuexAccessor, GameDataAccessor,
         const response = await Axios.get(auctionsFile)
         const auctionsCache = response.data as IAuctionsCache
 
-        this.changeLastModified(auctionsCache.lastModified)
+        this.changeLastUpdate(auctionsCache.lastUpdate)
         this.auctions = auctionsCache.auctions
     }
 

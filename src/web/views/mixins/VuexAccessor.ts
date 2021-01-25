@@ -11,7 +11,7 @@ import { IIlvlRange } from '@store/AppStore'
         ...mapState([
             'region',
             'realms',
-            'lastModified',
+            'lastUpdate',
 
             'tier',
 
@@ -26,7 +26,7 @@ import { IIlvlRange } from '@store/AppStore'
         ...mapMutations([
             'changeRegion',
             'changeRealms',
-            'changeLastModified',
+            'changeLastUpdate',
 
             'changeTier',
 
@@ -43,8 +43,8 @@ export class VuexAccessor extends Mixins(Vue) {
     changeRegion!: (region: RegionSlug | null) => void
     realms!: Set<number>
     changeRealms!: (realms: Set<number>) => void
-    lastModified!: number | null
-    changeLastModified!: (lastModified: number | null) => void
+    lastUpdate!: number | null
+    changeLastUpdate!: (lastUpdate: number | null) => void
 
     tier!: Tier | null
     changeTier!: (tier: Tier | null) => void

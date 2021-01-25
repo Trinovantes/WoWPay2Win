@@ -11,7 +11,7 @@
                 <div class="group">
                     <p>
                         <strong>Last Update:</strong>
-                        <time :datetime="lastUpdateIso" :title="lastUpdateString">{{ lastUpdate }}</time>
+                        <time :datetime="lastUpdateIso" :title="lastUpdateString">{{ lastUpdateFromNow }}</time>
                     </p>
                 </div>
                 <RealmFilter />
@@ -61,25 +61,25 @@ export default class MainLayout extends Mixins(VuexAccessor) {
         return Constants.APP_DESC
     }
 
-    get lastUpdate(): string {
-        if (this.lastModified) {
-            return dayjs(this.lastModified).fromNow()
+    get lastUpdateFromNow(): string {
+        if (this.lastUpdate) {
+            return dayjs(this.lastUpdate).fromNow()
         } else {
             return 'N/A'
         }
     }
 
     get lastUpdateIso(): string | null {
-        if (this.lastModified) {
-            return dayjs(this.lastModified).toISOString()
+        if (this.lastUpdate) {
+            return dayjs(this.lastUpdate).toISOString()
         } else {
             return null
         }
     }
 
     get lastUpdateString(): string | null {
-        if (this.lastModified) {
-            return dayjs(this.lastModified).format('ll LT')
+        if (this.lastUpdate) {
+            return dayjs(this.lastUpdate).format('ll LT')
         } else {
             return null
         }

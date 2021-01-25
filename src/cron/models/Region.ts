@@ -104,7 +104,7 @@ export class Region extends Cacheable {
 
         let totalAuctions = 0
         const auctionsCache: IAuctionsCache = {
-            lastModified: Date.now(),
+            lastUpdate: Date.now(),
             auctions: [],
         }
 
