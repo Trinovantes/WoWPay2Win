@@ -90,6 +90,16 @@ export default class MainLayout extends Mixins(VuexAccessor) {
 <style lang="scss">
 aside#sidebar{
     font-size: 17px;
+    background: $bg-side;
+    min-width: $sidebar-min-width;
+    max-width: $sidebar-max-width;
+
+    display: flex;
+    flex-direction: column;
+
+    .main-sidebar{
+        flex: 1;
+    }
 
     .group{
         border-bottom: 1px solid $bg-main;
