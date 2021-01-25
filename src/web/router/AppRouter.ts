@@ -1,15 +1,30 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-Vue.use(VueRouter)
 
-import routes from './routes'
+Vue.use(VueRouter)
 
 // ----------------------------------------------------------------------------
 // Router
 // ----------------------------------------------------------------------------
 
 const AppRouter = new VueRouter({
-    routes,
+    routes: [
+        {
+            path: '/',
+            component: () => import('@views/layouts/MainLayout.vue'),
+            children: [
+                {
+                    path: '',
+                    component: () => import('@views/pages/AuctionsPage.vue'),
+                },
+            ],
+        },
+        {
+            name: 'Error404',
+            path: '*',
+            redirect: '/',
+        },
+    ],
 })
 
 export default AppRouter
