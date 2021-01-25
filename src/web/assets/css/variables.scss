@@ -7,12 +7,15 @@ $negative   : #C10015;
 $info       : #31CCEC;
 $warning    : #F2C037;
 
+$dark-page  : #333;
 $text       : #aaa;
-$header     : var(--q-color-dark);
-$bg-side    : #333;
-$bg-main    : lighten($bg-side, 5);
+$header     : $dark;
+$bg-side    : lighten($dark, 5);
+$bg-main    : lighten($dark, 10);
 
 $padding: 12px;
+$space-base: $padding;
+
 $side-padding: $padding * 2;
 $sidebar-min-width: 300px;
 $sidebar-max-width: 500px;

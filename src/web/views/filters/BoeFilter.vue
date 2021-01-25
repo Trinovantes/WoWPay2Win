@@ -163,7 +163,7 @@ export default class BoeFilter extends Mixins(GameDataAccessor, ImageLoader) {
         flex: 1;
 
         a{
-            background: var(--q-color-dark);
+            background: $dark;
             border-radius: 15px;
             color: white;
             cursor: pointer;
@@ -178,11 +178,11 @@ export default class BoeFilter extends Mixins(GameDataAccessor, ImageLoader) {
             text-decoration: none;
 
             &.active{
-                background: var(--q-color-primary);
+                background: $primary;
             }
 
             &:hover{
-                background: var(--q-color-secondary);
+                background: $secondary;
             }
         }
     }
@@ -196,7 +196,7 @@ export default class BoeFilter extends Mixins(GameDataAccessor, ImageLoader) {
             color: white;
 
             &.q-item--active{
-                background: var(--q-color-primary)
+                background: $primary
             }
         }
 

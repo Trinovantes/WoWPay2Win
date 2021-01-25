@@ -2,12 +2,11 @@
 @import 'quasar/src/css/index.sass';
 
 body.body--dark{
-    background: $bg-main;
     color: $text;
 }
 
 a{
-    color: var(--q-color-secondary);
+    color: $secondary;
     text-decoration: none;
 
     &:hover{
