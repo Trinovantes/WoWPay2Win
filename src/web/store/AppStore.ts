@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 Vue.use(Vuex)
 
 import Constants, { getIlvlRange, RegionSlug, Tier } from '@common/Constants'
@@ -71,7 +72,7 @@ const AppStore = new Vuex.Store<IRootState>({
     // Checks state changes only happen in mutation handlers
     strict: DEFINE.IS_DEV,
 
-    state: createDefaultState(),
+    state: createDefaultState,
 
     mutations: {
         changeRegion(state: IRootState, region: RegionSlug | null): void {
