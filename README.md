@@ -27,7 +27,7 @@ yarn buildCron
 yarn fetchData
 
 # Starts webpack-dev-server on localhost:8080
-yarn web
+yarn devWeb
 ```
 
 I recommend doing cron script development in VS Code because this repository is already configured to launch the scripts inside VS Code using `F5`. We just need to first run `yarn cron` in a separate terminal first.

@@ -3,10 +3,12 @@
     "scripts": {
         "fetchData": "    node -r dotenv/config dist-cron/fetchData.js",
         "fetchAuctions": "node -r dotenv/config dist-cron/fetchAuctions.js",
-        "cron": "     cross-env NODE_ENV=development webpack --watch     --config scripts/webpack.config.cron.ts",
-        "web": "      cross-env NODE_ENV=development webpack-dev-server  --config scripts/webpack.config.web.ts",
-        "buildCron": "cross-env NODE_ENV=production  webpack             --config scripts/webpack.config.cron.ts",
-        "buildWeb": " cross-env NODE_ENV=production  webpack             --config scripts/webpack.config.web.ts",
+        "devCron": "  cross-env NODE_ENV=development webpack --watch    --config scripts/webpack.config.cron.ts",
+        "devWeb": "   cross-env NODE_ENV=development webpack-dev-server --config scripts/webpack.config.web.ts",
+        "buildCron": "cross-env NODE_ENV=production  webpack            --config scripts/webpack.config.cron.ts",
+        "buildWeb": " cross-env NODE_ENV=production  webpack            --config scripts/webpack.config.web.ts",
+        "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
+        "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
         "lint": "eslint --ext .js,.ts,.vue ."
     },
     "babel": {
@@ -17,6 +19,7 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
+        "concurrently": "^5.3.0",
         "dayjs": "^1.9.5",
         "dotenv": "^8.2.0",
         "lodash": "^4.17.20",
