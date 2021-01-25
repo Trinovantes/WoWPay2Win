@@ -4,8 +4,6 @@ import Vue, { ComponentOptions, CreateElement } from 'vue'
 // Quasar
 // ----------------------------------------------------------------------------
 
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import 'quasar/src/css/index.sass'
 import Quasar from 'quasar'
 
 Vue.use(Quasar, {
@@ -19,6 +17,7 @@ Vue.use(Quasar, {
 // ----------------------------------------------------------------------------
 
 import '@css/main.scss'
+
 import App from '@views/App.vue'
 import AppRouter from '@router/AppRouter'
 import AppStore from '@store/AppStore'
