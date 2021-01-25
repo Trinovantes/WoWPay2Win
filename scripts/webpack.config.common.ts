@@ -1,6 +1,5 @@
 import path from 'path'
 import webpack, { DefinePlugin } from 'webpack'
-import TerserPlugin from 'terser-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 import { isDev, staticDir, srcDir, srcWebDir } from './webpack.constants'
@@ -121,16 +120,4 @@ export const commonConfig: webpack.Configuration = {
             'DEFINE.IMAGE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/img')),
         }),
     ],
-
-    optimization: {
-        minimize: !isDev,
-        minimizer: [
-            new TerserPlugin({
-                terserOptions: {
-                    // https://github.com/vuejs/vue-class-component/issues/407
-                    keep_classnames: true,
-                },
-            }),
-        ],
-    },
 }
