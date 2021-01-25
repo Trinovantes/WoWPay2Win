@@ -25,7 +25,7 @@ export default class Footer extends Vue {
 
     get meme(): string {
         const DAYS_OF_WEEK = 7
-        const daysSinceTues = (DAYS_OF_WEEK - new Date().getDay() - 2) % DAYS_OF_WEEK
+        const daysSinceTues = (DAYS_OF_WEEK + (new Date().getDay() - 2)) % DAYS_OF_WEEK
 
         const memes = [
             'Does anybody else think we should delete pandas from the game?',
