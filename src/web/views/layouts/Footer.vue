@@ -11,15 +11,14 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
-import Vue from 'vue'
+import { Component, Vue, Mixins } from 'vue-property-decorator'
 
 import { sample } from 'lodash'
 
 import Constants from '@common/Constants'
 
 @Component
-export default class Footer extends Vue {
+export default class Footer extends Mixins(Vue) {
     readonly title = Constants.APP_NAME
     readonly year = new Date().getUTCFullYear()
 

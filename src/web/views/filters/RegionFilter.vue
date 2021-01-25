@@ -13,13 +13,13 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import { RegionSlug, RegionConfigs } from '@common/Constants'
 
 @Component
-export default class RegionFilter extends VuexAccessor {
+export default class RegionFilter extends Mixins(VuexAccessor) {
     readonly regions = RegionConfigs.map((regionConfig) => regionConfig.slug)
 
     get selectedRegion(): RegionSlug | null {

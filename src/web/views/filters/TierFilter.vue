@@ -31,14 +31,14 @@
 </template>
 
 <script lang="ts">
-import Component, { mixins } from 'vue-class-component'
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
 import { ImageLoader } from '@views/mixins/ImageLoader'
 
 import { Tier, TierConfigs } from '@common/Constants'
 
 @Component
-export default class TierFilter extends mixins(VuexAccessor, ImageLoader) {
+export default class TierFilter extends Mixins(VuexAccessor, ImageLoader) {
     readonly tiers: Array<Tier> = Object.keys(TierConfigs).map((key) => key as Tier)
 
     get selectedTier(): Tier | null {

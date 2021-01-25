@@ -1,8 +1,7 @@
-import Component from 'vue-class-component'
-import Vue from 'vue'
+import { Component, Mixins, Vue } from 'vue-property-decorator'
 
 @Component
-export class Formatter extends Vue {
+export class Formatter extends Mixins(Vue) {
     formatNum(val: number): string {
         const fmt = new Intl.NumberFormat(undefined, {
             minimumFractionDigits: 0,

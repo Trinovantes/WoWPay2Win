@@ -12,15 +12,14 @@
 </template>
 
 <script lang="ts">
-import Component, { mixins } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
+import { GameDataAccessor } from '@views/mixins/GameDataAccessor'
 
 import _ from 'lodash'
 
 import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tier } from '@common/Constants'
-import { createDefaultState, SavedFilters } from '@store/AppStore'
-import { GameDataAccessor } from '@views/mixins/GameDataAccessor'
 import { Tertiary } from '@common/Bonuses'
+import { createDefaultState, SavedFilters } from '@store/AppStore'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','
@@ -30,7 +29,7 @@ const DELIMITER = ','
         Auctions: () => import('@views/pages/AuctionsPage.vue'),
     },
 })
-export default class App extends mixins(GameDataAccessor) {
+export default class App extends Mixins(GameDataAccessor) {
     ready = false
     pendingQuery = false
 

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import _ from 'lodash'
@@ -22,7 +22,7 @@ import _ from 'lodash'
 import Constants from '@common/Constants'
 
 @Component
-export default class MaxBuyoutFilter extends VuexAccessor {
+export default class MaxBuyoutFilter extends Mixins(VuexAccessor) {
     readonly MAX_SLIDER = 100
     readonly SLIDER_TIERS = [
         [25, 100 * 1000],

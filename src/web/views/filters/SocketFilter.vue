@@ -21,11 +21,11 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 @Component
-export default class SocketFilter extends VuexAccessor {
+export default class SocketFilter extends Mixins(VuexAccessor) {
     get selectedMustHaveSocket(): boolean {
         return this.mustHaveSocket
     }

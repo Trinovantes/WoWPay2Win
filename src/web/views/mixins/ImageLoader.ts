@@ -1,12 +1,11 @@
-import Component from 'vue-class-component'
-import Vue from 'vue'
+import { Component, Mixins, Vue } from 'vue-property-decorator'
 
 import { Tier, TierConfigs } from '@common/Constants'
 
 @Component
-export class ImageLoader extends Vue {
-    readonly itemIcons = getItemIcons()
-    readonly tierIcons = getTierIcons()
+export class ImageLoader extends Mixins(Vue) {
+    private readonly itemIcons = getItemIcons()
+    private readonly tierIcons = getTierIcons()
 
     getItemIcon(itemId: number): unknown {
         const iconFile = `${itemId}.jpg`

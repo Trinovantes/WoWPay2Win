@@ -1,5 +1,5 @@
-import Component from 'vue-class-component'
-import Vue from 'vue'
+import { Component, Mixins, Vue } from 'vue-property-decorator'
+
 import { mapMutations, mapState } from 'vuex'
 
 import { RegionSlug, Tier } from '@common/Constants'
@@ -38,7 +38,7 @@ import { IIlvlRange } from '@store/AppStore'
         ]),
     },
 })
-export class VuexAccessor extends Vue {
+export class VuexAccessor extends Mixins(Vue) {
     region!: RegionSlug | null
     changeRegion!: (region: RegionSlug | null) => void
     realms!: Set<number>

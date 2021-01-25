@@ -42,8 +42,8 @@
 </template>
 
 <script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
-import Component, { mixins } from 'vue-class-component'
 
 import Constants from '@common/Constants'
 
@@ -66,7 +66,7 @@ dayjs.extend(localizedFormat)
         TertiaryFilter: () => import('@views/filters/TertiaryFilter.vue'),
     },
 })
-export default class MainLayout extends mixins(VuexAccessor) {
+export default class MainLayout extends Mixins(VuexAccessor) {
     readonly APP_DESC = Constants.APP_DESC
 
     get lastUpdated(): string {

@@ -15,13 +15,14 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
+
 import { TierConfigs } from '@common/Constants'
 import { IIlvlRange } from '@store/AppStore'
 
 @Component
-export default class ItemLevelFilter extends VuexAccessor {
+export default class ItemLevelFilter extends Mixins(VuexAccessor) {
     get ilvls(): { min: number; max: number; step: number } {
         if (this.tier === null) {
             return {

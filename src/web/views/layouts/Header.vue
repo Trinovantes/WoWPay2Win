@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
+import { Component, Mixins } from 'vue-property-decorator'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import Constants from '@common/Constants'
@@ -29,7 +29,7 @@ import Constants from '@common/Constants'
         TierFilter: () => import('@views/filters/TierFilter.vue'),
     },
 })
-export default class Header extends VuexAccessor {
+export default class Header extends Mixins(VuexAccessor) {
     readonly title = Constants.APP_NAME
 }
 </script>
