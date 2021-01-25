@@ -10,8 +10,8 @@
             <div v-if="region">
                 <div class="group">
                     <p>
-                        <strong>Last Updated:</strong>
-                        <time :datetime="lastUpdatedIso" :title="lastUpdatedString">{{ lastUpdated }}</time>
+                        <strong>Last Update:</strong>
+                        <time :datetime="lastUpdateIso" :title="lastUpdateString">{{ lastUpdate }}</time>
                     </p>
                 </div>
                 <RealmFilter />
@@ -61,7 +61,7 @@ export default class MainLayout extends Mixins(VuexAccessor) {
         return Constants.APP_DESC
     }
 
-    get lastUpdated(): string {
+    get lastUpdate(): string {
         if (this.lastModified) {
             return dayjs(this.lastModified).fromNow()
         } else {
@@ -69,7 +69,7 @@ export default class MainLayout extends Mixins(VuexAccessor) {
         }
     }
 
-    get lastUpdatedIso(): string | null {
+    get lastUpdateIso(): string | null {
         if (this.lastModified) {
             return dayjs(this.lastModified).toISOString()
         } else {
@@ -77,7 +77,7 @@ export default class MainLayout extends Mixins(VuexAccessor) {
         }
     }
 
-    get lastUpdatedString(): string | null {
+    get lastUpdateString(): string | null {
         if (this.lastModified) {
             return dayjs(this.lastModified).format('ll LT')
         } else {
