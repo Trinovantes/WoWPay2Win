@@ -35,13 +35,13 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { AuctionDataAccessor } from '@views/mixins/AuctionDataAccessor'
+import { GameDataAccessor } from '@views/mixins/GameDataAccessor'
 import { Watch } from 'vue-property-decorator'
 
 import { IRealmCache } from '@common/ICache'
 
 @Component
-export default class RealmFilter extends AuctionDataAccessor {
+export default class RealmFilter extends GameDataAccessor {
     filteredRealms: Array<IRealmCache> = []
 
     created(): void {

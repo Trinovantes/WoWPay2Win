@@ -19,7 +19,7 @@ import _ from 'lodash'
 
 import Constants, { getDefaultTier, getIlvlRange, getTierBoeIds, RegionSlug, Tier } from '@common/Constants'
 import { createDefaultState, SavedFilters } from '@store/AppStore'
-import { AuctionDataAccessor } from '@views/mixins/AuctionDataAccessor'
+import { GameDataAccessor } from '@views/mixins/GameDataAccessor'
 import { Tertiary } from '@common/Bonuses'
 
 const MUST_HAVE_SOCKET_VALUE = '1'
@@ -30,7 +30,7 @@ const DELIMITER = ','
         Auctions: () => import('@views/pages/AuctionsPage.vue'),
     },
 })
-export default class App extends mixins(AuctionDataAccessor) {
+export default class App extends mixins(GameDataAccessor) {
     ready = false
     pendingQuery = false
 

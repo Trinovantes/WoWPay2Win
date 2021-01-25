@@ -51,7 +51,7 @@
 <script lang="ts">
 import Component, { mixins } from 'vue-class-component'
 import { VuexAccessor } from '@views/mixins/VuexAccessor'
-import { AuctionDataAccessor } from '@views/mixins/AuctionDataAccessor'
+import { GameDataAccessor } from '@views/mixins/GameDataAccessor'
 import { ImageLoader } from '@views/mixins/ImageLoader'
 import { Formatter } from '@views/mixins/Formatter'
 import { Watch } from 'vue-property-decorator'
@@ -63,7 +63,7 @@ import Constants, { getTierBoeIds } from '@common/Constants'
 import { Tertiary } from '@common/Bonuses'
 
 @Component
-export default class AuctionsPage extends mixins(VuexAccessor, AuctionDataAccessor, ImageLoader, Formatter) {
+export default class AuctionsPage extends mixins(VuexAccessor, GameDataAccessor, ImageLoader, Formatter) {
     pagination = {
         page: 1,
         rowsPerPage: Constants.ROWS_PER_PAGE,

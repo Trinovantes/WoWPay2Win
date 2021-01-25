@@ -1,13 +1,12 @@
-import { VuexAccessor } from './VuexAccessor'
-import Component from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
+import { VuexAccessor } from '@views/mixins/VuexAccessor'
 
 import { IItemAuctionCache, IItemCache, IRealmCache, IRegionCache } from '@common/ICache'
 import { getRegionLocale, RegionSlug } from '@common/Constants'
 
 @Component
-export class AuctionDataAccessor extends VuexAccessor {
-    readonly dataFiles = getDataFiles()
+export class GameDataAccessor extends VuexAccessor {
+    private readonly dataFiles = getDataFiles()
     protected regionRealms: Array<IRealmCache> = []
     protected realmToConnectedRealmMap: { [key: number]: number } = {}
 
