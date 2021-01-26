@@ -63,7 +63,7 @@ export function checkIsTertiary(bonusId: number): Tertiary | undefined {
 
 // Some of these bundle into same id
 // 1st id : corruption amount
-// 2nd id : corruption effect on item (sometimes same id as corruption effect id)
+// 2nd id : corruption effect on item (sometimes same id as corruption amount id)
 // 3th id : spell effect id
 const Corruptions: Array<[number, number | null, number, string]> = [
     [6455, 6483, 315607, 'Avoidant I'],
@@ -120,8 +120,8 @@ const Corruptions: Array<[number, number | null, number, string]> = [
     [6546, null, 318239, 'Glimpse of Clarity'],
 ]
 
-// New ids introduced from hotfixes: these id change corruption amounts
-// Old items still have old corruption amounts, only new items will have new amounts
+// New ids introduced from hotfixes: these ids change corruption amount on gear
+// Old items still have old corruption amounts, only new items will have new ids
 const HotfixCorruptionIds = [
     6613,
     6614,
