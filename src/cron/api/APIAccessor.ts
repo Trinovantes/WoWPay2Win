@@ -1,10 +1,11 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import querystring from 'querystring'
+import { IncomingMessage } from 'http'
 
-import { Region } from '../models/Region'
 import Constants from '@common/Constants'
 import { sleep } from '@common/utils'
-import { IncomingMessage } from 'http'
+import { IOauthResponse } from './API'
+import { Region } from '../models/Region'
 
 export class APIAccessor<T> {
     readonly endpoint: string
@@ -47,7 +48,7 @@ export class APIAccessor<T> {
         })
 
         if (response) {
-            const data = response.data as { 'access_token': string }
+            const data = response.data as IOauthResponse
             return data.access_token
         } else {
             return ''

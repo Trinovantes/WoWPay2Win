@@ -1,5 +1,9 @@
 /* eslint-disable camelcase */
 
+export interface IOauthResponse {
+    access_token: string
+}
+
 export interface IRegionResponse {
     connected_realms: Array<{
         href: string
