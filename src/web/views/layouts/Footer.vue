@@ -1,5 +1,5 @@
 <template>
-    <footer id="footer" class="group">
+    <footer id="footer">
         <p class="meme">
             {{ meme }}
         </p>
@@ -48,6 +48,7 @@ export default class Footer extends Mixins(Vue) {
 footer#footer{
     font-size: 13px;
     line-height: 1.5em;
+    padding: 0 $side-padding;
 
     p{
         margin: $padding 0;

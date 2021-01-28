@@ -1,34 +1,31 @@
 <template>
     <aside id="sidebar">
-        <div class="main-sidebar">
+        <div class="group">
+            <p>
+                {{ appDesc }}
+            </p>
+        </div>
+
+        <div v-if="region">
             <div class="group">
                 <p>
-                    {{ appDesc }}
+                    <strong>Last Update:</strong>
+                    <time :datetime="lastUpdateIso" :title="lastUpdateString">{{ lastUpdateFromNow }}</time>
                 </p>
             </div>
-
-            <div v-if="region">
-                <div class="group">
-                    <p>
-                        <strong>Last Update:</strong>
-                        <time :datetime="lastUpdateIso" :title="lastUpdateString">{{ lastUpdateFromNow }}</time>
-                    </p>
-                </div>
-                <RealmFilter />
-                <BoeFilter />
-                <ItemLevelFilter />
-                <MaxBuyoutFilter />
-                <SocketFilter />
-                <TertiaryFilter />
-            </div>
-            <q-banner
-                v-else
-                class="bg-warning"
-            >
-                No region selected
-            </q-banner>
+            <RealmFilter />
+            <BoeFilter />
+            <ItemLevelFilter />
+            <MaxBuyoutFilter />
+            <SocketFilter />
+            <TertiaryFilter />
         </div>
-        <Footer />
+        <q-banner
+            v-else
+            class="bg-warning"
+        >
+            No region selected
+        </q-banner>
     </aside>
 </template>
 
@@ -46,8 +43,6 @@ import Constants from '@common/Constants'
 
 @Component({
     components: {
-        Footer: () => import('@views/layouts/Footer.vue'),
-
         RealmFilter: () => import('@views/filters/RealmFilter.vue'),
         BoeFilter: () => import('@views/filters/BoeFilter.vue'),
         ItemLevelFilter: () => import('@views/filters/ItemLevelFilter.vue'),
@@ -90,16 +85,6 @@ export default class MainLayout extends Mixins(VuexAccessor) {
 <style lang="scss">
 aside#sidebar{
     font-size: 17px;
-    background: $bg-side;
-    min-width: $sidebar-min-width;
-    max-width: $sidebar-max-width;
-
-    display: flex;
-    flex-direction: column;
-
-    .main-sidebar{
-        flex: 1;
-    }
 
     .group{
         border-bottom: 1px solid $bg-main;
