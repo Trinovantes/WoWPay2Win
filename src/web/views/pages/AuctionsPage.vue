@@ -55,7 +55,7 @@ import { GameDataAccessor } from '@views/mixins/GameDataAccessor'
 import { ImageLoader } from '@views/mixins/ImageLoader'
 import { Formatter } from '@views/mixins/Formatter'
 
-import Axios from 'axios'
+import axios from 'axios'
 
 import { IAuctionsCache, IItemAuctionCache } from '@common/ICache'
 import Constants, { getTierBoeIds } from '@common/Constants'
@@ -190,7 +190,7 @@ export default class AuctionsPage extends Mixins(VuexAccessor, GameDataAccessor,
         }
 
         const auctionsFile = `${DEFINE.AUCTIONS_URL}/auctions-${this.region}.json`
-        const response = await Axios.get(auctionsFile)
+        const response = await axios.get(auctionsFile)
         const auctionsCache = response.data as IAuctionsCache
 
         this.changeLastUpdate(auctionsCache.lastUpdate)

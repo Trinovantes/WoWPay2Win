@@ -1,4 +1,4 @@
-import Axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import querystring from 'querystring'
 import { IncomingMessage } from 'http'
 
@@ -96,7 +96,7 @@ async function tryExponentialBackoff<T>(config: AxiosRequestConfig, isValidRespo
                     reject(new Error(`Request timeout: ${config.url}`))
                 }, Constants.API_TIMEOUT)
 
-                Axios(config)
+                axios(config)
                     .then((response) => {
                         const errorMessage = isValidResponse?.(response?.data)
                         if (errorMessage) {
