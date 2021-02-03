@@ -17,7 +17,7 @@
 
         "baseUrl": ".",
         "paths": {
-            // Need to match aliases in scripts/webpack.config.common
+            // Need to match aliases in build/webpack.config.common
             "@static/*": ["./static/*"],
             "@common/*": ["./src/common/*"],
             "@cron/*": ["./src/cron/*"],
