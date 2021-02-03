@@ -4,10 +4,10 @@ import { IncomingMessage } from 'http'
 
 import Constants from '@common/Constants'
 import { sleep } from '@common/utils'
-import { IOauthResponse } from './API'
-import { Region } from '../models/Region'
+import { IOauthResponse } from '@cron/api/Responses'
+import { Region } from '@cron/models/Region'
 
-export class APIAccessor<T> {
+export class ApiAccessor<T> {
     readonly endpoint: string
     readonly isDynamic: boolean
     readonly region: Region

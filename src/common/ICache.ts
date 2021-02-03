@@ -1,5 +1,5 @@
-import { Tertiary } from './Bonuses'
-import { Locale } from './Constants'
+import { Tertiary } from '@common/Bonuses'
+import { Locale } from '@common/Constants'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ICache {

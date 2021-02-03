@@ -1,5 +1,5 @@
 import { IRealmCache } from '@common/ICache'
-import { Region } from './Region'
+import { Region } from '@cron/models/Region'
 
 export class Realm {
     readonly id: number

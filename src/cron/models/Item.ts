@@ -3,19 +3,17 @@ import path from 'path'
 
 import { Locale } from '@common/Constants'
 import { ICache, IItemCache } from '@common/ICache'
-
-import { IItemMediaResponse, IItemResponse } from '@cron/api/API'
-import { APIAccessor } from '@cron/api/APIAccessor'
-
-import { Region } from './Region'
-import { Cacheable } from './Cacheable'
+import { IItemMediaResponse, IItemResponse } from '@cron/api/Responses'
+import { ApiAccessor } from '@cron/api/ApiAccessor'
+import { Region } from '@cron/models/Region'
+import { Cacheable } from '@cron/models/Cacheable'
 
 export class Item extends Cacheable {
     readonly iconFile: string
     readonly iconPath: string
 
-    readonly itemAccessor: APIAccessor<IItemResponse>
-    readonly itemMediaAccessor: APIAccessor<IItemMediaResponse>
+    readonly itemAccessor: ApiAccessor<IItemResponse>
+    readonly itemMediaAccessor: ApiAccessor<IItemMediaResponse>
 
     readonly region: Region
     readonly id: number
@@ -34,10 +32,10 @@ export class Item extends Cacheable {
         this.iconPath = path.resolve(DEFINE.IMAGE_DIR, 'items', this.iconFile)
 
         const itemEndpoint = `${region.config.apiHost}/data/wow/item/${id}`
-        this.itemAccessor = new APIAccessor(itemEndpoint, false, region)
+        this.itemAccessor = new ApiAccessor(itemEndpoint, false, region)
 
         const itemMediaEndpoint = `${region.config.apiHost}/data/wow/media/item/${id}`
-        this.itemMediaAccessor = new APIAccessor(itemMediaEndpoint, false, region)
+        this.itemMediaAccessor = new ApiAccessor(itemMediaEndpoint, false, region)
 
         this.region = region
         this.id = id
@@ -117,7 +115,7 @@ export class Item extends Cacheable {
 
         const cmd = `${this.iconUrl} to ${this.iconPath}`
         const fileWriter = createWriteStream(this.iconPath)
-        const stream = await APIAccessor.fetchFile(iconUrl)
+        const stream = await ApiAccessor.fetchFile(iconUrl)
 
         // Register listeners first
         const fileWriterResult = new Promise<void>((resolve, reject) => {

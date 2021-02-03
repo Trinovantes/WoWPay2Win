@@ -1,16 +1,15 @@
 import { getBoeIds } from '@common/Constants'
 import { IConnectedRealmCache } from '@common/ICache'
 
-import { IAuctionsResponse, IConnectedRealmResponse } from '@cron/api/API'
-import { APIAccessor } from '@cron/api/APIAccessor'
-
-import { ItemAuction } from './ItemAuctions'
-import { Realm } from './Realm'
-import { Region } from './Region'
+import { IAuctionsResponse, IConnectedRealmResponse } from '@cron/api/Responses'
+import { ApiAccessor } from '@cron/api/ApiAccessor'
+import { ItemAuction } from '@cron/models/ItemAuctions'
+import { Realm } from '@cron/models/Realm'
+import { Region } from '@cron/models/Region'
 
 export class ConnectedRealm {
-    readonly connectedRealmAccessor: APIAccessor<IConnectedRealmResponse>
-    readonly auctionsAccessor: APIAccessor<IAuctionsResponse>
+    readonly connectedRealmAccessor: ApiAccessor<IConnectedRealmResponse>
+    readonly auctionsAccessor: ApiAccessor<IAuctionsResponse>
 
     readonly region: Region
     readonly id: number
@@ -19,10 +18,10 @@ export class ConnectedRealm {
 
     constructor(region: Region, id: number) {
         const connectedRealmEndpoint = `${region.config.apiHost}/data/wow/connected-realm/${id}`
-        this.connectedRealmAccessor = new APIAccessor(connectedRealmEndpoint, true, region)
+        this.connectedRealmAccessor = new ApiAccessor(connectedRealmEndpoint, true, region)
 
         const auctionsEndpoint = `${region.config.apiHost}/data/wow/connected-realm/${id}/auctions`
-        this.auctionsAccessor = new APIAccessor(auctionsEndpoint, true, region)
+        this.auctionsAccessor = new ApiAccessor(auctionsEndpoint, true, region)
 
         this.region = region
         this.id = id

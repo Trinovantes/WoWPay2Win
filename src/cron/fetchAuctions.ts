@@ -1,5 +1,5 @@
-import fetchRegions from './utils/fetchRegions'
-import unrecognizedBonusIdTracker from './utils/UnrecognizedBonusIdTracker'
+import fetchRegions from '@cron/utils/fetchRegions'
+import unrecognizedBonusIdTracker from '@cron/utils/UnrecognizedBonusIdTracker'
 
 async function main() {
     const regions = await fetchRegions()

@@ -5,16 +5,15 @@ import { RegionConfig } from '@common/Constants'
 import { IAuctionsCache, ICache, IRegionCache } from '@common/ICache'
 import { batchRequests } from '@common/utils'
 
-import { IRegionResponse } from '@cron/api/API'
-import { APIAccessor } from '@cron/api/APIAccessor'
+import { IRegionResponse } from '@cron/api/Responses'
+import { ApiAccessor } from '@cron/api/ApiAccessor'
 import { saveCacheToFile } from '@cron/utils'
-
-import { ConnectedRealm } from './ConnectedRealm'
-import { Cacheable } from './Cacheable'
-import { Realm } from './Realm'
+import { ConnectedRealm } from '@cron/models/ConnectedRealm'
+import { Cacheable } from '@cron/models/Cacheable'
+import { Realm } from '@cron/models/Realm'
 
 export class Region extends Cacheable {
-    readonly regionAccessor: APIAccessor<IRegionResponse>
+    readonly regionAccessor: ApiAccessor<IRegionResponse>
 
     readonly config: RegionConfig
     connectedRealms: Array<ConnectedRealm>
@@ -24,7 +23,7 @@ export class Region extends Cacheable {
         super(`region-${config.slug}.json`)
 
         const endpoint = `${config.apiHost}/data/wow/connected-realm/index`
-        this.regionAccessor = new APIAccessor(endpoint, true, this)
+        this.regionAccessor = new ApiAccessor(endpoint, true, this)
 
         this.config = config
         this.connectedRealms = []
