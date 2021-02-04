@@ -144,7 +144,7 @@ server {
     listen      443 ssl;
     server_name www.wowpay2win.com;
     autoindex   off;
-    root        /var/www/wowpay2win.com/dist-web/;
+    root        /var/www/wowpay2win.com/dist/web/;
     expires     1d;
     add_header  Cache-Control public;
     error_page  404 = @redirect;
