@@ -120,7 +120,7 @@ export class Item extends Cacheable {
         // Register listeners first
         const fileWriterResult = new Promise<void>((resolve, reject) => {
             fileWriter.on('finish', () => {
-                console.debug(`File writer closed ${this.iconPath}`)
+                console.debug(`File writer finished ${this.iconPath}`)
                 resolve()
             })
             fileWriter.on('error', (error) => {
