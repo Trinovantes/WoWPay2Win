@@ -1,4 +1,4 @@
-import fetchRegions from '@cron/utils/fetchRegions'
+import fetchRegions from './utils'
 import unrecognizedBonusIdTracker from '@cron/utils/UnrecognizedBonusIdTracker'
 
 async function main() {

@@ -2,7 +2,7 @@ import { getBoeIds } from '@common/Constants'
 import { batchRequests } from '@common/utils'
 import { Item } from '@cron/models/Item'
 import { Region } from '@cron/models/Region'
-import fetchRegions from '@cron/utils/fetchRegions'
+import fetchRegions from '@cron/utils'
 
 async function fetchItems(region: Region, dataDir: string, imgDir: string) {
     const boeIds = getBoeIds()
