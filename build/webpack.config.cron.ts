@@ -12,7 +12,7 @@ export default merge(commonConfig, {
 
     entry: {
         fetchAuctions: `${srcCronDir}/fetchAuctions.ts`,
-        fetchData: `${srcCronDir}/fetchData.ts`,
+        fetchItems: `${srcCronDir}/fetchItems.ts`,
     },
     output: {
         path: distCronDir,

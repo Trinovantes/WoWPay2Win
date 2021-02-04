@@ -24,7 +24,7 @@ yarn lint
 
 # Note that the website requires game data from the API (localized item names and icon files) before it can be properly built
 yarn buildCron
-yarn fetchData
+yarn fetchItems
 
 # Starts webpack-dev-server on localhost:8080
 yarn devWeb
@@ -48,7 +48,7 @@ cd /var/www/wowpay2win.com
 vim .env
 
 yarn buildCron     # Builds the cron scripts
-yarn fetchData     # Fetch game data (regions, connected realms, items)
+yarn fetchItems    # Fetch game data (regions, connected realms, items)
 yarn fetchAuctions # Fetch auction house data
 yarn buildWeb      # Builds the website
 ```

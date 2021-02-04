@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run fetchData",
+            "name": "Run fetchItems",
             "type": "node",
             "request": "launch",
 
@@ -11,7 +11,7 @@
             ],
 
             "envFile": "${workspaceFolder}/.env",
-            "program": "${workspaceFolder}/dist-cron/fetchData.js",
+            "program": "${workspaceFolder}/dist-cron/fetchItems.js",
             "sourceMaps": true
         },
         {
