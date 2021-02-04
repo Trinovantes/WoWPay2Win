@@ -9,9 +9,7 @@ import { Region } from '@cron/models/Region'
 import { Cacheable } from '@cron/models/Cacheable'
 
 export class Item extends Cacheable {
-    readonly iconFile: string
     readonly iconPath: string
-
     readonly itemAccessor: ApiAccessor<IItemResponse>
     readonly itemMediaAccessor: ApiAccessor<IItemMediaResponse>
 
@@ -21,20 +19,14 @@ export class Item extends Cacheable {
     baseLevel: number
     iconUrl: string | null
 
-    constructor(region: Region, id: number) {
-        super(`item-${id}.json`)
-
-        if (!DEFINE.IMAGE_DIR) {
-            throw new Error('DEFINE.IMAGE_DIR is not set by the preprocessor')
-        }
-
-        this.iconFile = `${id}.jpg`
-        this.iconPath = path.resolve(DEFINE.IMAGE_DIR, 'items', this.iconFile)
+    constructor(region: Region, id: number, dataDir: string, imgDir: string) {
+        super(path.resolve(dataDir, `item-${id}.json`))
 
         const itemEndpoint = `${region.config.apiHost}/data/wow/item/${id}`
-        this.itemAccessor = new ApiAccessor(itemEndpoint, false, region)
-
         const itemMediaEndpoint = `${region.config.apiHost}/data/wow/media/item/${id}`
+
+        this.iconPath = path.resolve(imgDir, 'items', `${id}.jpg`)
+        this.itemAccessor = new ApiAccessor(itemEndpoint, false, region)
         this.itemMediaAccessor = new ApiAccessor(itemMediaEndpoint, false, region)
 
         this.region = region

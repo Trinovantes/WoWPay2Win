@@ -112,12 +112,6 @@ export const commonConfig: webpack.Configuration = {
         }),
         new DefinePlugin({
             'DEFINE.IS_DEV': JSON.stringify(isDev),
-
-            'DEFINE.AUCTIONS_URL': JSON.stringify('/data'),
-            'DEFINE.AUCTIONS_DIR': JSON.stringify(path.resolve(__dirname, '../dist/web/data')),
-
-            'DEFINE.CACHE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/data')),
-            'DEFINE.IMAGE_DIR': JSON.stringify(path.resolve(srcWebDir, 'assets/img')),
         }),
     ],
 }

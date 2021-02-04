@@ -4,20 +4,32 @@ import { Item } from '@cron/models/Item'
 import { Region } from '@cron/models/Region'
 import fetchRegions from '@cron/utils/fetchRegions'
 
-async function fetchItems(region: Region) {
+async function fetchItems(region: Region, dataDir: string, imgDir: string) {
     const boeIds = getBoeIds()
 
     await batchRequests(boeIds.length, async(idx) => {
-        const item = new Item(region, boeIds[idx])
+        const item = new Item(region, boeIds[idx], dataDir, imgDir)
         await item.fetch()
     })
 }
 
 async function main() {
-    const regions = await fetchRegions()
+    if (process.argv.length !== 5) {
+        console.info(process.argv)
+        throw new Error('Expected dataDir, auctionsDir, imgDir as arguments')
+    }
+
+    const dataDir = process.argv[2]
+    const auctionsDir = process.argv[3]
+    const imgDir = process.argv[4]
+    console.info('dataDir     =', dataDir)
+    console.info('auctionsDir =', auctionsDir)
+    console.info('imgDir      =', imgDir)
+
+    const regions = await fetchRegions(dataDir, auctionsDir)
 
     for (const region of regions) {
-        await fetchItems(region)
+        await fetchItems(region, dataDir, imgDir)
     }
 
     console.info('Cron Script Finished')

@@ -16,16 +16,18 @@ export class Region extends Cacheable {
     readonly regionAccessor: ApiAccessor<IRegionResponse>
 
     readonly config: RegionConfig
-    connectedRealms: Array<ConnectedRealm>
+    readonly auctionsDir: string
+    readonly connectedRealms: Array<ConnectedRealm>
     accessToken?: string
 
-    constructor(config: RegionConfig) {
-        super(`region-${config.slug}.json`)
+    constructor(config: RegionConfig, dataDir: string, auctionsDir: string) {
+        super(path.resolve(dataDir, `region-${config.slug}.json`))
 
         const endpoint = `${config.apiHost}/data/wow/connected-realm/index`
         this.regionAccessor = new ApiAccessor(endpoint, true, this)
 
         this.config = config
+        this.auctionsDir = auctionsDir
         this.connectedRealms = []
     }
 
@@ -86,13 +88,9 @@ export class Region extends Cacheable {
     }
 
     async fetchAuctions(): Promise<void> {
-        const auctionsDir = DEFINE.AUCTIONS_DIR
-        if (!auctionsDir) {
-            throw new Error('DEFINE.AUCTIONS_DIR is not set by the preprocessor')
-        }
-        if (!existsSync(auctionsDir)) {
-            console.debug(`${auctionsDir} does not exist. Attempting to mkdir`)
-            mkdirSync(auctionsDir, { recursive: true })
+        if (!existsSync(this.auctionsDir)) {
+            console.debug(`${this.auctionsDir} does not exist. Attempting to mkdir`)
+            mkdirSync(this.auctionsDir, { recursive: true })
         }
 
         console.info(`Region::fetchAuctions ${this.toString()}`)
@@ -114,7 +112,7 @@ export class Region extends Cacheable {
             }
         }
 
-        const auctionCacheFile = path.resolve(auctionsDir, `auctions-${this.config.slug}.json`)
+        const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.config.slug}.json`)
         console.debug(`Saving ${totalAuctions} auctions to ${auctionCacheFile}`)
         await saveCacheToFile(auctionCacheFile, auctionsCache)
     }

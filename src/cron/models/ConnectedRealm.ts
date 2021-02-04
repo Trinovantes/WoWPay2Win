@@ -13,8 +13,8 @@ export class ConnectedRealm {
 
     readonly region: Region
     readonly id: number
-    realms: Array<Realm>
-    auctions: Array<ItemAuction>
+    readonly realms: Array<Realm>
+    readonly auctions: Array<ItemAuction>
 
     constructor(region: Region, id: number) {
         const connectedRealmEndpoint = `${region.config.apiHost}/data/wow/connected-realm/${id}`

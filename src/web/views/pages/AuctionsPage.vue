@@ -185,11 +185,7 @@ export default class AuctionsPage extends Mixins(VuexAccessor, GameDataAccessor,
             return
         }
 
-        if (!DEFINE.AUCTIONS_URL) {
-            throw new Error('DEFINE.AUCTIONS_URL is not set by the preprocessor')
-        }
-
-        const auctionsFile = `${DEFINE.AUCTIONS_URL}/auctions-${this.region}.json`
+        const auctionsFile = `/data/auctions-${this.region}.json`
         const response = await axios.get(auctionsFile)
         const auctionsCache = response.data as IAuctionsCache
 
