@@ -1,7 +1,7 @@
 <template>
     <footer id="footer">
-        <p class="meme">
-            {{ meme }}
+        <p class="flavor-text">
+            {{ flavorText }}
         </p>
         <p>
             <a href="https://github.com/Trinovantes/WoWPay2Win">GitHub</a>
@@ -22,7 +22,7 @@ export default class Footer extends Mixins(Vue) {
     readonly title = Constants.APP_NAME
     readonly year = new Date().getUTCFullYear()
 
-    get meme(): string {
+    get flavorText(): string {
         const DAYS_OF_WEEK = 7
         const daysSinceTues = (DAYS_OF_WEEK + (new Date().getDay() - 2)) % DAYS_OF_WEEK
 
@@ -36,6 +36,7 @@ export default class Footer extends Mixins(Vue) {
             'I\'m calling the overtime police',
             'Anyone caught playing Classic will be gkicked',
             'Please buff BDK',
+            'Sponsored by Raid: Shadow Lands',
             `${daysSinceTues} ${daysSinceTues === 1 ? 'day' : 'days'} since last wipe on Shriekwing`,
         ]
 
@@ -60,7 +61,7 @@ footer#footer{
             margin-bottom: $side-padding;
         }
 
-        &.meme{
+        &.flavor-text{
             font-style: italic;
         }
     }
