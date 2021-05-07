@@ -1,4 +1,4 @@
-import Constants from '@common/Constants'
+import { IlvlRange, Tier, TIER_CONFIGS } from './Constants'
 
 export function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => {
@@ -8,36 +8,40 @@ export function sleep(ms: number): Promise<void> {
     })
 }
 
-export async function batchRequests(numReq: number, request: (idx: number) => Promise<void>): Promise<void> {
-    let offset = 0
-
-    while (offset < numReq) {
-        const queuedRequests: Array<Promise<void>> = []
-
-        for (let i = 0; i < Constants.CONCURRENT_API_REQUESTS; i++) {
-            const idx = offset + i
-            if (idx >= numReq) {
-                break
-            }
-
-            queuedRequests.push(request(idx))
+export function getIlvlRange(tier: Tier | null): IlvlRange {
+    if (!tier) {
+        return {
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
         }
-
-        await Promise.all(queuedRequests)
-        offset += Constants.CONCURRENT_API_REQUESTS
     }
+
+    return TIER_CONFIGS[tier].ilvls
 }
 
-export function setEq<T>(s1: Set<T>, s2: Set<T>): boolean {
-    if (s1.size !== s2.size) {
-        return false
+export function getTierBoeIds(tier: Tier | null): Array<number> {
+    if (!tier) {
+        return []
     }
 
-    for (const el of s1) {
-        if (!s2.has(el)) {
-            return false
+    const tierConfig = TIER_CONFIGS[tier]
+    const boeIds: Array<number> = []
+
+    for (const category of tierConfig.boes) {
+        for (const id of category.ids) {
+            boeIds.push(id)
         }
     }
 
-    return true
+    return boeIds
+}
+
+export function getAllBoeIds(): Array<number> {
+    const boeIds: Array<number> = []
+
+    for (const tier of Object.keys(TIER_CONFIGS)) {
+        boeIds.push(...getTierBoeIds(tier as Tier))
+    }
+
+    return boeIds
 }

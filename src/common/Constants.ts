@@ -1,24 +1,19 @@
-import { IIlvlRange } from '@store/AppStore'
 import dayjs, { Dayjs } from 'dayjs'
-import _ from 'lodash'
 
 // ----------------------------------------------------------------------------
 // Default
 // ----------------------------------------------------------------------------
 
-export default {
-    APP_NAME: 'WoWPay2Win',
-    APP_DESC: 'This tool scans for BoEs in every auction house across the region. To buy an item, you need to either transfer a character with gold or buy tokens on that realm.',
-    OG_DESC: 'Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!',
+export const APP_NAME = 'WoWPay2Win'
+export const APP_DESC = 'This tool scans for BoEs in every auction house across the region. To buy an item, you need to either transfer a character with gold or buy tokens on that realm.'
+export const OG_DESC = 'Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!'
 
-    API_TIMEOUT: 30 * 1000, // in ms
-    CONCURRENT_API_REQUESTS: DEFINE.IS_DEV ? 1 : 10,
-    MAX_API_RETRIES: DEFINE.IS_DEV ? 1 : 5,
+export const API_TIMEOUT = 30 * 1000 // in ms
+export const CONCURRENT_API_REQUESTS = DEFINE.IS_DEV ? 20 : 5
+export const MAX_API_RETRIES = DEFINE.IS_DEV ? 1 : 5
 
-    GOLD_CAP: 10 * 1000 * 1000,
-
-    ROWS_PER_PAGE: 50,
-}
+export const GOLD_CAP = 10 * 1000 * 1000
+export const ROWS_PER_PAGE = 50
 
 // ----------------------------------------------------------------------------
 // Region
@@ -45,7 +40,7 @@ export interface RegionConfig {
     readonly oauthEndpoint: string
 }
 
-export const RegionConfigs: Array<RegionConfig> = [
+export const REGION_CONFIGS: Array<RegionConfig> = [
     {
         slug: RegionSlug.US,
         locale: Locale.EN_US,
@@ -73,7 +68,7 @@ export const RegionConfigs: Array<RegionConfig> = [
 ]
 
 export function getRegionLocale(regionSlug: RegionSlug): Locale {
-    for (const regionConfig of RegionConfigs) {
+    for (const regionConfig of REGION_CONFIGS) {
         if (regionConfig.slug === regionSlug) {
             return regionConfig.locale
         }
@@ -83,70 +78,96 @@ export function getRegionLocale(regionSlug: RegionSlug): Locale {
 }
 
 // ----------------------------------------------------------------------------
-// Tier
-//
-// Use this script to quickly extract item ids from wowhead item search
-// https://www.wowhead.com/items/quality:4?filter=3:166:128:16;1:8:4:13224;0:0:0:0
+// Tier (ids should match warcraftlogs.com)
+// ----------------------------------------------------------------------------
+
 /*
+Use this script to quickly extract item ids from wowhead item search
+https://www.wowhead.com/items/quality:4?filter=3:166:128:16;1:9:4:13224;0:0:0:0
+
 $('#tab-items table').find('a.q4').each((idx, el) => {
     const href = $(el).attr('href')
     const id = /(\d+)/.exec(href)[0]
-    console.log(id, href)
+    console.info(id, href)
 })
 */
-// ----------------------------------------------------------------------------
 
 export enum Tier {
     // BfA
-    Nyalotha = 't26',
+    Nyalotha = 't24',
 
     // Shadowlands
     Shadowlands = 'shadowlands',
-    CastleNathria = 't27',
+    CastleNathria = 't26',
 }
 
-const DEFAULT_TIER = Tier.CastleNathria
+export const DEFAULT_TIER = Tier.CastleNathria
 
-export interface IBoeCategory {
+export interface BoeCategory {
     label: string
     ids: Set<number>
+}
+
+export interface IlvlRange {
+    min: number
+    max: number
 }
 
 export interface TierConfig {
     readonly name: string
     readonly iconPath: string
     readonly expiration?: Dayjs
-    readonly boes: Array<IBoeCategory>
-    readonly ilvls: {
-        min: number
-        max: number
+    readonly boes: Array<BoeCategory>
+    readonly ilvls: IlvlRange & {
         step: number
     }
 }
 
-export const TierConfigs: {[key in Tier]: TierConfig} = {
-    [Tier.Nyalotha]: {
-        name: "Ny'alotha, the Waking City",
-        iconPath: 'nyalotha.png',
-        expiration: dayjs('2020-11-23'),
+export const TIER_CONFIGS: {[key in Tier]: TierConfig} = {
+    [Tier.CastleNathria]: {
+        name: 'Castle Nathria',
+        iconPath: 'castle-nathria.png',
         boes: [
             {
-                label: 'Raid BoEs',
+                label: 'Cloth',
                 ids: new Set([
-                    175004,
-                    175005,
-                    175010,
-                    175009,
-                    175008,
-                    175007,
-                    175006,
+                    183008,
+                    183017,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    183010,
+                    182978,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    182990,
+                    182982,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    183013,
+                    183031,
+                ]),
+            },
+            {
+                label: 'Misc.',
+                ids: new Set([
+                    183035,
+                    184778,
                 ]),
             },
         ],
         ilvls: {
-            min: 85,
-            max: 85 + (15 * 3),
-            step: 15,
+            min: 187,
+            max: 226,
+            step: 13,
         },
     },
     [Tier.Shadowlands]: {
@@ -231,104 +252,28 @@ export const TierConfigs: {[key in Tier]: TierConfig} = {
             step: 1,
         },
     },
-    [Tier.CastleNathria]: {
-        name: 'Castle Nathria',
-        iconPath: 'castle-nathria.png',
+    [Tier.Nyalotha]: {
+        name: "Ny'alotha, the Waking City",
+        iconPath: 'nyalotha.png',
+        expiration: dayjs('2020-11-23'),
         boes: [
             {
-                label: 'Cloth',
+                label: 'Raid BoEs',
                 ids: new Set([
-                    183008,
-                    183017,
-                ]),
-            },
-            {
-                label: 'Leather',
-                ids: new Set([
-                    183010,
-                    182978,
-                ]),
-            },
-            {
-                label: 'Mail',
-                ids: new Set([
-                    182990,
-                    182982,
-                ]),
-            },
-            {
-                label: 'Plate',
-                ids: new Set([
-                    183013,
-                    183031,
-                ]),
-            },
-            {
-                label: 'Misc.',
-                ids: new Set([
-                    183035,
-                    184778,
+                    175004,
+                    175005,
+                    175010,
+                    175009,
+                    175008,
+                    175007,
+                    175006,
                 ]),
             },
         ],
         ilvls: {
-            min: 187,
-            max: 226,
-            step: 13,
+            min: 85,
+            max: 85 + (15 * 3),
+            step: 15,
         },
     },
-}
-
-export function getDefaultTier(): Tier {
-    const today = dayjs()
-
-    for (const [tier, tierConfig] of Object.entries(TierConfigs)) {
-        if (!tierConfig.expiration) {
-            continue
-        }
-
-        if (today.isBefore(tierConfig.expiration)) {
-            return tier as unknown as Tier
-        }
-    }
-
-    return DEFAULT_TIER
-}
-
-export function getIlvlRange(tier: Tier | null): IIlvlRange {
-    if (!tier) {
-        return {
-            min: Number.MIN_SAFE_INTEGER,
-            max: Number.MAX_SAFE_INTEGER,
-        }
-    }
-
-    return _.pick(TierConfigs[tier].ilvls, ['min', 'max'])
-}
-
-export function getTierBoeIds(tier: Tier | null): Array<number> {
-    if (!tier) {
-        return []
-    }
-
-    const tierConfig = TierConfigs[tier]
-    const boeIds: Array<number> = []
-
-    for (const category of tierConfig.boes) {
-        for (const id of category.ids) {
-            boeIds.push(id)
-        }
-    }
-
-    return boeIds
-}
-
-export function getBoeIds(): Array<number> {
-    const boeIds: Array<number> = []
-
-    for (const tier of Object.keys(TierConfigs)) {
-        boeIds.push(...getTierBoeIds(tier as Tier))
-    }
-
-    return boeIds
 }

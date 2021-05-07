@@ -1,11 +1,7 @@
 import { merge } from 'webpack-merge'
-import { VueLoaderPlugin } from 'vue-loader'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
-import { WebpackPluginInstance } from 'webpack'
-
-import { commonConfig } from './webpack.config.common'
-import { isDev, staticDir, srcWebDir, distWebDir } from './webpack.constants'
+import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.config.common'
 
 // ----------------------------------------------------------------------------
 // Web
@@ -17,10 +13,14 @@ export default merge(commonConfig, {
     entry: {
         main: `${srcWebDir}/main.ts`,
     },
+
     output: {
         path: distWebDir,
         publicPath: '/',
         filename: isDev
+            ? '[name].js'
+            : '[name].[contenthash].js',
+        chunkFilename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
     },
@@ -28,22 +28,20 @@ export default merge(commonConfig, {
     devServer: {
         historyApiFallback: true,
         contentBase: [
-            staticDir, // Static assets
-            distWebDir, // Auctions data files
+            distWebDir,
         ],
     },
 
     plugins: [
-        !isDev && new CopyWebpackPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 {
                     from: staticDir,
                 },
             ],
         }),
-        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             template: `${srcWebDir}/index.html`,
         }),
-    ].filter(Boolean) as Array<WebpackPluginInstance>,
+    ],
 })

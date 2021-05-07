@@ -1,27 +1,36 @@
-import { ItemAuction } from '@cron/models/ItemAuctions'
+import { ItemAuction } from '@/cron/models/ItemAuctions'
+
+const MAX_UNRECOGNIZED_IDS = 10
 
 class UnrecognizedBonusIdTracker {
-    private readonly unrecognizedIds: { [bonusId: number]: Array<ItemAuction> } = {}
+    private readonly _unrecognizedIds: { [bonusId: number]: Array<ItemAuction> } = {}
 
     add(bonusId: number, auction: ItemAuction): void {
-        if (!(bonusId in this.unrecognizedIds)) {
-            this.unrecognizedIds[bonusId] = []
+        if (!DEFINE.IS_DEV) {
+            return
         }
 
-        this.unrecognizedIds[bonusId].push(auction)
+        if (!(bonusId in this._unrecognizedIds)) {
+            this._unrecognizedIds[bonusId] = []
+        }
+
+        this._unrecognizedIds[bonusId].push(auction)
     }
 
     print(): void {
-        for (const [bonusId, auctions] of Object.entries(this.unrecognizedIds)) {
+        if (!DEFINE.IS_DEV) {
+            return
+        }
+
+        for (const [bonusId, auctions] of Object.entries(this._unrecognizedIds)) {
             console.info(`Unrecognized Bonus Id:${bonusId} (${auctions.length})`)
 
-            for (const auction of auctions) {
-                const wowheadLink = `https://www.wowhead.com/item=${auction.itemId}?bonus=${auction.bonuses.join(':')}`
+            for (let i = 0; i < MAX_UNRECOGNIZED_IDS && i < auctions.length; i++) {
+                const wowheadLink = `https://www.wowhead.com/item=${auctions[i].itemId}?bonus=${auctions[i].bonuses.join(':')}`
                 console.info(wowheadLink)
             }
         }
     }
 }
 
-const unrecognizedBonusIdTracker = new UnrecognizedBonusIdTracker()
-export default unrecognizedBonusIdTracker
+export const unrecognizedBonusIdTracker = new UnrecognizedBonusIdTracker()

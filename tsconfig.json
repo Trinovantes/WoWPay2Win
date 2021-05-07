@@ -3,38 +3,32 @@
         "strict": true,
         "sourceMap": true,
 
-        "target": "es2017",
+        "lib": [
+            "ES2019"
+        ],
+
+        "target": "esnext",
         "module": "esnext",
         "moduleResolution": "node",
 
-        "experimentalDecorators": true,
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
 
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
 
+        "outDir": "dist",
         "baseUrl": ".",
         "paths": {
-            // Need to match aliases in build/webpack.config.common
-            "@static/*": ["./static/*"],
-            "@common/*": ["./src/common/*"],
-            "@cron/*": ["./src/cron/*"],
-            "@web/*": ["./src/web/*"],
-
-            "@views/*": ["src/web/views/*"],
-            "@router/*": ["./src/web/router/*"],
-            "@store/*": ["./src/web/store/*"],
-
-            "@css/*": ["./src/web/assets/css/*"],
-            "@img/*": ["./src/web/assets/img/*"],
-            "@data/*": ["./src/web/assets/data/*"],
+            "@/*": ["./src/*"],
         },
     },
     "exclude": [
         "node_modules",
-        "dist*",
+        "dist",
     ],
     "include": [
         "**/*",

@@ -6,26 +6,36 @@
             "type": "node",
             "request": "launch",
 
-            "skipFiles": [
-                "<node_internals>/**"
+            "runtimeArgs": [
+                "-r",
+                "source-map-support/register",
             ],
 
-            "envFile": "${workspaceFolder}/.env",
-            "program": "${workspaceFolder}/dist/cron/fetchItems.js",
-            "sourceMaps": true
+            "args": [
+                "src/web/assets/data",
+                "src/web/assets/img",
+            ],
+
+            "envFile": "${workspaceRoot}/.env",
+            "program": "${workspaceRoot}/dist/cron/fetchItems.js",
         },
         {
             "name": "Run fetchAuctions",
             "type": "node",
             "request": "launch",
 
-            "skipFiles": [
-                "<node_internals>/**"
+            "runtimeArgs": [
+                "-r",
+                "source-map-support/register",
             ],
 
-            "envFile": "${workspaceFolder}/.env",
-            "program": "${workspaceFolder}/dist/cron/fetchAuctions.js",
-            "sourceMaps": true
+            "args": [
+                "src/web/assets/data",
+                "dist/web/data",
+            ],
+
+            "envFile": "${workspaceRoot}/.env",
+            "program": "${workspaceRoot}/dist/cron/fetchAuctions.js",
         }
     ]
 }

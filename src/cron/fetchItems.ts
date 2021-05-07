@@ -1,51 +1,48 @@
-import { getBoeIds } from '@common/Constants'
-import { batchRequests } from '@common/utils'
-import { Item } from '@cron/models/Item'
-import { Region } from '@cron/models/Region'
-import fetchRegions from '@cron/utils'
-
-async function fetchItems(region: Region, dataDir: string, imgDir: string) {
-    const boeIds = getBoeIds()
-
-    await batchRequests(boeIds.length, async(idx) => {
-        const item = new Item(region, boeIds[idx], dataDir, imgDir)
-        await item.fetch()
-    })
-}
+import path from 'path'
+import { getAllBoeIds } from '@/common/utils'
+import { batchRequests } from '@/cron/utils/batchRequests'
+import { Item } from '@/cron/models/Item'
+import { fetchRegions } from './utils/fetchRegions'
+import { mkdirp } from './utils/mkdirp'
 
 async function main() {
-    if (process.argv.length !== 5) {
+    if (process.argv.length !== 4) {
         console.info(process.argv)
-        throw new Error('Expected dataDir, auctionsDir, imgDir as arguments')
+        throw new Error('Expected dataDir, imgDir as arguments')
     }
 
-    const dataDir = process.argv[2]
-    const auctionsDir = process.argv[3]
-    const imgDir = process.argv[4]
-    console.info('dataDir     =', dataDir)
-    console.info('auctionsDir =', auctionsDir)
-    console.info('imgDir      =', imgDir)
+    const dataDir = path.resolve(process.argv[2])
+    const imgDir = path.resolve(process.argv[3])
+    console.table({
+        dataDir,
+        imgDir,
+    })
 
-    const regions = await fetchRegions(dataDir, auctionsDir)
+    mkdirp(dataDir)
+    mkdirp(imgDir)
 
+    const regions = await fetchRegions(dataDir)
     for (const region of regions) {
-        await fetchItems(region, dataDir, imgDir)
-    }
+        const boeIds = getAllBoeIds()
+        await batchRequests(boeIds.length, async(idx) => {
+            const item = new Item(region, boeIds[idx], dataDir, imgDir)
+            await item.fetch()
+        })
 
-    console.info('Cron Script Finished')
+        if (DEFINE.IS_DEV) {
+            break
+        }
+    }
 }
 
 main()
     .then(() => {
+        console.info('Cron Script Finished')
         process.exit(0)
     })
     .catch((err) => {
         const error = err as Error
-        console.error('Cron Script Failed:', error.name, error.message)
-
-        if (DEFINE.IS_DEV) {
-            console.error(error.stack)
-        }
-
+        console.warn('Cron Script Failed')
+        console.warn(error.stack)
         process.exit(1)
     })

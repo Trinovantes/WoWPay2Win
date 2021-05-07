@@ -1,11 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import querystring from 'querystring'
 import { IncomingMessage } from 'http'
-
-import Constants from '@common/Constants'
-import { sleep } from '@common/utils'
-import { IOauthResponse } from '@cron/api/Responses'
-import { Region } from '@cron/models/Region'
+import { BnetOauthResponse } from '@/cron/api/Responses'
+import { Region } from '@/cron/models/Region'
+import { getSecret, Secrets } from '@/cron/utils/secrets'
+import { tryExponentialBackoff } from '@/cron/utils/tryExponentialBackoff'
 
 export class ApiAccessor<T> {
     readonly endpoint: string
@@ -18,7 +16,7 @@ export class ApiAccessor<T> {
         this.region = region
     }
 
-    private get accessToken(): string {
+    private get _accessToken(): string {
         if (!this.region.accessToken) {
             throw new Error('Region does not have accessToken')
         }
@@ -27,11 +25,8 @@ export class ApiAccessor<T> {
     }
 
     async fetchAccessToken(): Promise<string> {
-        const user = process.env.CLIENT_ID
-        const pass = process.env.CLIENT_SECRET
-        if (!user || !pass) {
-            throw new Error('Cannnot find CLIENT_ID or CLIENT_SECRET in env')
-        }
+        const user = getSecret(Secrets.CLIENT_ID)
+        const pass = getSecret(Secrets.CLIENT_SECRET)
 
         console.debug('Fetching', this.region.config.oauthEndpoint)
 
@@ -47,12 +42,16 @@ export class ApiAccessor<T> {
             },
         })
 
-        if (response) {
-            const data = response.data as IOauthResponse
-            return data.access_token
-        } else {
-            return ''
+        if (!response) {
+            throw new Error('Failed to get access token')
         }
+
+        if (response.status !== 200) {
+            throw new Error(`Authentication returned ${response.status}: ${JSON.stringify(response.data)}`)
+        }
+
+        const data = response.data as BnetOauthResponse
+        return data.access_token
     }
 
     async fetch(isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
@@ -64,7 +63,7 @@ export class ApiAccessor<T> {
             method: 'GET',
             url: this.endpoint,
             headers: {
-                Authorization: `Bearer ${this.accessToken}`,
+                Authorization: `Bearer ${this._accessToken}`,
             },
             params: {
                 regionSlug: this.region.config.slug,
@@ -85,46 +84,4 @@ export class ApiAccessor<T> {
 
         return response?.data as IncomingMessage
     }
-}
-
-async function tryExponentialBackoff<T>(config: AxiosRequestConfig, isValidResponse?: (data: T | null) => string | null): Promise<AxiosResponse | null> {
-    // Retry with exponential backoff if server is temporarily unavilable
-    for (let attempt = 0; attempt < Constants.MAX_API_RETRIES; attempt++) {
-        try {
-            return await new Promise((resolve, reject) => {
-                const timeoutId = setTimeout(() => {
-                    reject(new Error(`Request timeout: ${config.url}`))
-                }, Constants.API_TIMEOUT)
-
-                axios(config)
-                    .then((response) => {
-                        const errorMessage = isValidResponse?.(response?.data)
-                        if (errorMessage) {
-                            throw new Error(errorMessage)
-                        }
-
-                        // If the request didn't throw, then we can exit the loop early
-                        resolve(response)
-                    })
-                    .catch((err) => {
-                        reject(err)
-                    })
-                    .finally(() => {
-                        clearTimeout(timeoutId)
-                    })
-            })
-        } catch (err) {
-            const error = err as Error
-            const delay = Math.round(Math.exp(attempt) * 1000)
-
-            const isMaxAttempts = (attempt === Constants.MAX_API_RETRIES - 1)
-            const retryMsg = isMaxAttempts ? '' : `Retrying after ${delay}ms`
-
-            console.info(error.message, retryMsg)
-            await sleep(delay)
-        }
-    }
-
-    // If after all our attempts and the op fails, the script should proceed assuming no data
-    return null
 }

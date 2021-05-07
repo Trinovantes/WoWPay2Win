@@ -1,0 +1,38 @@
+# -----------------------------------------------------------------------------
+FROM node:14 as builder
+# -----------------------------------------------------------------------------
+
+WORKDIR /app
+
+# Install node_modules first since they rarely change and can be more aggressively cached by Docker
+COPY tsconfig.json ./
+COPY yarn.lock package.json ./
+RUN yarn install
+
+# Build app
+COPY build/ ./build/
+COPY src/   ./src/
+
+RUN yarn buildCron
+
+# -----------------------------------------------------------------------------
+FROM node:14-alpine3.10 as cron
+LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
+# -----------------------------------------------------------------------------
+
+ENV NODE_ENV 'production'
+
+WORKDIR /app
+
+# Mount points
+RUN mkdir -p ./dist/web/data
+RUN mkdir -p ./src/web/assets/data
+
+COPY --from=builder /app/yarn.lock      ./
+COPY --from=builder /app/package.json   ./
+RUN yarn install
+
+COPY --from=builder /app/dist ./dist
+RUN echo "30 * * * * cd /app && yarn fetchAuctions" >> /etc/crontabs/root
+
+CMD crond -f

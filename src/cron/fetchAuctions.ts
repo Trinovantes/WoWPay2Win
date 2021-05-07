@@ -1,5 +1,7 @@
-import fetchRegions from './utils'
-import unrecognizedBonusIdTracker from '@cron/utils/UnrecognizedBonusIdTracker'
+import { fetchRegions } from './utils/fetchRegions'
+import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
+import path from 'path'
+import { mkdirp } from './utils/mkdirp'
 
 async function main() {
     if (process.argv.length !== 4) {
@@ -7,35 +9,35 @@ async function main() {
         throw new Error('Expected dataDir and auctionsDir as arguments')
     }
 
-    const dataDir = process.argv[3]
-    const auctionsDir = process.argv[4]
-    console.info('dataDir     =', dataDir)
-    console.info('auctionsDir =', auctionsDir)
+    const dataDir = path.resolve(process.argv[2])
+    const auctionsDir = path.resolve(process.argv[3])
+    console.table({
+        dataDir,
+        auctionsDir,
+    })
+
+    mkdirp(dataDir)
+    mkdirp(auctionsDir)
 
     const regions = await fetchRegions(dataDir, auctionsDir)
-
     for (const region of regions) {
         await region.fetchAuctions()
+
+        if (DEFINE.IS_DEV) {
+            break
+        }
     }
 
-    console.info('Cron Script Finished')
-
-    if (DEFINE.IS_DEV) {
-        unrecognizedBonusIdTracker.print()
-    }
+    unrecognizedBonusIdTracker.print()
 }
 
 main()
     .then(() => {
+        console.info('Cron Script Finished')
         process.exit(0)
-    })
-    .catch((err) => {
+    }).catch((err) => {
         const error = err as Error
-        console.error('Cron Script Failed:', error.name, error.message)
-
-        if (DEFINE.IS_DEV) {
-            console.error(error.stack)
-        }
-
+        console.warn('Cron Script Failed')
+        console.warn(error.stack)
         process.exit(1)
     })

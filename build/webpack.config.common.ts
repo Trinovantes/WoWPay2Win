@@ -1,8 +1,25 @@
 import path from 'path'
 import webpack, { DefinePlugin } from 'webpack'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import { VueLoaderPlugin } from 'vue-loader'
 
-import { isDev, staticDir, srcDir, srcWebDir } from './webpack.constants'
+// ----------------------------------------------------------------------------
+// Constants
+// ----------------------------------------------------------------------------
+
+export const isDev = (process.env.NODE_ENV === 'development')
+
+// Assume we are running webpack from the project root (../)
+const rootDir = path.resolve()
+
+const distDir = path.resolve(rootDir, 'dist')
+export const distCronDir = path.resolve(distDir, 'cron')
+export const distWebDir = path.resolve(distDir, 'web')
+
+export const srcDir = path.resolve(rootDir, 'src')
+export const srcCronDir = path.resolve(srcDir, 'cron')
+export const srcWebDir = path.resolve(srcDir, 'web')
+export const staticDir = path.resolve(srcDir, 'web', 'static')
 
 // ----------------------------------------------------------------------------
 // Common
@@ -12,34 +29,33 @@ export const commonConfig: webpack.Configuration = {
     mode: isDev
         ? 'development'
         : 'production',
-    devtool: isDev
-        ? 'source-map'
-        : false,
+    devtool: 'source-map',
 
     resolve: {
-        symlinks: false,
         extensions: ['.ts', '.js', '.vue', '.json', '.scss', '.css'],
         alias: {
             // Need to match aliases in tsconfig.json
-            '@static': staticDir,
-            '@common': path.resolve(srcDir, 'common'),
-            '@cron': path.resolve(srcDir, 'cron'),
-            '@web': path.resolve(srcDir, 'web'),
-
-            '@views': path.resolve(srcWebDir, 'views'),
-            '@router': path.resolve(srcWebDir, 'router'),
-            '@store': path.resolve(srcWebDir, 'store'),
-
-            '@css': path.resolve(srcWebDir, 'assets/css'),
-            '@img': path.resolve(srcWebDir, 'assets/img'),
-            '@data': path.resolve(srcWebDir, 'assets/data'),
-
-            // https://github.com/vuejs-templates/webpack/issues/215
-            vue: isDev
-                ? 'vue/dist/vue.js'
-                : 'vue/dist/vue.min.js',
+            '@': path.resolve(srcDir),
         },
     },
+
+    plugins: [
+        new DefinePlugin({
+            __VUE_OPTIONS_API__: JSON.stringify(false),
+            __VUE_PROD_DEVTOOLS__: JSON.stringify(true),
+
+            'DEFINE.IS_DEV': JSON.stringify(isDev),
+        }),
+        new MiniCssExtractPlugin({
+            filename: isDev
+                ? '[name].css'
+                : '[name].[contenthash].css',
+            chunkFilename: isDev
+                ? '[name].css'
+                : '[name].[contenthash].css',
+        }),
+        new VueLoaderPlugin(),
+    ],
 
     module: {
         rules: [
@@ -58,60 +74,32 @@ export const commonConfig: webpack.Configuration = {
                 use: 'vue-loader',
             },
             {
-                test: /\.s(a|c)ss$/,
+                test: /\.(sass|scss)$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    isDev
+                        ? 'style-loader'
+                        : MiniCssExtractPlugin.loader,
                     'css-loader',
                     {
                         loader: 'sass-loader',
                         options: {
                             additionalData: (content: string, loaderContext: { resourcePath: string }): string => {
                                 return (loaderContext.resourcePath.endsWith('sass'))
-                                    ? '@import "@css/variables.scss"\n' + content
-                                    : '@import "@css/variables.scss";' + content
+                                    ? '@import "@/web/assets/css/variables.scss"\n' + content
+                                    : '@import "@/web/assets/css/variables.scss";' + content
                             },
                         },
                     },
                 ],
             },
             {
-                test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader',
-                ],
-            },
-            {
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 10 * 1024 * 1024,
-                            name: 'img/[name].[contenthash].[ext]',
-                            esModule: false,
-                        },
-                    },
-                ],
+                test: /\.(jpe?g|png|gif|svg|webp)$/i,
+                type: 'asset/inline',
             },
             {
                 test: /\.(ttf|eot|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'url-loader',
+                type: 'asset',
             },
         ],
     },
-
-    plugins: [
-        new MiniCssExtractPlugin({
-            filename: isDev
-                ? '[name].css'
-                : '[name].[contenthash].css',
-            chunkFilename: isDev
-                ? '[id].css'
-                : '[id].[contenthash].css',
-        }),
-        new DefinePlugin({
-            'DEFINE.IS_DEV': JSON.stringify(isDev),
-        }),
-    ],
 }

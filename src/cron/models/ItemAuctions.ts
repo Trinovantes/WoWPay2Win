@@ -1,9 +1,11 @@
-import { checkIsBonusIlvl, checkIsSocket, checkIsTertiary, isCorruptionBonusId, Tertiary } from '@common/Bonuses'
-import { IItemAuctionCache } from '@common/ICache'
-import unrecognizedBonusIdTracker from '@cron/utils/UnrecognizedBonusIdTracker'
+import { checkIsBonusIlvl, checkIsDifficultyId, checkIsSocket, checkIsTertiary, isCorruptionBonusId, Tertiary } from '@/common/BonusId'
+import { ItemAuctionData } from '@/common/Data'
+import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
 
 // ----------------------------------------------------------------------------
 // ItemAuction
+//
+// A specific instance of an auction
 // ----------------------------------------------------------------------------
 
 export class ItemAuction {
@@ -30,9 +32,15 @@ export class ItemAuction {
                 continue
             }
 
+            if (checkIsDifficultyId(bonusId)) {
+                continue
+            }
+
             const bonusIlvl = checkIsBonusIlvl(bonusId)
-            if (bonusIlvl) {
-                this.bonusIlvl = bonusIlvl
+            if (bonusIlvl !== undefined) {
+                if (bonusIlvl !== 0) {
+                    this.bonusIlvl = bonusIlvl
+                }
                 continue
             }
 
@@ -52,7 +60,7 @@ export class ItemAuction {
         }
     }
 
-    export(): IItemAuctionCache {
+    export(): ItemAuctionData {
         return {
             id: this.id,
             crId: this.crId,

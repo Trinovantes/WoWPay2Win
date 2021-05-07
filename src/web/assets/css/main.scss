@@ -1,13 +1,20 @@
 @import 'material-design-icons-iconfont/dist/material-design-icons.css';
 @import 'quasar/src/css/index.sass';
 
+// ----------------------------------------------------------------------------
+// Typography
+// ----------------------------------------------------------------------------
+
 body.body--dark{
     color: $text;
+    font-size: 1rem;
+    line-height: $line-height;
 }
 
 a{
     color: $secondary;
     text-decoration: none;
+    transition: 0.25s;
 
     &:hover{
         text-decoration: underline;

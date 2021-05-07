@@ -1,36 +1,44 @@
-import Vue, { ComponentOptions, CreateElement } from 'vue'
+import './assets/css/main.scss'
+import { createApp } from 'vue'
+import { createAppRouter } from './router'
+import { createFilterStore, filterInjectionKey } from './store/Filter'
+import { auctionsInjectionKey, createAuctionsStore } from './store/Auctions'
+import AppLoader from './components/AppLoader.vue'
+import { Quasar } from 'quasar'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 
-// ----------------------------------------------------------------------------
-// Quasar
-// ----------------------------------------------------------------------------
+dayjs.extend(relativeTime)
+dayjs.extend(localizedFormat)
 
-import Quasar from 'quasar'
+async function main() {
+    // Vue
+    const app = createApp(AppLoader)
 
-Vue.use(Quasar, {
-    config: {
-        dark: true,
-    },
-})
+    // Vue Router
+    const router = createAppRouter()
+    app.use(router)
+    await router.isReady()
 
-// ----------------------------------------------------------------------------
-// App
-// ----------------------------------------------------------------------------
+    // Vuex
+    const filterStore = await createFilterStore(router)
+    app.use(filterStore, filterInjectionKey)
 
-import '@css/main.scss'
+    const auctionsStore = await createAuctionsStore(filterStore)
+    app.use(auctionsStore, auctionsInjectionKey)
 
-import App from '@views/App.vue'
-import AppRouter from '@router/AppRouter'
-import AppStore from '@store/AppStore'
+    // Quasar
+    app.use(Quasar, {
+        config: {
+            dark: true,
+        },
+    })
 
-const appOptions: ComponentOptions<Vue> = {
-    router: AppRouter,
-    store: AppStore,
-    render: (createElement: CreateElement) => {
-        return createElement(App)
-    },
+    app.mount('#app')
 }
 
-const app = new Vue(appOptions)
-AppRouter.onReady(() => {
-    app.$mount('#app', true)
+main().catch((err) => {
+    const error = err as Error
+    console.warn(error)
 })

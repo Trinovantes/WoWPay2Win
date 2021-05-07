@@ -1,7 +1,5 @@
 import { merge } from 'webpack-merge'
-
-import { commonConfig } from './webpack.config.common'
-import { srcCronDir, distCronDir } from './webpack.constants'
+import { commonConfig, srcCronDir, distCronDir } from './webpack.config.common'
 
 // ----------------------------------------------------------------------------
 // Cron
@@ -14,10 +12,8 @@ export default merge(commonConfig, {
         fetchAuctions: `${srcCronDir}/fetchAuctions.ts`,
         fetchItems: `${srcCronDir}/fetchItems.ts`,
     },
+
     output: {
         path: distCronDir,
-
-        // Needed by VSCode debugger to find original aliased paths
-        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     },
 })

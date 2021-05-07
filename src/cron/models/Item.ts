@@ -1,21 +1,27 @@
 import { existsSync, createWriteStream } from 'fs'
 import path from 'path'
+import { Locale } from '@/common/Constants'
+import { Data, ItemData } from '@/common/Data'
+import { BnetItemMediaResponse, BnetItemResponse } from '@/cron/api/Responses'
+import { ApiAccessor } from '@/cron/api/ApiAccessor'
+import { Region } from '@/cron/models/Region'
+import { Cacheable } from '@/cron/models/Cacheable'
 
-import { Locale } from '@common/Constants'
-import { ICache, IItemCache } from '@common/ICache'
-import { IItemMediaResponse, IItemResponse } from '@cron/api/Responses'
-import { ApiAccessor } from '@cron/api/ApiAccessor'
-import { Region } from '@cron/models/Region'
-import { Cacheable } from '@cron/models/Cacheable'
+// ----------------------------------------------------------------------------
+// Item
+//
+// High level information about an Item
+// This has no relation to specific instances of items in game
+// ----------------------------------------------------------------------------
 
 export class Item extends Cacheable {
     readonly iconPath: string
-    readonly itemAccessor: ApiAccessor<IItemResponse>
-    readonly itemMediaAccessor: ApiAccessor<IItemMediaResponse>
+    readonly itemAccessor: ApiAccessor<BnetItemResponse>
+    readonly itemMediaAccessor: ApiAccessor<BnetItemMediaResponse>
 
     readonly region: Region
     readonly id: number
-    localizedName: { [key in Locale]?: string }
+    localizedName: Partial<Record<Locale, string>>
     baseLevel: number
     iconUrl: string | null
 
@@ -37,7 +43,7 @@ export class Item extends Cacheable {
     }
 
     import(fileContents: string): boolean {
-        const cachedItem = JSON.parse(fileContents) as IItemCache
+        const cachedItem = JSON.parse(fileContents) as ItemData
 
         this.localizedName = cachedItem.localizedName
         this.baseLevel = cachedItem.baseLevel
@@ -54,8 +60,8 @@ export class Item extends Cacheable {
         return true
     }
 
-    export(): ICache {
-        const cachedItem: IItemCache = {
+    export(): Data {
+        const cachedItem: ItemData = {
             localizedName: this.localizedName,
             baseLevel: this.baseLevel,
             iconUrl: this.iconUrl,
@@ -67,7 +73,7 @@ export class Item extends Cacheable {
     async fetch(): Promise<void> {
         console.info(`Item::fetch ${this.toString()}`)
 
-        if (await this.loadFromCache()) {
+        if (await this.loadDataFromCache()) {
             console.debug(`Loaded ${this.toString()} from ${this.cacheFile}`)
             return
         }
@@ -95,7 +101,7 @@ export class Item extends Cacheable {
         }
 
         console.debug(`Saving ${this.toString()} to ${this.cacheFile}`)
-        await this.saveToCache()
+        await this.saveDataToCache()
     }
 
     private async downloadMedia(): Promise<void> {

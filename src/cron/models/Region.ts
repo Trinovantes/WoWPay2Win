@@ -1,26 +1,31 @@
 import path from 'path'
-import { existsSync, mkdirSync } from 'fs'
+import { RegionConfig } from '@/common/Constants'
+import { RegionAuctionsData, Data, RegionCache } from '@/common/Data'
+import { batchRequests } from '@/cron/utils/batchRequests'
+import { BnetRegionResponse } from '@/cron/api/Responses'
+import { ApiAccessor } from '@/cron/api/ApiAccessor'
+import { ConnectedRealm } from '@/cron/models/ConnectedRealm'
+import { Cacheable, saveDataToCache } from '@/cron/models/Cacheable'
+import { Realm } from '@/cron/models/Realm'
 
-import { RegionConfig } from '@common/Constants'
-import { IAuctionsCache, ICache, IRegionCache } from '@common/ICache'
-import { batchRequests } from '@common/utils'
-
-import { IRegionResponse } from '@cron/api/Responses'
-import { ApiAccessor } from '@cron/api/ApiAccessor'
-import { saveCacheToFile } from '@cron/utils'
-import { ConnectedRealm } from '@cron/models/ConnectedRealm'
-import { Cacheable } from '@cron/models/Cacheable'
-import { Realm } from '@cron/models/Realm'
+// ----------------------------------------------------------------------------
+// Region (us, eu, tw, kr)
+//
+// A Region has multiple ConnectedRealms
+// A ConnectedRealm has
+//  - 1 to N Realms
+//  - 0 to N ItemAuctions
+// ----------------------------------------------------------------------------
 
 export class Region extends Cacheable {
-    readonly regionAccessor: ApiAccessor<IRegionResponse>
+    readonly regionAccessor: ApiAccessor<BnetRegionResponse>
 
     readonly config: RegionConfig
-    readonly auctionsDir: string
+    readonly auctionsDir?: string
     readonly connectedRealms: Array<ConnectedRealm>
     accessToken?: string
 
-    constructor(config: RegionConfig, dataDir: string, auctionsDir: string) {
+    constructor(config: RegionConfig, dataDir: string, auctionsDir?: string) {
         super(path.resolve(dataDir, `region-${config.slug}.json`))
 
         const endpoint = `${config.apiHost}/data/wow/connected-realm/index`
@@ -32,7 +37,7 @@ export class Region extends Cacheable {
     }
 
     protected import(fileContents: string): boolean {
-        const cachedRegion = JSON.parse(fileContents) as IRegionCache
+        const cachedRegion = JSON.parse(fileContents) as RegionCache
 
         for (const cachedConnectedRealm of cachedRegion.connectedRealms) {
             const connectedRealm = new ConnectedRealm(this, cachedConnectedRealm.id)
@@ -47,8 +52,8 @@ export class Region extends Cacheable {
         return true
     }
 
-    protected export(): ICache {
-        const cachedRegion: IRegionCache = {
+    protected export(): Data {
+        const cachedRegion: RegionCache = {
             connectedRealms: [],
         }
 
@@ -63,13 +68,12 @@ export class Region extends Cacheable {
         console.info(`Region::fetch ${this.toString()}`)
         this.accessToken = await this.regionAccessor.fetchAccessToken()
 
-        if (await this.loadFromCache()) {
+        if (await this.loadDataFromCache()) {
             console.debug(`Loaded ${this.connectedRealms.length} realms from ${this.cacheFile}`)
             return
         }
 
         const regionResponse = await this.regionAccessor.fetch()
-
         if (regionResponse) {
             await batchRequests(regionResponse.connected_realms.length, async(idx) => {
                 const { href } = regionResponse.connected_realms[idx]
@@ -84,13 +88,12 @@ export class Region extends Cacheable {
         }
 
         console.debug(`Saving ${this.connectedRealms.length} realms to ${this.cacheFile}`)
-        await this.saveToCache()
+        await this.saveDataToCache()
     }
 
     async fetchAuctions(): Promise<void> {
-        if (!existsSync(this.auctionsDir)) {
-            console.debug(`${this.auctionsDir} does not exist. Attempting to mkdir`)
-            mkdirSync(this.auctionsDir, { recursive: true })
+        if (!this.auctionsDir) {
+            throw new Error(`${this.toString()} initialized without auctionsDir`)
         }
 
         console.info(`Region::fetchAuctions ${this.toString()}`)
@@ -100,7 +103,7 @@ export class Region extends Cacheable {
         })
 
         let totalAuctions = 0
-        const auctionsCache: IAuctionsCache = {
+        const auctionsCache: RegionAuctionsData = {
             lastUpdate: Date.now(),
             auctions: [],
         }
@@ -114,7 +117,7 @@ export class Region extends Cacheable {
 
         const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.config.slug}.json`)
         console.debug(`Saving ${totalAuctions} auctions to ${auctionCacheFile}`)
-        await saveCacheToFile(auctionCacheFile, auctionsCache)
+        await saveDataToCache(auctionCacheFile, auctionsCache)
     }
 
     toString(): string {

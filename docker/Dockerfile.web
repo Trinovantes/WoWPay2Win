@@ -1,0 +1,31 @@
+# -----------------------------------------------------------------------------
+FROM node:14 as builder
+# -----------------------------------------------------------------------------
+
+WORKDIR /app
+
+# Install node_modules first since they rarely change and can be more aggressively cached by Docker
+COPY tsconfig.json ./
+COPY yarn.lock package.json ./
+RUN yarn install
+
+# Build app
+COPY build/ ./build/
+COPY src/   ./src/
+
+RUN yarn buildCron
+RUN --mount=type=secret,id=CLIENT_ID \
+    --mount=type=secret,id=CLIENT_SECRET \
+    yarn fetchItems
+
+RUN yarn buildWeb
+
+# -----------------------------------------------------------------------------
+FROM nginx:alpine as web
+LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
+# -----------------------------------------------------------------------------
+
+WORKDIR /app
+
+COPY ./docker/web.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist ./dist

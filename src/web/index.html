@@ -4,16 +4,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><%= require('@common/Constants').default.APP_NAME %></title>
-    <meta name="description" content="<%= require('@common/Constants').default.APP_DESC %>">
+    <title><%= require('@/common/Constants').APP_NAME %></title>
+    <meta name="description" content="<%= require('@/common/Constants').APP_DESC %>">
     <meta property="favicon" content="/favicon.ico">
-    <meta property="og:image" content="/token.jpg" />
-    <meta property="og:description" content="<%= require('@common/Constants').default.OG_DESC %>" />
 
-    <link rel="preconnect" href="https://wow.zamimg.com">
-    <link rel="dns-prefetch" href="https://wow.zamimg.com">
+    <meta property="og:title" content="<%= require('@/common/Constants').APP_NAME %>" />
+    <meta property="og:description" content="<%= require('@/common/Constants').OG_DESC %>" />
+    <meta property="og:image" content="/token-large.png" />
+
+    <meta name="twitter:title" content="<%= require('@/common/Constants').APP_NAME %>" />
+    <meta name="twitter:description" content="<%= require('@/common/Constants').OG_DESC %>" />
+    <meta name="twitter:image" content="/token-large.png" />
+    <meta name="twitter:site" content="@trinovantes" />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="prefetch" href="https://wow.zamimg.com">
     <script>var whTooltips = { colorLinks: false, iconizeLinks: false, renameLinks: false };</script>
-    <script src="https://wow.zamimg.com/widgets/power.js"></script>
+    <script src="https://wow.zamimg.com/widgets/power.js" defer></script>
+
+    <base target="_blank">
 </head>
 <body>
     <div id="app"></div>

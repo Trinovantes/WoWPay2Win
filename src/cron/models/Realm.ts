@@ -1,5 +1,9 @@
-import { IRealmCache } from '@common/ICache'
-import { Region } from '@cron/models/Region'
+import { RealmData } from '@/common/Data'
+import { Region } from '@/cron/models/Region'
+
+// ----------------------------------------------------------------------------
+// Realm
+// ----------------------------------------------------------------------------
 
 export class Realm {
     readonly id: number
@@ -10,7 +14,7 @@ export class Realm {
         this.name = name
     }
 
-    export(): IRealmCache {
+    export(): RealmData {
         return {
             id: this.id,
             name: this.name,

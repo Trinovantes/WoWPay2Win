@@ -1,15 +1,18 @@
-import { getBoeIds } from '@common/Constants'
-import { IConnectedRealmCache } from '@common/ICache'
+import { getAllBoeIds } from '@/common/utils'
+import { ConnectedRealmData } from '@/common/Data'
+import { BnetAuctionsResponse, BnetConnectedRealmResponse } from '@/cron/api/Responses'
+import { ApiAccessor } from '@/cron/api/ApiAccessor'
+import { ItemAuction } from '@/cron/models/ItemAuctions'
+import { Realm } from '@/cron/models/Realm'
+import { Region } from '@/cron/models/Region'
 
-import { IAuctionsResponse, IConnectedRealmResponse } from '@cron/api/Responses'
-import { ApiAccessor } from '@cron/api/ApiAccessor'
-import { ItemAuction } from '@cron/models/ItemAuctions'
-import { Realm } from '@cron/models/Realm'
-import { Region } from '@cron/models/Region'
+// ----------------------------------------------------------------------------
+// ConnectedRealm
+// ----------------------------------------------------------------------------
 
 export class ConnectedRealm {
-    readonly connectedRealmAccessor: ApiAccessor<IConnectedRealmResponse>
-    readonly auctionsAccessor: ApiAccessor<IAuctionsResponse>
+    readonly connectedRealmAccessor: ApiAccessor<BnetConnectedRealmResponse>
+    readonly auctionsAccessor: ApiAccessor<BnetAuctionsResponse>
 
     readonly region: Region
     readonly id: number
@@ -29,8 +32,8 @@ export class ConnectedRealm {
         this.auctions = []
     }
 
-    export(): IConnectedRealmCache {
-        const cachedConnectedRealm: IConnectedRealmCache = {
+    export(): ConnectedRealmData {
+        const cachedConnectedRealm: ConnectedRealmData = {
             id: this.id,
             realms: [],
         }
@@ -71,7 +74,7 @@ export class ConnectedRealm {
             return
         }
 
-        const boeIds: Array<number> = getBoeIds()
+        const boeIds: Array<number> = getAllBoeIds()
         for (const auctionResponse of auctionsResponse.auctions) {
             const itemId = auctionResponse.item.id
             if (!boeIds.includes(itemId)) {
@@ -79,7 +82,7 @@ export class ConnectedRealm {
             }
 
             const id = auctionResponse.id
-            const buyout = Math.round((auctionResponse.buyout || 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
+            const buyout = Math.round((auctionResponse.buyout ?? 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
             const bonuses = auctionResponse.item.bonus_lists || []
 
             if (buyout > 0) {
