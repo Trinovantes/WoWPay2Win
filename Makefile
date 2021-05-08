@@ -87,7 +87,11 @@ run-web: stop-web
 
 build: build-web build-cron
 
+stop: stop-web stop-cron
+
 run: run-web run-cron
+
+all: build run
 
 pull:
 	docker pull $(web-image) --quiet
