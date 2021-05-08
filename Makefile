@@ -37,7 +37,7 @@ stop-cron:
 	docker stop $(cron-container) || true
 	docker rm $(cron-container) || true
 
-run-cron: stop-cron build-cron
+run-cron: stop-cron
 	docker run \
 		--env-file .env \
 		--mount type=bind,source=/var/www/wowpay2win/auctions,target=/app/dist/web/data \
@@ -71,7 +71,7 @@ stop-web:
 	docker stop $(web-container) || true
 	docker rm $(web-container) || true
 
-run-web: stop-web build-web
+run-web: stop-web
 	docker run \
 		--publish 9003:80 \
 		--mount type=bind,source=/var/www/wowpay2win/auctions,target=/app/dist/web/data,readonly \
