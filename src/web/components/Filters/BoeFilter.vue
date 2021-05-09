@@ -77,6 +77,11 @@
             </q-list>
         </div>
     </div>
+    <q-banner v-else>
+        <strong>
+            No BoEs available for {{ tierName }}
+        </strong>
+    </q-banner>
 </template>
 
 <script lang="ts">
@@ -154,6 +159,8 @@ export default defineComponent({
             return getItemNameById(itemId, region.value)
         }
 
+        const tierName = computed(() => TIER_CONFIGS[filterStore.state.tier].name)
+
         return {
             boeCategories,
             selectedBoes,
@@ -167,6 +174,8 @@ export default defineComponent({
             getWowheadLink,
             getItemIcon,
             getItemName,
+
+            tierName,
         }
     },
 })

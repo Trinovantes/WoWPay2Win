@@ -21,7 +21,9 @@
             <TertiaryFilter />
         </div>
         <q-banner v-else>
-            No region selected
+            <strong>
+                No region selected
+            </strong>
         </q-banner>
     </div>
 </template>
