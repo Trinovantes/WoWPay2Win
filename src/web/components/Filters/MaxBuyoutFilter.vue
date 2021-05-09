@@ -25,19 +25,13 @@ export default defineComponent({
         const filterStore = useFilterStore()
 
         const formatter = Intl.NumberFormat(undefined, { maximumFractionDigits: 0 })
-        const formatedMaxBuyout = computed<string>(() => {
-            return formatter.format(filterStore.state.maxBuyout)
-        })
+        const formatedMaxBuyout = computed(() => formatter.format(filterStore.state.maxBuyout))
 
-        const throttledUpdateMaxBuyout = throttle((sliderPosition: number) => {
+        const sliderPosition = ref(convertGoldToPos(filterStore.state.maxBuyout))
+        watch(sliderPosition, throttle((sliderPosition: number) => {
             const maxBuyout = convertPositionToGold(sliderPosition)
             filterStore.commit(FilterMutation.SET_MAX_BUYOUT, maxBuyout)
-        }, 500)
-
-        const sliderPosition = ref(100)
-        watch(sliderPosition, () => {
-            throttledUpdateMaxBuyout(sliderPosition.value)
-        })
+        }, 250))
 
         return {
             formatedMaxBuyout,
@@ -69,5 +63,23 @@ function convertPositionToGold(pos: number): number {
     }
 
     throw new Error(`Invalid slider position for conversion ${pos}`)
+}
+
+function convertGoldToPos(gold: number): number {
+    let posMin = 0
+    let goldMin = 0
+
+    for (const [posMax, goldMax] of SLIDER_TIERS) {
+        if (gold <= goldMax) {
+            const scale = (posMax - posMin) / (goldMax - goldMin)
+            const pos = posMin + scale * (gold - goldMin)
+            return pos
+        }
+
+        posMin = posMax
+        goldMin = goldMax
+    }
+
+    throw new Error(`Invalid gold amount for conversion ${gold}`)
 }
 </script>
