@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from 'dayjs'
 import { deepFreeze } from './utils'
 
 // ----------------------------------------------------------------------------
@@ -120,7 +119,6 @@ export interface IlvlRange {
 export interface TierConfig {
     name: string
     iconPath: string
-    expiration?: Dayjs
     boes: Array<BoeCategory>
     ilvls: IlvlRange & {
         step: number
@@ -187,7 +185,6 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     [Tier.Shadowlands]: {
         name: 'Shadowlands World Drops',
         iconPath: 'shadowlands.png',
-        expiration: dayjs('2020-12-09'),
         boes: [
             {
                 label: 'Trinket',
@@ -269,7 +266,6 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     [Tier.Nyalotha]: {
         name: "Ny'alotha, the Waking City",
         iconPath: 'nyalotha.png',
-        expiration: dayjs('2020-11-23'),
         boes: [
             {
                 label: 'Raid BoEs',
