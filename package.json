@@ -1,8 +1,8 @@
 {
     "private": true,
     "scripts": {
-        "fetchItems": "   node -r dotenv/config dist/cron/fetchItems.js    src/web/assets/data src/web/assets/img",
-        "fetchAuctions": "node -r dotenv/config dist/cron/fetchAuctions.js src/web/assets/data dist/web/data",
+        "fetchItems": "   node -r source-map-support/register -r dotenv/config dist/cron/fetchItems.js    src/web/assets/data src/web/assets/img",
+        "fetchAuctions": "node -r source-map-support/register -r dotenv/config dist/cron/fetchAuctions.js src/web/assets/data dist/web/data",
         "devCron": "  cross-env NODE_ENV=development webpack --watch --config build/webpack.config.cron.ts",
         "devWeb": "   cross-env NODE_ENV=development webpack serve   --config build/webpack.config.web.ts",
         "buildCron": "cross-env NODE_ENV=production  webpack         --config build/webpack.config.cron.ts",
@@ -27,6 +27,7 @@
         "lodash": "^4.17.20",
         "material-design-icons-iconfont": "^6.1.0",
         "quasar": "^2.0.0-beta.12",
+        "source-map-support": "^0.5.19",
         "vue": "^3",
         "vue-router": "^4",
         "vuex": "^4"
