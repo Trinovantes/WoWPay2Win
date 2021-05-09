@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs'
+import { deepFreeze } from './utils'
 
 // ----------------------------------------------------------------------------
 // Default
@@ -34,13 +35,13 @@ export enum Locale {
 }
 
 export interface RegionConfig {
-    readonly slug: RegionSlug
-    readonly locale: Locale
-    readonly apiHost: string
-    readonly oauthEndpoint: string
+    slug: RegionSlug
+    locale: Locale
+    apiHost: string
+    oauthEndpoint: string
 }
 
-export const REGION_CONFIGS: Array<RegionConfig> = [
+export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = deepFreeze([
     {
         slug: RegionSlug.US,
         locale: Locale.EN_US,
@@ -65,7 +66,7 @@ export const REGION_CONFIGS: Array<RegionConfig> = [
         apiHost: 'https://kr.api.blizzard.com',
         oauthEndpoint: 'https://apac.battle.net/oauth/token',
     },
-]
+])
 
 export function getRegionLocale(regionSlug: RegionSlug): Locale {
     for (const regionConfig of REGION_CONFIGS) {
@@ -114,16 +115,16 @@ export interface IlvlRange {
 }
 
 export interface TierConfig {
-    readonly name: string
-    readonly iconPath: string
-    readonly expiration?: Dayjs
-    readonly boes: Array<BoeCategory>
-    readonly ilvls: IlvlRange & {
+    name: string
+    iconPath: string
+    expiration?: Dayjs
+    boes: Array<BoeCategory>
+    ilvls: IlvlRange & {
         step: number
     }
 }
 
-export const TIER_CONFIGS: {[key in Tier]: TierConfig} = {
+export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     [Tier.CastleNathria]: {
         name: 'Castle Nathria',
         iconPath: 'castle-nathria.png',
@@ -276,4 +277,4 @@ export const TIER_CONFIGS: {[key in Tier]: TierConfig} = {
             step: 15,
         },
     },
-}
+})

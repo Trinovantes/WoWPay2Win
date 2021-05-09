@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { IlvlRange, Tier, TIER_CONFIGS } from './Constants'
 
 export function sleep(ms: number): Promise<void> {
@@ -8,6 +9,20 @@ export function sleep(ms: number): Promise<void> {
     })
 }
 
+export function deepFreeze<T>(obj: T): T {
+    if (typeof obj !== 'object') {
+        return obj
+    }
+
+    for (const key of Object.getOwnPropertyNames(obj) as Array<keyof T>) {
+        if (typeof obj[key] === 'object') {
+            obj[key] = deepFreeze(obj[key])
+        }
+    }
+
+    return Object.freeze(obj)
+}
+
 export function getIlvlRange(tier: Tier | null): IlvlRange {
     if (!tier) {
         return {
@@ -16,7 +31,7 @@ export function getIlvlRange(tier: Tier | null): IlvlRange {
         }
     }
 
-    return TIER_CONFIGS[tier].ilvls
+    return Object.assign({}, TIER_CONFIGS[tier].ilvls)
 }
 
 export function getTierBoeIds(tier: Tier | null): Array<number> {
