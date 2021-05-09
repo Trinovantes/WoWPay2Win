@@ -2,6 +2,14 @@ import { fetchRegions } from './utils/fetchRegions'
 import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
 import path from 'path'
 import { mkdirp } from './utils/mkdirp'
+import { SENTRY_DSN } from '@/common/Constants'
+import * as Sentry from '@sentry/node'
+
+Sentry.init({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: 1.0,
+    enabled: !DEFINE.IS_DEV,
+})
 
 async function main() {
     if (process.argv.length !== 4) {
@@ -19,13 +27,29 @@ async function main() {
     mkdirp(dataDir)
     mkdirp(auctionsDir)
 
-    const regions = await fetchRegions(dataDir, auctionsDir)
-    for (const region of regions) {
-        await region.fetchAuctions()
+    const transaction = Sentry.startTransaction({
+        op: 'fetchAuctions',
+        name: 'Fetch Auctions Cron Job',
+    })
 
-        if (DEFINE.IS_DEV) {
-            break
+    try {
+        const child = transaction.startChild({ op: 'fetchRegions' })
+        const regions = await fetchRegions(dataDir, auctionsDir)
+        child.finish()
+
+        for (const region of regions) {
+            const child = transaction.startChild({ op: `fetchAuctions:${region.config.slug}` })
+            await region.fetchAuctions()
+            child.finish()
+
+            if (DEFINE.IS_DEV) {
+                break
+            }
         }
+    } catch (err) {
+        Sentry.captureException(err)
+    } finally {
+        transaction.finish()
     }
 
     unrecognizedBonusIdTracker.print()
@@ -33,11 +57,11 @@ async function main() {
 
 main()
     .then(() => {
-        console.info('Cron Script Finished')
+        console.info('fetchAuctions Finished')
         process.exit(0)
     }).catch((err) => {
         const error = err as Error
-        console.warn('Cron Script Failed')
+        console.warn('fetchAuctions Failed')
         console.warn(error.stack)
         process.exit(1)
     })

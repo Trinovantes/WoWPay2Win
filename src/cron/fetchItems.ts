@@ -37,12 +37,12 @@ async function main() {
 
 main()
     .then(() => {
-        console.info('Cron Script Finished')
+        console.info('fetchItems Finished')
         process.exit(0)
     })
     .catch((err) => {
         const error = err as Error
-        console.warn('Cron Script Failed')
+        console.warn('fetchItems Failed')
         console.warn(error.stack)
         process.exit(1)
     })

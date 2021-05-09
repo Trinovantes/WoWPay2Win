@@ -16,6 +16,8 @@ export const MAX_API_RETRIES = DEFINE.IS_DEV ? 1 : 5
 export const GOLD_CAP = 10 * 1000 * 1000
 export const ROWS_PER_PAGE = 50
 
+export const SENTRY_DSN = 'https://ba1fbe840db046beb61f9ae59e888924@o504161.ingest.sentry.io/5590531'
+
 // ----------------------------------------------------------------------------
 // Region
 // ----------------------------------------------------------------------------

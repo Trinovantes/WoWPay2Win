@@ -18,6 +18,9 @@
         ]
     },
     "dependencies": {
+        "@sentry/browser": "^6.3.5",
+        "@sentry/node": "^6.3.5",
+        "@sentry/tracing": "^6.3.5",
         "axios": "^0.21.1",
         "dayjs": "^1.9.5",
         "dotenv": "^9.0.0",
