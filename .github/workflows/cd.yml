@@ -60,7 +60,7 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
-          sourcemaps: ./dist/web/cron ./dist/web/web
+          sourcemaps: ./dist/web ./dist/cron
 
   deploy:
     needs: build
