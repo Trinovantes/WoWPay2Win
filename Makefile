@@ -14,7 +14,15 @@ cron-dockerfile = ./docker/Dockerfile.cron
 cron-container = wowpay2win-cron
 cron-image = ghcr.io/trinovantes/$(cron-container)
 
-.PHONY: build-cron build-web stop-cron stop-web run-cron run-web pull push clean
+.PHONY: all build-cron build-web stop-cron stop-web run-cron run-web pull push clean
+
+all: build run
+
+build: build-web build-cron
+
+stop: stop-web stop-cron
+
+run: run-web run-cron
 
 # -----------------------------------------------------------------------------
 # Cron
@@ -89,14 +97,6 @@ run-web: stop-web
 # -----------------------------------------------------------------------------
 # Maintenance
 # -----------------------------------------------------------------------------
-
-build: build-web build-cron
-
-stop: stop-web stop-cron
-
-run: run-web run-cron
-
-all: build run
 
 pull:
 	docker pull $(web-image) --quiet
