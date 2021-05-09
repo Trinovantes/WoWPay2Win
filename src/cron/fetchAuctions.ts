@@ -4,6 +4,9 @@ import path from 'path'
 import { mkdirp } from './utils/mkdirp'
 import { SENTRY_DSN } from '@/common/Constants'
 import * as Sentry from '@sentry/node'
+import * as Tracing from '@sentry/tracing'
+
+Tracing.addExtensionMethods()
 
 Sentry.init({
     dsn: SENTRY_DSN,
