@@ -102,6 +102,7 @@ export enum Tier {
     // Shadowlands
     Shadowlands = 'shadowlands',
     CastleNathria = 't26',
+    SanctumOfDomination = 't27',
 }
 
 export const DEFAULT_TIER = Tier.CastleNathria
@@ -127,6 +128,16 @@ export interface TierConfig {
 }
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
+    [Tier.SanctumOfDomination]: {
+        name: 'Sanctum of Domination',
+        iconPath: 'shadowlands.png', // TODO
+        boes: [], // TODO
+        ilvls: {
+            min: 213,
+            max: 252,
+            step: 13,
+        },
+    },
     [Tier.CastleNathria]: {
         name: 'Castle Nathria',
         iconPath: 'castle-nathria.png',
