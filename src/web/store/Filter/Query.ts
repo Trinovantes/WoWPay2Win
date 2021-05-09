@@ -66,7 +66,7 @@ export function importQuery(queryFilters: QueryFilters): FilterState {
             importedFilters.ilvlRange.min = Math.max(min, importedFilters.ilvlRange.min)
         }
         if (!isNaN(max)) {
-            importedFilters.ilvlRange.min = Math.min(max, importedFilters.ilvlRange.max)
+            importedFilters.ilvlRange.max = Math.min(max, importedFilters.ilvlRange.max)
         }
     }
 
