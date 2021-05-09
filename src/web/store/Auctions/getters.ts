@@ -29,10 +29,6 @@ export interface AuctionsGetters {
 export const getters: GetterTree<AuctionsState, AuctionsState> & AuctionsGetters = {
     [AuctionsGetter.FILTERED_AUCTIONS]: () => {
         return (filterState) => {
-            if (!filterState.tier) {
-                return []
-            }
-
             if (!filterState.region) {
                 return []
             }

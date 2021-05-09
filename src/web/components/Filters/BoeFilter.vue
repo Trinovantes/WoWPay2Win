@@ -1,10 +1,10 @@
 <template>
     <div
-        v-if="categories.length > 0"
+        v-if="boeCategories.length > 0"
         class="group boes"
     >
         <div
-            v-for="category of categories"
+            v-for="category of boeCategories"
             :key="category.label"
         >
             <h2>
@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { BoeCategory, TIER_CONFIGS } from '@/common/Constants'
+import { TIER_CONFIGS } from '@/common/Constants'
 import { useFilterStore } from '@/web/store/Filter'
 import { FilterMutation } from '@/web/store/Filter/mutations'
 import { computed, defineComponent } from 'vue'
@@ -88,11 +88,11 @@ import { getItemIcon } from '@/web/utils/ImageLoader'
 import { getItemNameById, getWowheadItemLinkById } from '@/web/utils/GameData'
 
 type SelectedBoes = Array<number>
-type BoeCategories = Array<BoeCategory>
 
 export default defineComponent({
     setup() {
         const filterStore = useFilterStore()
+        const boeCategories = computed(() => TIER_CONFIGS[filterStore.state.tier].boes)
         const selectedBoes = computed<SelectedBoes>({
             get() {
                 return [...filterStore.state.boes]
@@ -110,7 +110,6 @@ export default defineComponent({
 
             filterStore.commit(FilterMutation.SET_BOES, currentSelected)
         }
-
         const toggleNone = (idsToRemove: Set<number>) => {
             const currentSelected = new Set(filterStore.state.boes)
             for (const id of idsToRemove) {
@@ -129,7 +128,6 @@ export default defineComponent({
 
             return true
         }
-
         const isNoneActive = (idsToCheck: SelectedBoes): boolean => {
             for (const id of idsToCheck) {
                 if (selectedBoes.value.includes(id)) {
@@ -140,14 +138,6 @@ export default defineComponent({
             return true
         }
 
-        const categories = computed<BoeCategories>(() => {
-            if (filterStore.state.tier) {
-                return TIER_CONFIGS[filterStore.state.tier].boes
-            } else {
-                return []
-            }
-        })
-
         const region = computed(() => filterStore.state.region)
         const getWowheadLink = (itemId: number) => {
             if (!region.value) {
@@ -156,7 +146,6 @@ export default defineComponent({
 
             return getWowheadItemLinkById(itemId, region.value)
         }
-
         const getItemName = (itemId: number) => {
             if (!region.value) {
                 return ''
@@ -166,7 +155,7 @@ export default defineComponent({
         }
 
         return {
-            categories,
+            boeCategories,
             selectedBoes,
 
             toggleAll,

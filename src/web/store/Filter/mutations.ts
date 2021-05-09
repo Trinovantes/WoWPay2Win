@@ -1,8 +1,8 @@
 import { Tertiary } from '@/common/BonusId'
-import { IlvlRange } from '@/common/Constants'
+import { IlvlRange, Tier } from '@/common/Constants'
 import { getIlvlRange } from '@/common/utils'
 import { MutationTree } from 'vuex'
-import { FilterState, RegionFilter, TierFilter } from '.'
+import { FilterState, RegionFilter } from '.'
 
 // ----------------------------------------------------------------------------
 // Interfaces
@@ -24,7 +24,7 @@ export enum FilterMutation {
 // ----------------------------------------------------------------------------
 
 export interface FilterMutations {
-    [FilterMutation.SET_TIER]: (state: FilterState, payload?: TierFilter) => void
+    [FilterMutation.SET_TIER]: (state: FilterState, payload?: Tier) => void
     [FilterMutation.SET_REGION]: (state: FilterState, payload?: RegionFilter) => void
     [FilterMutation.SET_REALMS]: (state: FilterState, payload?: Set<number>) => void
     [FilterMutation.SET_BOES]: (state: FilterState, payload?: Set<number>) => void

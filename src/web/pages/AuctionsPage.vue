@@ -171,7 +171,7 @@ export default defineComponent({
             return auctions
         }
 
-        const noDataLabel = computed<string>(() => {
+        const noDataLabel = computed(() => {
             if (!filterStore.state.region) {
                 return 'No region selected'
             }
@@ -189,8 +189,7 @@ export default defineComponent({
             descending: false,
             sortBy: 'buyout',
         })
-
-        const numPages = computed<number>(() => {
+        const numPages = computed(() => {
             return Math.ceil(filteredAuctions.value.length / ROWS_PER_PAGE)
         })
 
@@ -221,7 +220,6 @@ export default defineComponent({
             const itemLink = getWowheadItemLinkById(auction.itemId, filteredRegion.value)
             return `${itemLink}&bonus=${auction.bonuses.join(':')}`
         }
-
         const getItemName = (itemId: number) => {
             if (!filteredRegion.value) {
                 return ''

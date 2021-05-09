@@ -23,22 +23,11 @@ export function deepFreeze<T>(obj: T): T {
     return Object.freeze(obj)
 }
 
-export function getIlvlRange(tier: Tier | null): IlvlRange {
-    if (!tier) {
-        return {
-            min: Number.MIN_SAFE_INTEGER,
-            max: Number.MAX_SAFE_INTEGER,
-        }
-    }
-
+export function getIlvlRange(tier: Tier): IlvlRange {
     return Object.assign({}, TIER_CONFIGS[tier].ilvls)
 }
 
-export function getTierBoeIds(tier: Tier | null): Array<number> {
-    if (!tier) {
-        return []
-    }
-
+export function getTierBoeIds(tier: Tier): Array<number> {
     const tierConfig = TIER_CONFIGS[tier]
     const boeIds: Array<number> = []
 

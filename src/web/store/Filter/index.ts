@@ -11,14 +11,13 @@ import { exportFilters, importQuery } from '@/web/store/Filter/Query'
 // Store
 // ----------------------------------------------------------------------------
 
-export type TierFilter = Tier | null
 export type RegionFilter = RegionSlug | null
 export type RealmFilter = Set<number>
 export type BoeFilter = Set<number>
 export type TertiaryFilter = Set<Tertiary>
 
 export interface FilterState {
-    tier: TierFilter
+    tier: Tier
     region: RegionFilter
     realms: RealmFilter
     boes: BoeFilter

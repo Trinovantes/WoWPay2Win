@@ -33,13 +33,13 @@
 import { Tier, TIER_CONFIGS } from '@/common/Constants'
 import { defineComponent, computed } from 'vue'
 import { getTierIcon } from '@/web/utils/ImageLoader'
-import { TierFilter, useFilterStore } from '@/web/store/Filter'
+import { useFilterStore } from '@/web/store/Filter'
 import { FilterMutation } from '@/web/store/Filter/mutations'
 
 export default defineComponent({
     setup() {
         const filterStore = useFilterStore()
-        const selectedTier = computed<TierFilter>({
+        const selectedTier = computed<Tier>({
             get() {
                 return filterStore.state.tier
             },

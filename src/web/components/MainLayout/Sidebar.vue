@@ -29,7 +29,7 @@
 <script lang="ts">
 import { APP_DESC, APP_NAME } from '@/common/Constants'
 import { useAuctionsStore } from '@/web/store/Auctions'
-import { RegionFilter, useFilterStore } from '@/web/store/Filter'
+import { useFilterStore } from '@/web/store/Filter'
 import { defineAsyncComponent, defineComponent, computed } from 'vue'
 import { AuctionsGetter } from '@/web/store/Auctions/getters'
 
@@ -45,7 +45,7 @@ export default defineComponent({
 
     setup() {
         const filterStore = useFilterStore()
-        const selectedRegion = computed<RegionFilter>(() => filterStore.state.region)
+        const selectedRegion = computed(() => filterStore.state.region)
 
         const auctionsStore = useAuctionsStore()
         const lastUpdateIso = computed(() => auctionsStore.getters[AuctionsGetter.LAST_UPDATE_ISO])
