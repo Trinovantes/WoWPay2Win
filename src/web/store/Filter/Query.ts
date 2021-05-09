@@ -62,11 +62,13 @@ export function importQuery(queryFilters: QueryFilters): FilterState {
 
     if (queryFilters.ilvlRange) {
         const [min, max] = queryFilters.ilvlRange.split(DELIMITER).map((ilvl) => parseInt(ilvl))
+        const tierIlvls = getIlvlRange(importedFilters.tier)
+
         if (!isNaN(min)) {
-            importedFilters.ilvlRange.min = Math.max(min, importedFilters.ilvlRange.min)
+            importedFilters.ilvlRange.min = Math.max(min, tierIlvls.min)
         }
         if (!isNaN(max)) {
-            importedFilters.ilvlRange.max = Math.min(max, importedFilters.ilvlRange.max)
+            importedFilters.ilvlRange.max = Math.min(max, tierIlvls.max)
         }
     }
 
