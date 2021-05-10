@@ -3,10 +3,6 @@
         "strict": true,
         "sourceMap": true,
 
-        "lib": [
-            "ES2019"
-        ],
-
         "target": "esnext",
         "module": "esnext",
         "moduleResolution": "node",
