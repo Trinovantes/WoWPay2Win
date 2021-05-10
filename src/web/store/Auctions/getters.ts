@@ -74,27 +74,27 @@ export const getters: GetterTree<AuctionsState, AuctionsState> & AuctionsGetters
         }
     },
 
-    [AuctionsGetter.LAST_UPDATE_ISO]: (state) => {
-        if (state.lastUpdate !== null) {
-            return dayjs(state.lastUpdate).toISOString()
-        } else {
+    [AuctionsGetter.LAST_UPDATE_ISO]: (state: AuctionsState) => {
+        if (state.lastUpdate === null) {
             return ''
         }
+
+        return dayjs(state.lastUpdate).toISOString()
     },
 
-    [AuctionsGetter.LAST_UPDATE_STRING]: (state) => {
-        if (state.lastUpdate !== null) {
-            return dayjs(state.lastUpdate).format('ll LT')
-        } else {
+    [AuctionsGetter.LAST_UPDATE_STRING]: (state: AuctionsState) => {
+        if (state.lastUpdate === null) {
             return ''
         }
+
+        return dayjs(state.lastUpdate).format('ll LT')
     },
 
-    [AuctionsGetter.LAST_UPDATE_FROM_NOW]: (state) => {
-        if (state.lastUpdate !== null) {
-            return dayjs(state.lastUpdate).fromNow()
-        } else {
-            return 'N/A'
+    [AuctionsGetter.LAST_UPDATE_FROM_NOW]: (state: AuctionsState) => {
+        if (state.lastUpdate === null) {
+            return ''
         }
+
+        return dayjs(state.lastUpdate).fromNow()
     },
 }

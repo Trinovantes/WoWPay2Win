@@ -1,8 +1,7 @@
-import { Tertiary } from '@/common/BonusId'
 import { IlvlRange, Tier } from '@/common/Constants'
 import { getIlvlRange } from '@/common/utils'
 import { MutationTree } from 'vuex'
-import { FilterState, RegionFilter } from '.'
+import { BoeFilter, FilterState, RealmFilter, RegionFilter, TertiaryFilter } from '.'
 
 // ----------------------------------------------------------------------------
 // Interfaces
@@ -26,16 +25,16 @@ export enum FilterMutation {
 export interface FilterMutations {
     [FilterMutation.SET_TIER]: (state: FilterState, payload?: Tier) => void
     [FilterMutation.SET_REGION]: (state: FilterState, payload?: RegionFilter) => void
-    [FilterMutation.SET_REALMS]: (state: FilterState, payload?: Set<number>) => void
-    [FilterMutation.SET_BOES]: (state: FilterState, payload?: Set<number>) => void
+    [FilterMutation.SET_REALMS]: (state: FilterState, payload?: RealmFilter) => void
+    [FilterMutation.SET_BOES]: (state: FilterState, payload?: BoeFilter) => void
     [FilterMutation.SET_ILVL_RANGE]: (state: FilterState, payload?: IlvlRange) => void
     [FilterMutation.SET_MAX_BUYOUT]: (state: FilterState, payload?: number) => void
     [FilterMutation.SET_MUST_HAVE_SOCKET]: (state: FilterState, payload?: boolean) => void
-    [FilterMutation.SET_TERTIARIES]: (state: FilterState, payload?: Set<Tertiary>) => void
+    [FilterMutation.SET_TERTIARIES]: (state: FilterState, payload?: TertiaryFilter) => void
 }
 
 export const mutations: MutationTree<FilterState> & FilterMutations = {
-    [FilterMutation.SET_TIER]: (state, payload?) => {
+    [FilterMutation.SET_TIER]: (state: FilterState, payload?: Tier) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -45,7 +44,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.ilvlRange = getIlvlRange(state.tier)
     },
 
-    [FilterMutation.SET_REGION]: (state, payload?) => {
+    [FilterMutation.SET_REGION]: (state: FilterState, payload?: RegionFilter) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -54,7 +53,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.realms = new Set()
     },
 
-    [FilterMutation.SET_REALMS]: (state, payload?) => {
+    [FilterMutation.SET_REALMS]: (state: FilterState, payload?: RealmFilter) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -62,7 +61,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.realms = payload
     },
 
-    [FilterMutation.SET_BOES]: (state, payload?) => {
+    [FilterMutation.SET_BOES]: (state: FilterState, payload?: BoeFilter) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -70,7 +69,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.boes = payload
     },
 
-    [FilterMutation.SET_ILVL_RANGE]: (state, payload?) => {
+    [FilterMutation.SET_ILVL_RANGE]: (state: FilterState, payload?: IlvlRange) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -78,7 +77,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.ilvlRange = payload
     },
 
-    [FilterMutation.SET_MAX_BUYOUT]: (state, payload?) => {
+    [FilterMutation.SET_MAX_BUYOUT]: (state: FilterState, payload?: number) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -86,7 +85,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.maxBuyout = payload
     },
 
-    [FilterMutation.SET_MUST_HAVE_SOCKET]: (state, payload?) => {
+    [FilterMutation.SET_MUST_HAVE_SOCKET]: (state: FilterState, payload?: boolean) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
@@ -94,7 +93,7 @@ export const mutations: MutationTree<FilterState> & FilterMutations = {
         state.mustHaveSocket = payload
     },
 
-    [FilterMutation.SET_TERTIARIES]: (state, payload?) => {
+    [FilterMutation.SET_TERTIARIES]: (state: FilterState, payload?: TertiaryFilter) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }

@@ -18,7 +18,7 @@ export interface AuctionsMutations {
 }
 
 export const mutations: MutationTree<AuctionsState> & AuctionsMutations = {
-    [AuctionsMutation.SET_LAST_UPDATE]: (state, payload?) => {
+    [AuctionsMutation.SET_LAST_UPDATE]: (state: AuctionsState, payload?: number) => {
         if (payload === undefined) {
             throw new Error('Missing Payload')
         }
