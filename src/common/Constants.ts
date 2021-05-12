@@ -5,7 +5,7 @@ import { deepFreeze } from './utils'
 // ----------------------------------------------------------------------------
 
 export const APP_NAME = 'WoWPay2Win'
-export const APP_DESC = 'This tool scans for BoEs in every auction house across the region. To buy an item, you need to either transfer a character with gold or buy tokens on that realm.'
+export const APP_DESC = 'This tool scans for BoEs in every auction house across each region. To buy an item, you need to either transfer a character with gold or buy tokens on that realm.'
 export const OG_DESC = 'Tired of being bad in World of Warcraft? Just swipe your credit card and buy your BiS gear off the auction house!'
 
 export const API_TIMEOUT = 30 * 1000 // in ms

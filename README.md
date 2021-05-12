@@ -2,7 +2,7 @@
 
 At the beginning of the Ny'alotha raid in BfA, having the right corruption on gear drops (also available on BoEs) meant massive DPS increases. The gap was so big that it was nearly impossible to compete against players with BiS. As a result, many competitive players transferred to other realms and back just to buy their BiS for millions of gold.
 
-Thankfully it only lasted for one tier and was eventually remedied through the corruption vendor. Nowadays, this tool simply scans for BoEs in every auction house across the region.
+Thankfully it was eventually remedied through the corruption vendor and removed after one tier. Nowadays, this tool simply scans for BoEs in every auction house across each region.
 
 ## Architecture
 
