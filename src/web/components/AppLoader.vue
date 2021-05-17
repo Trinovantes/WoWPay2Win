@@ -24,6 +24,7 @@ export default defineComponent({
     components: {
         App,
     },
+
     props: {
         onResolve: {
             type: Function as PropType<() => void>,
