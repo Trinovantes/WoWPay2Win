@@ -2,6 +2,7 @@ import { merge } from 'webpack-merge'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.config.common'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 // ----------------------------------------------------------------------------
 // Web
@@ -32,6 +33,38 @@ export default merge(commonConfig, {
         ],
     },
 
+    module: {
+        rules: [
+            {
+                test: /\.(sass|scss)$/,
+                use: [
+                    isDev
+                        ? 'style-loader'
+                        : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            additionalData: (content: string, loaderContext: { resourcePath: string }): string => {
+                                return (loaderContext.resourcePath.endsWith('sass'))
+                                    ? '@import "@/web/assets/css/variables.scss"\n' + content
+                                    : '@import "@/web/assets/css/variables.scss";' + content
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.(ttf|eot|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                type: 'asset',
+            },
+            {
+                test: /\.(jpe?g|png|gif|svg|webp)$/i,
+                type: 'asset/inline',
+            },
+        ],
+    },
+
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
@@ -39,6 +72,14 @@ export default merge(commonConfig, {
                     from: staticDir,
                 },
             ],
+        }),
+        new MiniCssExtractPlugin({
+            filename: isDev
+                ? '[name].css'
+                : '[name].[contenthash].css',
+            chunkFilename: isDev
+                ? '[name].css'
+                : '[name].[contenthash].css',
         }),
         new HtmlWebpackPlugin({
             template: `${srcWebDir}/index.html`,

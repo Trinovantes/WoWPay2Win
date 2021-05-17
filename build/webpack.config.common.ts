@@ -1,6 +1,5 @@
 import path from 'path'
 import webpack, { DefinePlugin } from 'webpack'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { VueLoaderPlugin } from 'vue-loader'
 
 // ----------------------------------------------------------------------------
@@ -46,14 +45,6 @@ export const commonConfig: webpack.Configuration = {
 
             'DEFINE.IS_DEV': JSON.stringify(isDev),
         }),
-        new MiniCssExtractPlugin({
-            filename: isDev
-                ? '[name].css'
-                : '[name].[contenthash].css',
-            chunkFilename: isDev
-                ? '[name].css'
-                : '[name].[contenthash].css',
-        }),
         new VueLoaderPlugin(),
     ],
 
@@ -72,33 +63,6 @@ export const commonConfig: webpack.Configuration = {
             {
                 test: /\.vue$/,
                 use: 'vue-loader',
-            },
-            {
-                test: /\.(sass|scss)$/,
-                use: [
-                    isDev
-                        ? 'style-loader'
-                        : MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            additionalData: (content: string, loaderContext: { resourcePath: string }): string => {
-                                return (loaderContext.resourcePath.endsWith('sass'))
-                                    ? '@import "@/web/assets/css/variables.scss"\n' + content
-                                    : '@import "@/web/assets/css/variables.scss";' + content
-                            },
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.(jpe?g|png|gif|svg|webp)$/i,
-                type: 'asset/inline',
-            },
-            {
-                test: /\.(ttf|eot|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                type: 'asset',
             },
         ],
     },
