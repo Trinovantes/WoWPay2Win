@@ -56,7 +56,7 @@ header#header{
     .filters{
         background-color: $bg-side;
         display: grid;
-        grid-template-columns: ($sidebar-min-width / 2) 1fr;
+        grid-template-columns: math.div($sidebar-min-width, 2) 1fr;
         gap: $padding;
         padding: $padding;
     }

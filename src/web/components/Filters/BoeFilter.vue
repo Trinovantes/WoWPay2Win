@@ -193,7 +193,7 @@ export default defineComponent({
             cursor: pointer;
             display: block;
             float: right;
-            margin-left: $padding / 2;
+            margin-left: math.div($padding, 2);
             padding: 5px 10px;
 
             font-size: 0.75rem;

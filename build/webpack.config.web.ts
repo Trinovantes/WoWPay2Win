@@ -47,8 +47,8 @@ export default merge(commonConfig, {
                         options: {
                             additionalData: (content: string, loaderContext: { resourcePath: string }): string => {
                                 return (loaderContext.resourcePath.endsWith('sass'))
-                                    ? '@import "@/web/assets/css/variables.scss"\n' + content
-                                    : '@import "@/web/assets/css/variables.scss";' + content
+                                    ? '@use "sass:math"\n @import "@/web/assets/css/variables.scss"\n' + content
+                                    : '@use "sass:math";  @import "@/web/assets/css/variables.scss"; ' + content
                             },
                         },
                     },

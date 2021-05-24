@@ -120,7 +120,7 @@ export default defineComponent({
         .q-item__label--caption{
             color: #aaa;
             line-height: $line-height !important;
-            margin-top: $padding / 2;
+            margin-top: math.div($padding, 2);
         }
     }
 
