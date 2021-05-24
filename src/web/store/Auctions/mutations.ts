@@ -10,7 +10,7 @@ export enum AuctionsMutation {
 }
 
 // ----------------------------------------------------------------------------
-// BasicMutations
+// Mutations
 // ----------------------------------------------------------------------------
 
 export interface AuctionsMutations {

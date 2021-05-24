@@ -98,7 +98,7 @@ export async function createFilterStore(router: Router): Promise<Store<FilterSta
 // TypeScript Helpers
 // ----------------------------------------------------------------------------
 
-type TypedStore = Omit<Store<FilterState>, 'commit' | 'dispatch'> & {
+type TypedStore = Omit<Store<FilterState>, 'commit' | 'dispatch' | 'getters'> & {
     commit<K extends keyof FilterMutations>(
         key: K,
         payload?: Parameters<FilterMutations[K]>[1],

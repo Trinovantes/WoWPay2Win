@@ -19,7 +19,7 @@ export enum FilterMutation {
 }
 
 // ----------------------------------------------------------------------------
-// FilterMutations
+// Mutations
 // ----------------------------------------------------------------------------
 
 export interface FilterMutations {
