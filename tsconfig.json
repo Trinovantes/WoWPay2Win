@@ -3,7 +3,7 @@
         "strict": true,
         "sourceMap": true,
 
-        "target": "esnext",
+        "target": "es2020",
         "module": "esnext",
         "moduleResolution": "node",
 
