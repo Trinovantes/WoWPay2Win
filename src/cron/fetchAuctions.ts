@@ -58,13 +58,7 @@ async function main() {
     unrecognizedBonusIdTracker.print()
 }
 
-main()
-    .then(() => {
-        console.info('fetchAuctions Finished')
-        process.exit(0)
-    }).catch((err) => {
-        const error = err as Error
-        console.warn('fetchAuctions Failed')
-        console.warn(error.stack)
-        process.exit(1)
-    })
+main().catch((err) => {
+    console.warn(err)
+    process.exit(1)
+})

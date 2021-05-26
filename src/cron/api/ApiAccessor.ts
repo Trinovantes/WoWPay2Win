@@ -30,7 +30,7 @@ export class ApiAccessor<T> {
 
         console.debug('Fetching', this.region.config.oauthEndpoint)
 
-        const response = await tryExponentialBackoff({
+        const response = await tryExponentialBackoff<BnetOauthResponse>({
             method: 'POST',
             url: this.region.config.oauthEndpoint,
             data: querystring.stringify({
@@ -46,20 +46,14 @@ export class ApiAccessor<T> {
             throw new Error('Failed to get access token')
         }
 
-        if (response.status !== 200) {
-            throw new Error(`Authentication returned ${response.status}: ${JSON.stringify(response.data)}`)
-        }
-
-        const data = response.data as BnetOauthResponse
-        return data.access_token
+        return response.access_token
     }
 
     async fetch(isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
         const url = this.endpoint.replace(this.region.config.apiHost, '')
         console.debug('Fetching', url)
 
-        // This will throw an error if status is not 200
-        const response = await tryExponentialBackoff({
+        const response = await tryExponentialBackoff<T>({
             method: 'GET',
             url: this.endpoint,
             headers: {
@@ -72,16 +66,16 @@ export class ApiAccessor<T> {
             },
         }, isValidResponse)
 
-        return response?.data as T
+        return response
     }
 
     static async fetchFile(fileUrl: string): Promise<IncomingMessage | null> {
-        const response = await tryExponentialBackoff({
+        const response = await tryExponentialBackoff<IncomingMessage>({
             method: 'GET',
             url: fileUrl,
             responseType: 'stream',
         })
 
-        return response?.data as IncomingMessage
+        return response
     }
 }

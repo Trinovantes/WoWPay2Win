@@ -35,14 +35,7 @@ async function main() {
     }
 }
 
-main()
-    .then(() => {
-        console.info('fetchItems Finished')
-        process.exit(0)
-    })
-    .catch((err) => {
-        const error = err as Error
-        console.warn('fetchItems Failed')
-        console.warn(error.stack)
-        process.exit(1)
-    })
+main().catch((err) => {
+    console.warn(err)
+    process.exit(1)
+})
