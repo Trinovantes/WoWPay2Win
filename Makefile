@@ -28,6 +28,8 @@ run: run-web run-cron
 # Cron
 # -----------------------------------------------------------------------------
 
+cron: build-cron run-cron
+
 build-cron:
 	docker build \
 		--file $(cron-dockerfile) \
@@ -61,6 +63,8 @@ run-cron: stop-cron
 # -----------------------------------------------------------------------------
 # Web
 # -----------------------------------------------------------------------------
+
+web: build-web run-web
 
 build-web:
 	docker build \
