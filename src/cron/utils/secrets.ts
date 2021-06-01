@@ -9,7 +9,7 @@ export enum Secrets {
     CLIENT_SECRET = 'CLIENT_SECRET',
 }
 
-const secretsCache: Partial<Record<Secrets, string>> = {}
+const secretsCache = new Map<Secrets, string>()
 
 export function getSecret(key: Secrets): string {
     // Check if it's already defined in process.env
@@ -19,8 +19,8 @@ export function getSecret(key: Secrets): string {
     }
 
     // Check if it's in the cache
-    if (key in secretsCache) {
-        const cachedSecret = secretsCache[key]
+    if (secretsCache.has(key)) {
+        const cachedSecret = secretsCache.get(key)
         if (cachedSecret) {
             return cachedSecret
         }
@@ -30,7 +30,7 @@ export function getSecret(key: Secrets): string {
     const secretsFile = `/run/secrets/${key}`
     if (fs.existsSync(secretsFile)) {
         const secret = fs.readFileSync(secretsFile).toString('utf-8')
-        secretsCache[key] = secret
+        secretsCache.set(key, secret)
         return secret
     }
 

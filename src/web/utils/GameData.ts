@@ -5,35 +5,39 @@ import { getRegionLocale, RegionSlug } from '@/common/Constants'
 // Load Data
 // ----------------------------------------------------------------------------
 
-function getRegionFiles(): Record<RegionSlug, RegionCache> {
+function getRegionFiles(): Map<RegionSlug, RegionCache> {
     const req = require.context('@/web/assets/data', false, /region-(\w+)\.json$/)
-    const files: Partial<Record<RegionSlug, RegionCache>> = {}
+    const files = new Map<RegionSlug, RegionCache>()
 
     for (const fileName of req.keys()) {
         const matches = /region-(\w+)\.json$/.exec(fileName)
-        if (matches) {
-            const regionSlug = matches[1] as RegionSlug
-            files[regionSlug] = req(fileName) as RegionCache
+        if (!matches) {
+            throw new Error(`Failed to match region "${fileName}"`)
         }
+
+        const regionSlug = matches[1] as RegionSlug
+        files.set(regionSlug, req(fileName) as RegionCache)
     }
 
-    return files as Record<RegionSlug, RegionCache>
+    return files
 }
 
-function getItemFiles(): Record<number, ItemData> {
+function getItemFiles(): Map<number, ItemData> {
     const req = require.context('@/web/assets/data', false, /item-(\d+)\.json$/)
-    const files: Record<number, ItemData> = {}
+    const files = new Map<number, ItemData>()
 
     for (const fileName of req.keys()) {
         const matches = /item-(\d+)\.json$/.exec(fileName)
-        if (matches) {
-            const itemId = Number(matches[1])
-            if (isNaN(itemId)) {
-                throw new Error('Invalid item id while parsing item file')
-            }
-
-            files[itemId] = req(fileName) as ItemData
+        if (!matches) {
+            throw new Error(`Failed to match itemId "${fileName}"`)
         }
+
+        const itemId = Number(matches[1])
+        if (isNaN(itemId)) {
+            throw new Error('Invalid item id while parsing item file')
+        }
+
+        files.set(itemId, req(fileName) as ItemData)
     }
 
     return files
@@ -46,13 +50,13 @@ const itemFiles = getItemFiles()
 // Exports
 // ----------------------------------------------------------------------------
 
-export function getRegionData(region: RegionSlug): RegionCache | null {
-    if (!(region in regionFiles)) {
+export function getRegionData(region: RegionSlug): RegionCache | undefined {
+    if (!regionFiles.has(region)) {
         console.warn('Region data file not found during compilation', region, regionFiles)
-        return null
+        return undefined
     }
 
-    return regionFiles[region]
+    return regionFiles.get(region)
 }
 
 export function getWowheadItemLinkById(itemId: number, region: RegionSlug): string {
@@ -69,33 +73,33 @@ export function getWowheadItemLinkById(itemId: number, region: RegionSlug): stri
 }
 
 export function getItemNameById(itemId: number, region: RegionSlug): string {
-    if (!(itemId in itemFiles)) {
+    if (!itemFiles.has(itemId)) {
         console.warn('Item data file not found during compilation', itemId, itemFiles)
         return `Item ${itemId}`
     }
 
-    const itemCache = itemFiles[itemId]
+    const itemCache = itemFiles.get(itemId)
     const locale = getRegionLocale(region)
-    return itemCache.localizedName[locale] ?? ''
+    return itemCache?.localizedName[locale] ?? ''
 }
 
 export function getBaseIlvl(itemId: number): number {
-    if (!(itemId in itemFiles)) {
+    if (!itemFiles.has(itemId)) {
         console.warn('Item data file not found during compilation', itemId, itemFiles)
         return NaN
     }
 
-    const itemCache = itemFiles[itemId]
-    return itemCache.baseLevel
+    const itemCache = itemFiles.get(itemId)
+    return itemCache?.baseLevel ?? 0
 }
 
-type ConnectedRealmMap = Record<number, number>
-export const realmToConnectedRealmMap = createConnectedRealmMap()
+type ReamToConnectedRealmMap = Record<number, number>
+export const realmToConnectedRealmMaps = createConnectedRealmMaps()
 
-function createConnectedRealmMap(): Record<RegionSlug, ConnectedRealmMap> {
-    const maps: Partial<Record<RegionSlug, ConnectedRealmMap>> = {}
+function createConnectedRealmMaps(): Map<RegionSlug, ReamToConnectedRealmMap> {
+    const maps = new Map<RegionSlug, ReamToConnectedRealmMap>()
 
-    for (const [regionSlug, regionCache] of Object.entries(regionFiles)) {
+    for (const [regionSlug, regionCache] of regionFiles.entries()) {
         const map: Record<number, number> = {}
 
         for (const connectedRealm of regionCache.connectedRealms) {
@@ -104,8 +108,8 @@ function createConnectedRealmMap(): Record<RegionSlug, ConnectedRealmMap> {
             }
         }
 
-        maps[regionSlug as RegionSlug] = map
+        maps.set(regionSlug, map)
     }
 
-    return maps as Record<RegionSlug, ConnectedRealmMap>
+    return maps
 }

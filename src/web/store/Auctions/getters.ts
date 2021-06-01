@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import { Auctions, AuctionsState, cachedRequests } from '.'
 import { FilterState } from '@/web/store/Filter'
 import dayjs from 'dayjs'
-import { getBaseIlvl, realmToConnectedRealmMap } from '@/web/utils/GameData'
+import { getBaseIlvl, realmToConnectedRealmMaps } from '@/web/utils/GameData'
 
 // ----------------------------------------------------------------------------
 // Interfaces
@@ -35,7 +35,7 @@ export const getters: GetterTree<AuctionsState, AuctionsState> & AuctionsGetters
 
             const connectedRealms = new Set<number>()
             for (const realm of filterState.realms) {
-                const cr = realmToConnectedRealmMap[filterState.region]?.[realm]
+                const cr = realmToConnectedRealmMaps.get(filterState.region)?.[realm]
                 if (cr !== undefined) {
                     connectedRealms.add(cr)
                 }

@@ -6,11 +6,12 @@ import { Tier, TIER_CONFIGS } from '@/common/Constants'
 
 function getTierIcons() {
     const imgReq = require.context('@/web/assets/img/tiers', false, /\.(jpe?g|png|gif|svg)$/i)
-    const images: Record<string, string> = {}
+    const images = new Map<string, string>()
 
     for (const imageName of imgReq.keys()) {
         const img64 = imgReq(imageName) as string
-        images[imageName.replace('./', '')] = img64
+        const fileName = imageName.replace('./', '')
+        images.set(fileName, img64)
     }
 
     return images
@@ -18,11 +19,12 @@ function getTierIcons() {
 
 function getItemIcons() {
     const imgReq = require.context('@/web/assets/img/items', false, /\.(jpe?g|png|gif|svg)$/i)
-    const images: Record<string, string> = {}
+    const images = new Map<string, string>()
 
     for (const imageName of imgReq.keys()) {
         const img64 = imgReq(imageName) as string
-        images[imageName.replace('./', '')] = img64
+        const fileName = imageName.replace('./', '')
+        images.set(fileName, img64)
     }
 
     return images
@@ -35,22 +37,22 @@ const itemIcons = getItemIcons()
 // Exports
 // ----------------------------------------------------------------------------
 
-export function getTierIcon(tier: Tier): string | null {
+export function getTierIcon(tier: Tier): string | undefined {
     const iconFile = TIER_CONFIGS[tier].iconPath
-    if (!(iconFile in tierIcons)) {
+    if (!tierIcons.has(iconFile)) {
         console.warn('Image file not found during compilation', iconFile)
-        return null
+        return undefined
     }
 
-    return tierIcons[iconFile]
+    return tierIcons.get(iconFile)
 }
 
-export function getItemIcon(itemId: number): string | null {
+export function getItemIcon(itemId: number): string | undefined {
     const iconFile = `${itemId}.jpg`
-    if (!(iconFile in itemIcons)) {
+    if (!itemIcons.has(iconFile)) {
         console.warn('Image file not found during compilation', iconFile)
-        return null
+        return undefined
     }
 
-    return itemIcons[iconFile]
+    return itemIcons.get(iconFile)
 }
