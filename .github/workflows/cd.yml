@@ -6,6 +6,10 @@ on:
     branches:
       - master
 
+env:
+  WEB_IMAGE: ghcr.io/trinovantes/wowpay2win-web
+  CRON_IMAGE: ghcr.io/trinovantes/wowpay2win-cron
+
 jobs:
   lint:
     name: Run Linter
@@ -51,6 +55,18 @@ jobs:
 
       - name: Push images to registry
         run: make push
+
+      - name: Copy dist from image to disk
+        run: |
+          mkdir -p ./dist/cron
+          TEMP_CONTAINER=$(docker create ${{ env.CRON_IMAGE }})
+          docker cp $TEMP_CONTAINER:/app/dist/cron/. ./dist/cron
+          docker rm $TEMP_CONTAINER
+
+          mkdir -p ./dist/web
+          TEMP_CONTAINER=$(docker create ${{ env.WEB_IMAGE }})
+          docker cp $TEMP_CONTAINER:/app/dist/web/. ./dist/web
+          docker rm $TEMP_CONTAINER
 
       - name: Create sentry release
         uses: getsentry/action-release@v1

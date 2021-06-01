@@ -38,13 +38,6 @@ build-cron:
 		--target=cron \
 		.
 
-	rm -rf ./dist/cron
-	mkdir -p ./dist
-
-	$(eval TEMP_CONTAINER=$(shell docker create $(cron-image)))
-	docker cp $(TEMP_CONTAINER):/app/dist/cron/. ./dist/cron
-	docker rm $(TEMP_CONTAINER)
-
 stop-cron:
 	docker stop $(cron-container) || true
 	docker rm $(cron-container) || true
@@ -75,13 +68,6 @@ build-web:
 		--secret id=CLIENT_ID \
 		--secret id=CLIENT_SECRET \
 		.
-
-	rm -rf ./dist/web
-	mkdir -p ./dist
-
-	$(eval TEMP_CONTAINER=$(shell docker create $(web-image)))
-	docker cp $(TEMP_CONTAINER):/app/dist/web/. ./dist/web
-	docker rm $(TEMP_CONTAINER)
 
 stop-web:
 	docker stop $(web-container) || true
