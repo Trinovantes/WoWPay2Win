@@ -48,17 +48,18 @@ export const actions: ActionTree<AuctionsState, AuctionsState> & AuctionsActions
         }
 
         // Already loaded auctions this session so we can skip reloading
-        if (payload in cachedRequests) {
+        if (cachedRequests.has(payload)) {
+            const lastUpdate = cachedRequests.get(payload)?.lastUpdate
+            commit(AuctionsMutation.SET_LAST_UPDATE, lastUpdate)
             return
         }
 
         try {
             const auctionsFile = `/data/auctions-${payload}.json`
-            const response = await axios.get(auctionsFile)
-            const auctionsData = response.data as RegionAuctionsData
+            const response = await axios.get<RegionAuctionsData>(auctionsFile)
 
-            cachedRequests[payload] = auctionsData.auctions
-            commit(AuctionsMutation.SET_LAST_UPDATE, auctionsData.lastUpdate)
+            cachedRequests.set(payload, response.data)
+            commit(AuctionsMutation.SET_LAST_UPDATE, response.data.lastUpdate)
         } catch (err) {
             console.warn(err)
         }

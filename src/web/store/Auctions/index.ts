@@ -1,4 +1,4 @@
-import { ItemAuctionData } from '@/common/Data'
+import { ItemAuctionData, RegionAuctionsData } from '@/common/Data'
 import { computed, InjectionKey, watch } from 'vue'
 import { CommitOptions, createStore, DispatchOptions, Store, useStore } from 'vuex'
 import { actions, AuctionsAction, AuctionsActions } from './actions'
@@ -12,8 +12,7 @@ import { useFilterStore } from '@/web/store/Filter'
 // ----------------------------------------------------------------------------
 
 export type Auctions = Array<ItemAuctionData>
-
-export const cachedRequests: Partial<Record<RegionSlug, Auctions>> = {}
+export const cachedRequests = new Map<RegionSlug, RegionAuctionsData>()
 
 export interface AuctionsState {
     lastUpdate: number | null

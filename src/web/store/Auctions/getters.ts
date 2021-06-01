@@ -41,7 +41,7 @@ export const getters: GetterTree<AuctionsState, AuctionsState> & AuctionsGetters
                 }
             }
 
-            const auctions = cachedRequests[filterState.region] ?? []
+            const auctions = cachedRequests.get(filterState.region)?.auctions ?? []
             return auctions.filter((auction) => {
                 // Skip BoEs not selected by user
                 if (!filterState.boes.has(auction.itemId)) {
