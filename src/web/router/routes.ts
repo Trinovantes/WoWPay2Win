@@ -6,7 +6,6 @@ export const routes: Array<RouteRecordRaw> = [
         component: () => import('@/web/layouts/MainLayout.vue'),
         children: [
             {
-                name: 'home',
                 path: '',
                 component: () => import('@/web/pages/AuctionsPage.vue'),
             },
@@ -14,9 +13,8 @@ export const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/:pathMatch(.*)*',
-        name: 'Error404',
         redirect: {
-            name: 'home',
+            path: '/',
         },
     },
 ]
