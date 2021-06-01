@@ -27,6 +27,8 @@ LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 
 WORKDIR /app
 
-COPY ./docker/general.conf  ./
-COPY ./docker/web.conf      /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist ./dist
+COPY ./docker/web.conf          /etc/nginx/conf.d/default.conf
+COPY ./docker/general.conf      /app/general.conf
+COPY --from=builder /app/dist   /app/dist
+
+RUN nginx -t
