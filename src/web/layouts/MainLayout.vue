@@ -19,9 +19,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Header from '@/web/components/MainLayout/Header.vue'
-import Footer from '@/web/components/MainLayout/Footer.vue'
-import Sidebar from '@/web/components/MainLayout/Sidebar.vue'
+import Header from './Header.vue'
+import Footer from './Footer.vue'
+import Sidebar from './Sidebar.vue'
 
 export default defineComponent({
     components: {
