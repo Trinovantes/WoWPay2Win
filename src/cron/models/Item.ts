@@ -139,7 +139,7 @@ export class Item extends Cacheable {
         return fileWriterResult
     }
 
-    toString(): string {
+    override toString(): string {
         return `[Item:${this.id} ${this.region.config.locale}]`
     }
 }

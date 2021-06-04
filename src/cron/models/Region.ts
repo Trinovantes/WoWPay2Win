@@ -120,7 +120,7 @@ export class Region extends Cacheable {
         await saveDataToCache(auctionCacheFile, auctionsCache)
     }
 
-    toString(): string {
+    override toString(): string {
         return `[Region:${this.config.slug}]`
     }
 }
