@@ -21,7 +21,7 @@ export class Region extends Cacheable {
     readonly regionAccessor: ApiAccessor<BnetRegionResponse>
 
     readonly config: RegionConfig
-    readonly auctionsDir?: string
+    readonly auctionsDir: string | undefined
     readonly connectedRealms: Array<ConnectedRealm>
     accessToken?: string
 
