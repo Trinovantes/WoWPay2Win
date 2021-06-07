@@ -1,7 +1,5 @@
 <template>
-    <suspense
-        @resolve="onResolve"
-    >
+    <suspense>
         <template #default>
             <App />
         </template>
@@ -17,21 +15,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent } from 'vue'
 import App from './App.vue'
 
 export default defineComponent({
     components: {
         App,
-    },
-
-    props: {
-        onResolve: {
-            type: Function as PropType<() => void>,
-            default: () => {
-                // nop
-            },
-        },
     },
 })
 </script>
