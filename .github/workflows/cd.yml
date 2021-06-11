@@ -47,7 +47,7 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
-      - name: Pull images
+      - name: Pull images from registry
         run: make pull || true
 
       - name: Build images
@@ -56,7 +56,7 @@ jobs:
       - name: Push images to registry
         run: make push
 
-      - name: Copy dist from image to disk
+      - name: Copy dist from image to disk for sentry upload
         run: |
           mkdir -p ./dist/cron
           TEMP_CONTAINER=$(docker create ${{ env.CRON_IMAGE }})
@@ -106,7 +106,7 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
-      - name: Pull from registry
+      - name: Pull images from registry
         run: make pull
 
       - name: Start containers
