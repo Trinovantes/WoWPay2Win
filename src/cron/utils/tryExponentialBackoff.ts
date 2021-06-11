@@ -1,10 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import { API_TIMEOUT, MAX_API_ATTEMPTS } from '@/common/Constants'
 import { sleep } from '@/common/utils'
-import { API_TIMEOUT, MAX_API_RETRIES } from '@/common/Constants'
 
 export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
     // Retry with exponential backoff if server is temporarily unavilable
-    for (let attempt = 0; attempt < MAX_API_RETRIES; attempt++) {
+    for (let attempt = 1; attempt <= MAX_API_ATTEMPTS; attempt++) {
         const timeout = axios.CancelToken.source()
         const timeoutId = setTimeout(() => {
             timeout.cancel(`Request timeout: ${request.url}`)
@@ -12,8 +12,8 @@ export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isVa
 
         try {
             const response = await axios({
-                ...request,
                 cancelToken: timeout.token,
+                ...request,
             })
 
             if (response.status !== 200) {
@@ -28,13 +28,15 @@ export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isVa
             return response.data as T
         } catch (err) {
             const error = err as Error
-            const delay = Math.round(Math.exp(attempt) * 1000)
+            console.warn(error.message)
 
-            const isMaxAttempts = (attempt === MAX_API_RETRIES - 1)
-            const retryMsg = isMaxAttempts ? '' : `Retrying after ${delay}ms`
+            if (axios.isAxiosError(err)) {
+                console.warn('Error Response Data:', err.response?.data)
+            }
 
-            console.warn(error.message, retryMsg)
-            if (!isMaxAttempts) {
+            if (attempt < MAX_API_ATTEMPTS) {
+                const delay = Math.round(Math.exp(attempt) * 1000)
+                console.warn(`Retrying after ${delay}ms`)
                 await sleep(delay)
             }
         } finally {
