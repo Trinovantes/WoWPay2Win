@@ -28,10 +28,6 @@ async function main() {
             const item = new Item(region, boeIds[idx], dataDir, imgDir)
             await item.fetch()
         })
-
-        if (DEFINE.IS_DEV) {
-            break
-        }
     }
 }
 

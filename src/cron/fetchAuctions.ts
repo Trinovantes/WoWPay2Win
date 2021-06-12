@@ -35,30 +35,22 @@ async function main() {
         name: 'Fetch Auctions Cron Job',
     })
 
-    try {
-        const child = transaction.startChild({ op: 'fetchRegions' })
-        const regions = await fetchRegions(dataDir, auctionsDir)
+    const child = transaction.startChild({ op: 'fetchRegions' })
+    const regions = await fetchRegions(dataDir, auctionsDir)
+    child.finish()
+
+    for (const region of regions) {
+        const child = transaction.startChild({ op: 'fetchAuctions', description: region.config.slug })
+        await region.fetchAuctions()
         child.finish()
-
-        for (const region of regions) {
-            const child = transaction.startChild({ op: `fetchAuctions:${region.config.slug}` })
-            await region.fetchAuctions()
-            child.finish()
-
-            if (DEFINE.IS_DEV) {
-                break
-            }
-        }
-    } catch (err) {
-        Sentry.captureException(err)
-    } finally {
-        transaction.finish()
     }
 
     unrecognizedBonusIdTracker.print()
+    transaction.finish()
 }
 
 main().catch((err) => {
     console.warn(err)
+    Sentry.captureException(err)
     process.exit(1)
 })
