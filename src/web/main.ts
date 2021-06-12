@@ -51,7 +51,6 @@ async function main() {
 }
 
 main().catch((err) => {
-    const error = err as Error
-    console.warn(error)
-    Sentry.captureException(error)
+    console.warn(err)
+    Sentry.captureException(err)
 })
