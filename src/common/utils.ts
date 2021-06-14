@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { IlvlRange, Tier, TIER_CONFIGS } from './Constants'
 
 export function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve()
-        }, ms)
+        setTimeout(resolve, ms)
     })
 }
 
