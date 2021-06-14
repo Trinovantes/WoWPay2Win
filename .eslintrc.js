@@ -79,7 +79,7 @@ module.exports = {
         }],
 
         'vue/singleline-html-element-content-newline': ['error', {
-            'ignores': ['ExternalLink', ...INLINE_ELEMENTS],
+            'ignores': ['ExternalLink', 'pre', 'router-link', ...INLINE_ELEMENTS],
         }],
 
         '@typescript-eslint/type-annotation-spacing': 'error',
