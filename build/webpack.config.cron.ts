@@ -1,5 +1,5 @@
 import { merge } from 'webpack-merge'
-import { commonConfig, srcCronDir, distCronDir } from './webpack.config.common'
+import { commonConfig, srcCronDir, distCronDir } from './webpack.common'
 
 // ----------------------------------------------------------------------------
 // Cron
