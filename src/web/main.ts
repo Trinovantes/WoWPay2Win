@@ -17,6 +17,7 @@ dayjs.extend(localizedFormat)
 
 Sentry.init({
     dsn: SENTRY_DSN,
+    release: DEFINE.GIT_HASH,
     integrations: [
         new Integrations.BrowserTracing(),
     ],

@@ -3,6 +3,7 @@ print-%: ; @echo $*=$($*)
 -include .env
 export
 
+export GIT_HASH                 := $(shell git rev-parse HEAD)
 export DOCKER_BUILDKIT          := 1
 export COMPOSE_DOCKER_CLI_BUILD := 1
 
@@ -14,15 +15,37 @@ cron-dockerfile = ./docker/Dockerfile.cron
 cron-container = wowpay2win-cron
 cron-image = ghcr.io/trinovantes/$(cron-container)
 
-.PHONY: all build-cron build-web stop-cron stop-web run-cron run-web pull push clean
+.PHONY: \
+	build-cron stop-cron run-cron \
+	build-web stop-web run-web \
+	pull push clean all
 
 all: build run
 
-build: build-web build-cron
+build: \
+	build-cron \
+	build-web
 
-stop: stop-web stop-cron
+stop: \
+	stop-cron \
+	stop-web
 
-run: run-web run-cron
+run: \
+	run-cron \
+	run-web
+
+pull:
+	docker pull $(cron-image) --quiet
+	docker pull $(web-image) --quiet
+
+push:
+	docker push $(cron-image) --quiet
+	docker push $(web-image) --quiet
+
+clean:
+	rm -rf ./dist ./node_modules/.cache
+	docker container prune -f
+	docker image prune -f
 
 # -----------------------------------------------------------------------------
 # Cron
@@ -35,6 +58,7 @@ build-cron:
 		--file $(cron-dockerfile) \
 		--tag $(cron-image) \
 		--progress=plain \
+		--secret id=GIT_HASH \
 		.
 
 stop-cron:
@@ -65,6 +89,7 @@ build-web:
 		--progress=plain \
 		--secret id=CLIENT_ID \
 		--secret id=CLIENT_SECRET \
+		--secret id=GIT_HASH \
 		.
 
 stop-web:
@@ -81,20 +106,3 @@ run-web: stop-web
 		--detach \
 		--name $(web-container) \
 		$(web-image)
-
-# -----------------------------------------------------------------------------
-# Maintenance
-# -----------------------------------------------------------------------------
-
-pull:
-	docker pull $(web-image) --quiet
-	docker pull $(cron-image) --quiet
-
-push:
-	docker push $(web-image) --quiet
-	docker push $(cron-image) --quiet
-
-clean:
-	rm -rf ./dist
-	docker container prune -f
-	docker image prune -f

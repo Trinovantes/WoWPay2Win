@@ -4,21 +4,24 @@ FROM node:14 as builder
 
 WORKDIR /app
 
-# Install node_modules first since they rarely change and can be more aggressively cached by Docker
-COPY tsconfig.json ./
-COPY yarn.lock package.json ./
+# Install dependencies
+COPY tsconfig.json              ./
+COPY yarn.lock package.json     ./
 RUN yarn install
 
 # Build app
-COPY build/ ./build/
-COPY src/   ./src/
+COPY build/                     ./build/
+COPY src/                       ./src/
 
-RUN yarn buildCron
+RUN --mount=type=secret,id=GIT_HASH \
+    yarn buildCron
+
 RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
     yarn fetchItems
 
-RUN yarn buildWeb
+RUN --mount=type=secret,id=GIT_HASH \
+    yarn buildWeb
 
 # -----------------------------------------------------------------------------
 FROM nginx:alpine

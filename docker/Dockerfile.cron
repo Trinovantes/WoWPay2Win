@@ -4,16 +4,18 @@ FROM node:14 as builder
 
 WORKDIR /app
 
-# Install node_modules first since they rarely change and can be more aggressively cached by Docker
-COPY tsconfig.json ./
-COPY yarn.lock package.json ./
+# Install dependencies
+COPY tsconfig.json              ./
+COPY yarn.lock package.json     ./
 RUN yarn install
 
 # Build app
-COPY build/ ./build/
-COPY src/   ./src/
-
-RUN yarn buildCron
+COPY build/                     ./build/
+COPY src/@types/                ./src/@types/
+COPY src/common/                ./src/common/
+COPY src/cron/                  ./src/cron/
+RUN --mount=type=secret,id=GIT_HASH \
+    yarn buildCron
 
 # -----------------------------------------------------------------------------
 FROM node:14-alpine
@@ -21,18 +23,18 @@ LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
 ENV NODE_ENV 'production'
-
 WORKDIR /app
 
-# Mount points
-RUN mkdir -p ./dist/web/data
-RUN mkdir -p ./src/web/assets/data
-
-COPY --from=builder /app/yarn.lock      ./
-COPY --from=builder /app/package.json   ./
+# Install dependencies
+COPY yarn.lock package.json     ./
 RUN yarn install
 
-COPY --from=builder /app/dist ./dist
-RUN echo "30 * * * * cd /app && yarn fetchAuctions" >> /etc/crontabs/root
+# Mount points
+RUN mkdir -p                    ./src/web/assets/data
+RUN mkdir -p                    ./dist/web/data
 
+# Copy app
+COPY --from=builder /app/dist/  ./dist/
+
+RUN echo "30 * * * * cd /app && yarn fetchAuctions" >> /etc/crontabs/root
 CMD crond -f
