@@ -16,7 +16,7 @@ COPY src/   ./src/
 RUN yarn buildCron
 
 # -----------------------------------------------------------------------------
-FROM node:14-alpine as cron
+FROM node:14-alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 

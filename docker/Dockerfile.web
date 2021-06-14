@@ -21,7 +21,7 @@ RUN --mount=type=secret,id=CLIENT_ID \
 RUN yarn buildWeb
 
 # -----------------------------------------------------------------------------
-FROM nginx:alpine as web
+FROM nginx:alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 

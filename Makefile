@@ -35,7 +35,6 @@ build-cron:
 		--file $(cron-dockerfile) \
 		--tag $(cron-image) \
 		--progress=plain \
-		--target=cron \
 		.
 
 stop-cron:
@@ -64,7 +63,6 @@ build-web:
 		--file $(web-dockerfile) \
 		--tag $(web-image) \
 		--progress=plain \
-		--target=web \
 		--secret id=CLIENT_ID \
 		--secret id=CLIENT_SECRET \
 		.
