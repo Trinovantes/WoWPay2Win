@@ -7,6 +7,7 @@ on:
       - master
     paths-ignore:
       - yarn.lock
+      - README.md
 
 env:
   WEB_IMAGE: ghcr.io/trinovantes/wowpay2win-web

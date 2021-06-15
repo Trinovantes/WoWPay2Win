@@ -48,4 +48,9 @@ Secret | Description
 `SSH_HOST`| IP address of server
 `SSH_PRIVATE_KEY`| `ssh-keygen -N '' -f ~/.ssh/github-actions -C "github-actions"` <br> Add `github-actions.pub` to `~/.ssh/authorized_keys` <br> Add `github-actions` to this secret
 `SSH_KEYSCAN`| `ssh-keyscan -t ecdsa SSH_HOST`
-`ENV_FILE` | <pre>CLIENT_ID=XXX<br>CLIENT_SECRET=XXX</pre>
+
+### `ENV_FILE`
+```
+CLIENT_ID       From https://develop.battle.net/access/clients
+CLIENT_SECRET   From https://develop.battle.net/access/clients
+```
