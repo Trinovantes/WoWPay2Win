@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - yarn.lock
 
 env:
   WEB_IMAGE: ghcr.io/trinovantes/wowpay2win-web
