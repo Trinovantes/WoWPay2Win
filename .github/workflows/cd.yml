@@ -6,8 +6,10 @@ on:
     branches:
       - master
     paths-ignore:
-      - yarn.lock
       - README.md
+      - .vscode
+      - .editorconfig
+      - .gitignore
 
 env:
   WEB_IMAGE: ghcr.io/trinovantes/wowpay2win-web
