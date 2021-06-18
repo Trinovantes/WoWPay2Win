@@ -98,7 +98,7 @@ stop-web:
 
 run-web: stop-web
 	docker run \
-		--publish 9003:80 \
+		--publish 9030:80 \
 		--mount type=bind,source=/var/www/wowpay2win/auctions,target=/app/dist/web/data,readonly \
 		--network nginx-network \
 		--log-driver local \
