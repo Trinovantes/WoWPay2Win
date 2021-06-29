@@ -1,9 +1,23 @@
 @import 'material-design-icons-iconfont/dist/material-design-icons.css';
-@import 'quasar/src/css/index.sass';
+@import 'quasar/dist/quasar.prod.css';
 
 // ----------------------------------------------------------------------------
 // Typography
 // ----------------------------------------------------------------------------
+
+:root {
+    --q-primary: #{$primary};
+    --q-secondary: #{$secondary};
+    --q-accent: #{$accent};
+
+    --q-positive: #{$positive};
+    --q-negative: #{$negative};
+    --q-info: #{$info};
+    --q-warning: #{$warning};
+
+    --q-dark: #{$dark};
+    --q-dark-page: #{$dark-page};
+}
 
 body.body--dark{
     color: $text;
