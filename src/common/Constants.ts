@@ -104,7 +104,7 @@ export enum Tier {
     SanctumOfDomination = 't27',
 }
 
-export const DEFAULT_TIER = Tier.CastleNathria
+export const DEFAULT_TIER = Tier.SanctumOfDomination
 
 export interface BoeCategory {
     label: string
@@ -128,8 +128,37 @@ export interface TierConfig {
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     [Tier.SanctumOfDomination]: {
         name: 'Sanctum of Domination',
-        iconPath: 'shadowlands.png', // TODO
-        boes: [], // TODO
+        iconPath: 'sanctum-of-domination.png',
+        boes: [
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    186356,
+                    186358,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    186362,
+                    186359,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    186367,
+                    186364,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    186373,
+                    186371,
+                ]),
+            },
+        ],
         ilvls: {
             min: 213,
             max: 252,
