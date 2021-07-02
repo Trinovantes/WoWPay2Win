@@ -42,6 +42,7 @@ export function checkIsSocket(bonusId: number): true | undefined {
         case 1808:
         case 6514: // Nyalotha
         case 6935: // Castle Nathria
+        case 7576: // Sanctum of Domination
             return true
     }
 
