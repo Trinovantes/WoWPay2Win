@@ -82,6 +82,7 @@ jobs:
         with:
           environment: production
           sourcemaps: ./dist/web ./dist/cron
+          url_prefix: ~/
 
   deploy:
     needs: build
