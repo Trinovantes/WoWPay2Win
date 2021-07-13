@@ -51,6 +51,7 @@ export function importQuery(queryFilters: QueryFilters): FilterState {
         const tier = queryFilters.tier as Tier
         if (validTiers.includes(tier)) {
             importedFilters.tier = tier
+            importedFilters.ilvlRange = getIlvlRange(tier)
         }
     }
 
