@@ -2,8 +2,15 @@
 @import 'quasar/dist/quasar.prod.css';
 
 // ----------------------------------------------------------------------------
-// Typography
+// General Elements
 // ----------------------------------------------------------------------------
+
+.noscript{
+    background: $warning;
+    font-weight: bold;
+    text-align: center;
+    padding: $padding;
+}
 
 :root {
     --q-primary: #{$primary};
