@@ -38,9 +38,7 @@ export default merge(commonConfig, {
             {
                 test: /\.(sass|scss)$/,
                 use: [
-                    isDev
-                        ? 'style-loader'
-                        : MiniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     {
                         loader: 'sass-loader',
