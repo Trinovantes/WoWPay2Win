@@ -28,9 +28,9 @@ export default merge(commonConfig, {
 
     devServer: {
         historyApiFallback: true,
-        contentBase: [
-            distWebDir,
-        ],
+        static: {
+            directory: distWebDir,
+        },
     },
 
     module: {
