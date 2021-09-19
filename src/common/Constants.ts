@@ -101,7 +101,7 @@ export enum Tier {
     // Shadowlands
     Shadowlands = 'shadowlands',
     CastleNathria = 't26',
-    SanctumOfDomination = 't27', // TODO change to t28 to match WCL (not doing it for remainder of this tier to avoid breaking bookmarks)
+    SanctumOfDomination = 't28',
 }
 
 export const DEFAULT_TIER = Tier.SanctumOfDomination
