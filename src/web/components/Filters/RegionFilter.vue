@@ -3,7 +3,7 @@
         v-model="selectedRegion"
         :display-value="(selectedRegion ?? '').toUpperCase()"
         :options="allRegions"
-        :option-label="(regionSlug) => (regionSlug ?? '').toUpperCase()"
+        :option-label="(regionSlug: string) => (regionSlug ?? '').toUpperCase()"
         square
         filled
         label="Region"

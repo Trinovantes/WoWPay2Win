@@ -183,7 +183,7 @@ export default defineComponent({
             return 'No auctions found'
         })
 
-        const pagination = ref<QTable['pagination']>({
+        const pagination = ref<Required<QTable>['pagination']>({
             page: 1,
             rowsPerPage: ROWS_PER_PAGE,
             descending: false,

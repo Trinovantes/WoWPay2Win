@@ -1,6 +1,6 @@
 <template>
     <div class="group">
-        <h2>{{ region.toUpperCase() }} Realm Filter</h2>
+        <h2>{{ region?.toUpperCase() }} Realm Filter</h2>
         <q-select
             v-model="selectedRealms"
             :options="filteredRealms"

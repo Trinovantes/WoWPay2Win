@@ -92,13 +92,11 @@ import { computed, defineComponent } from 'vue'
 import { getItemIcon } from '@/web/utils/ImageLoader'
 import { getItemNameById, getWowheadItemLinkById } from '@/web/utils/GameData'
 
-type SelectedBoes = Array<number>
-
 export default defineComponent({
     setup() {
         const filterStore = useFilterStore()
         const boeCategories = computed(() => TIER_CONFIGS[filterStore.state.tier].boes)
-        const selectedBoes = computed<SelectedBoes>({
+        const selectedBoes = computed<Array<number>>({
             get() {
                 return [...filterStore.state.boes]
             },
@@ -124,7 +122,7 @@ export default defineComponent({
             filterStore.commit(FilterMutation.SET_BOES, currentSelected)
         }
 
-        const isAllActive = (idsToCheck: SelectedBoes): boolean => {
+        const isAllActive = (idsToCheck: Set<number>): boolean => {
             for (const id of idsToCheck) {
                 if (!selectedBoes.value.includes(id)) {
                     return false
@@ -133,7 +131,7 @@ export default defineComponent({
 
             return true
         }
-        const isNoneActive = (idsToCheck: SelectedBoes): boolean => {
+        const isNoneActive = (idsToCheck: Set<number>): boolean => {
             for (const id of idsToCheck) {
                 if (selectedBoes.value.includes(id)) {
                     return false
