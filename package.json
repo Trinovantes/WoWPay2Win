@@ -72,6 +72,7 @@
     "resolutions": {
         "@types/webpack": "^5.28.0",
         "webpack": "^5.28.2",
-        "**/eslint-import-resolver-node": "0.3.4"
+        "ansi-regex": "^5.0.1",
+        "eslint-import-resolver-node": "0.3.4"
     }
 }
