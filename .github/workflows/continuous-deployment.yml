@@ -2,8 +2,6 @@ name: Continuous Deployment
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '42 3 * * 0'
   push:
     branches:
       - master
