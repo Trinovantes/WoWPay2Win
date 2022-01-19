@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.common'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import 'webpack-dev-server'
 
 // ----------------------------------------------------------------------------
 // Web

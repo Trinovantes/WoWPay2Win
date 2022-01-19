@@ -20,7 +20,7 @@ export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isVa
                 throw new Error(`Request returned ${response.status}: ${JSON.stringify(response.data)}`)
             }
 
-            const errorMessage = isValidResponse?.(response?.data)
+            const errorMessage = isValidResponse?.(response?.data as T)
             if (errorMessage) {
                 throw new Error(errorMessage)
             }

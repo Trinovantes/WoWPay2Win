@@ -43,6 +43,14 @@ module.exports = {
         'vue',
     ],
 
+    settings: {
+        'import/resolver': {
+            'typescript': {
+                'alwaysTryTypes': true,
+            },
+        },
+    },
+
     rules: {
         'generator-star-spacing': ['error', 'before'],
         'arrow-parens': ['error', 'always'],
@@ -72,10 +80,7 @@ module.exports = {
         'vue/html-indent': ['error', 4],
         'vue/max-attributes-per-line': ['error', {
             singleline: 999,
-            multiline: {
-                max: 1,
-                allowFirstLine: false,
-            },
+            multiline: 1,
         }],
 
         'vue/singleline-html-element-content-newline': ['error', {

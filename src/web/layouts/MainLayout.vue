@@ -1,11 +1,11 @@
 <template>
     <div class="main-layout">
-        <Header class="layout-row" />
+        <MainLayoutHeader class="layout-row" />
 
         <div class="layout-row">
             <aside class="sidebar">
-                <Sidebar />
-                <Footer />
+                <MainLayoutSidebar />
+                <MainLayoutFooter />
             </aside>
 
             <main>
@@ -19,15 +19,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Header from './Header.vue'
-import Footer from './Footer.vue'
-import Sidebar from './Sidebar.vue'
+import MainLayoutHeader from './MainLayoutHeader.vue'
+import MainLayoutFooter from './MainLayoutFooter.vue'
+import MainLayoutSidebar from './MainLayoutSidebar.vue'
 
 export default defineComponent({
     components: {
-        Header,
-        Footer,
-        Sidebar,
+        MainLayoutHeader,
+        MainLayoutFooter,
+        MainLayoutSidebar,
     },
 })
 </script>
