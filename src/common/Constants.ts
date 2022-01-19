@@ -102,6 +102,7 @@ export enum Tier {
     Shadowlands = 'shadowlands',
     CastleNathria = 't26',
     SanctumOfDomination = 't28',
+    SepulcherOfTheFirstOnes = 't29',
 }
 
 export const DEFAULT_TIER = Tier.SanctumOfDomination
@@ -126,6 +127,17 @@ export interface TierConfig {
 }
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
+    [Tier.SepulcherOfTheFirstOnes]: {
+        name: 'Sepulcher of the First Ones',
+        iconPath: 'shadowlands.png',
+        boes: [
+        ],
+        ilvls: {
+            min: 239,
+            max: 278,
+            step: 13,
+        },
+    },
     [Tier.SanctumOfDomination]: {
         name: 'Sanctum of Domination',
         iconPath: 'sanctum-of-domination.png',
