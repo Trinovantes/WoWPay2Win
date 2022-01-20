@@ -1,3 +1,26 @@
+<script lang="ts">
+import { useFilterStore } from '@/web/store/Filter'
+import { computed, defineComponent } from 'vue'
+
+export default defineComponent({
+    setup() {
+        const filterStore = useFilterStore()
+        const mustHaveSocket = computed<boolean>({
+            get() {
+                return filterStore.mustHaveSocket
+            },
+            set(mustHaveSocket) {
+                filterStore.mustHaveSocket = mustHaveSocket
+            },
+        })
+
+        return {
+            mustHaveSocket,
+        }
+    },
+})
+</script>
+
 <template>
     <div class="group">
         <q-list>
@@ -19,27 +42,3 @@
         </q-list>
     </div>
 </template>
-
-<script lang="ts">
-import { useFilterStore } from '@/web/store/Filter'
-import { FilterMutation } from '@/web/store/Filter/mutations'
-import { computed, defineComponent } from 'vue'
-
-export default defineComponent({
-    setup() {
-        const filterStore = useFilterStore()
-        const mustHaveSocket = computed<boolean>({
-            get() {
-                return filterStore.state.mustHaveSocket
-            },
-            set(mustHaveSocket) {
-                filterStore.commit(FilterMutation.SET_MUST_HAVE_SOCKET, mustHaveSocket)
-            },
-        })
-
-        return {
-            mustHaveSocket,
-        }
-    },
-})
-</script>

@@ -1,3 +1,20 @@
+<script lang="ts">
+import { defineAsyncComponent, defineComponent } from 'vue'
+import { APP_NAME } from '@/common/Constants'
+
+export default defineComponent({
+    components: {
+        RegionFilter: defineAsyncComponent(() => import('@/web/components/Filters/RegionFilter.vue')),
+        TierFilter: defineAsyncComponent(() => import('@/web/components/Filters/TierFilter.vue')),
+    },
+    setup() {
+        return {
+            APP_NAME,
+        }
+    },
+})
+</script>
+
 <template>
     <header id="header" class="row shadow-2">
         <q-toolbar>
@@ -17,23 +34,6 @@
         </q-toolbar>
     </header>
 </template>
-
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue'
-import { APP_NAME } from '@/common/Constants'
-
-export default defineComponent({
-    components: {
-        RegionFilter: defineAsyncComponent(() => import('@/web/components/Filters/RegionFilter.vue')),
-        TierFilter: defineAsyncComponent(() => import('@/web/components/Filters/TierFilter.vue')),
-    },
-    setup() {
-        return {
-            APP_NAME,
-        }
-    },
-})
-</script>
 
 <style lang="scss">
 header#header{

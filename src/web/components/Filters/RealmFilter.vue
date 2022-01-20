@@ -1,42 +1,6 @@
-<template>
-    <div class="group">
-        <h2>{{ region?.toUpperCase() }} Realm Filter</h2>
-        <q-select
-            v-model="selectedRealms"
-            :options="filteredRealms"
-            emit-value
-            multiple
-            use-input
-            use-chips
-            map-options
-            option-label="name"
-            option-value="id"
-
-            filled
-            label="Realm"
-            color="secondary"
-            label-color="white"
-            spellcheck="false"
-            input-debounce="250"
-            clearable
-
-            @filter="filterFn"
-        >
-            <template #no-option>
-                <q-item>
-                    <q-item-section class="text-grey">
-                        No results
-                    </q-item-section>
-                </q-item>
-            </template>
-        </q-select>
-    </div>
-</template>
-
 <script lang="ts">
 import { RealmData } from '@/common/Data'
 import { useFilterStore } from '@/web/store/Filter'
-import { FilterMutation } from '@/web/store/Filter/mutations'
 import { computed, defineComponent, ref } from 'vue'
 import { getRegionData } from '@/web/utils/GameData'
 
@@ -48,14 +12,14 @@ export default defineComponent({
         const filterStore = useFilterStore()
         const selectedRealms = computed<SelectedRealms>({
             get() {
-                return [...filterStore.state.realms]
+                return [...filterStore.realms]
             },
             set(realms) {
-                filterStore.commit(FilterMutation.SET_REALMS, new Set(realms))
+                filterStore.realms = new Set(realms)
             },
         })
 
-        const region = computed(() => filterStore.state.region)
+        const region = computed(() => filterStore.region)
         const regionRealms = computed<Realms>(() => {
             if (!region.value) {
                 return []
@@ -94,3 +58,38 @@ export default defineComponent({
     },
 })
 </script>
+
+<template>
+    <div class="group">
+        <h2>{{ region?.toUpperCase() }} Realm Filter</h2>
+        <q-select
+            v-model="selectedRealms"
+            :options="filteredRealms"
+            emit-value
+            multiple
+            use-input
+            use-chips
+            map-options
+            option-label="name"
+            option-value="id"
+
+            filled
+            label="Realm"
+            color="secondary"
+            label-color="white"
+            spellcheck="false"
+            input-debounce="250"
+            clearable
+
+            @filter="filterFn"
+        >
+            <template #no-option>
+                <q-item>
+                    <q-item-section class="text-grey">
+                        No results
+                    </q-item-section>
+                </q-item>
+            </template>
+        </q-select>
+    </div>
+</template>

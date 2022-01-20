@@ -1,15 +1,3 @@
-<template>
-    <footer id="footer">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <p class="flavor-text" v-html="flavorText" />
-
-        <p class="links">
-            <a href="https://github.com/Trinovantes/WoWPay2Win">GitHub</a>
-            <a href="https://www.patreon.com/user?u=10301737">Patreon</a>
-        </p>
-    </footer>
-</template>
-
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { sample } from 'lodash'
@@ -44,6 +32,18 @@ export default defineComponent({
     },
 })
 </script>
+
+<template>
+    <footer id="footer">
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <p class="flavor-text" v-html="flavorText" />
+
+        <p class="links">
+            <a href="https://github.com/Trinovantes/WoWPay2Win">GitHub</a>
+            <a href="https://www.patreon.com/user?u=10301737">Patreon</a>
+        </p>
+    </footer>
+</template>
 
 <style lang="scss">
 footer#footer{

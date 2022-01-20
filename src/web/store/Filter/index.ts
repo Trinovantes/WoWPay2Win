@@ -1,14 +1,12 @@
 import { Tertiary } from '@/common/BonusId'
 import { DEFAULT_TIER, GOLD_CAP, IlvlRange, RegionSlug, Tier } from '@/common/Constants'
-import { getIlvlRange } from '@/common/utils'
-import { computed, InjectionKey, watch } from 'vue'
-import { Router } from 'vue-router'
-import { CommitOptions, createStore, Store, useStore } from 'vuex'
-import { mutations, FilterMutations } from './mutations'
-import { exportFilters, importQuery } from '@/web/store/Filter/Query'
+import { getIlvlRange, getTierBoeIds } from '@/common/utils'
+import { getValidRealmIds } from '@/web/utils/GameData'
+import _ from 'lodash'
+import { defineStore } from 'pinia'
 
 // ----------------------------------------------------------------------------
-// Store
+// State
 // ----------------------------------------------------------------------------
 
 export type RegionFilter = RegionSlug | null
@@ -52,62 +50,155 @@ export function createDefaultFilterState(): FilterState {
     return defaultState
 }
 
-export async function createFilterStore(router: Router): Promise<Store<FilterState>> {
-    const store = createStore<FilterState>({
-        strict: DEFINE.IS_DEV,
+const MUST_HAVE_SOCKET_VALUE = '1'
+const DELIMITER = ','
 
-        state: createDefaultFilterState,
-        mutations,
-    })
-
-    // Avoid infinite loop due to one handler causing changes that will trigger the other handler
-    let pendingHandler = false
-
-    store.subscribe(async() => {
-        if (pendingHandler) {
-            return
-        }
-
-        pendingHandler = true
-        const query = exportFilters(store.state)
-        await router.replace({ query })
-        pendingHandler = false
-    })
-
-    const query = computed(() => router.currentRoute.value.query)
-    const loadQuery = async() => {
-        if (pendingHandler) {
-            return
-        }
-
-        pendingHandler = true
-        const importedState = importQuery(query.value)
-        const importedQuery = exportFilters(importedState)
-        store.replaceState(importedState)
-        await router.replace({ query: importedQuery })
-        pendingHandler = false
-    }
-
-    watch(query, loadQuery)
-    await loadQuery()
-
-    return store
+enum QueryFiltersField {
+    tier = 'tier',
+    region = 'region',
+    realms = 'realms',
+    boes = 'boes',
+    ilvlRange = 'ilvlRange',
+    maxBuyout = 'maxBuyout',
+    mustHaveSocket = 'mustHaveSocket',
+    tertiaries = 'tertiaries',
 }
 
+type QueryFilters = Partial<Record<QueryFiltersField, string>>
+
 // ----------------------------------------------------------------------------
-// TypeScript Helpers
+// Store
 // ----------------------------------------------------------------------------
 
-type TypedStore = Omit<Store<FilterState>, 'commit' | 'dispatch' | 'getters'> & {
-    commit<K extends keyof FilterMutations>(
-        key: K,
-        payload?: Parameters<FilterMutations[K]>[1],
-        options?: CommitOptions
-    ): ReturnType<FilterMutations[K]>
+export const useFilterStore = defineStore('filter', {
+    state: createDefaultFilterState,
+
+    getters: {
+        exportedQuery: (state): QueryFilters => {
+            const queryFilters: QueryFilters = {}
+
+            if (state.tier) {
+                queryFilters.tier = state.tier
+            }
+
+            if (state.region) {
+                queryFilters.region = state.region
+            }
+
+            if (state.realms.size > 0) {
+                queryFilters.realms = exportSet(state.realms)
+            }
+
+            if (state.boes.size > 0) {
+                queryFilters.boes = exportSet(state.boes)
+            }
+
+            if (!_.isEqual(state.ilvlRange, getIlvlRange(state.tier))) {
+                queryFilters.ilvlRange = state.ilvlRange.min.toString() + DELIMITER + state.ilvlRange.max.toString()
+            }
+
+            if (state.maxBuyout < GOLD_CAP) {
+                queryFilters.maxBuyout = state.maxBuyout.toString()
+            }
+
+            if (state.mustHaveSocket) {
+                queryFilters.mustHaveSocket = MUST_HAVE_SOCKET_VALUE
+            }
+
+            if (state.tertiaries.size > 0) {
+                queryFilters.tertiaries = exportSet(state.tertiaries)
+            }
+
+            return queryFilters
+        },
+    },
+
+    actions: {
+        changeTier(tier: Tier) {
+            this.tier = tier
+            this.boes = new Set()
+            this.ilvlRange = getIlvlRange(tier)
+        },
+
+        changeRegion(region: RegionFilter) {
+            this.region = region
+            this.realms = new Set()
+        },
+
+        importFromQuery(queryFilters: QueryFilters) {
+            if (queryFilters.region) {
+                const validRegions = Object.values(RegionSlug)
+                const region = queryFilters.region as RegionSlug
+                if (validRegions.includes(region)) {
+                    this.changeRegion(region)
+                }
+            }
+
+            if (queryFilters.realms) {
+                const validRealmIds = getValidRealmIds(this.region)
+                const realms = importArray(queryFilters.realms).filter((realm) => validRealmIds.includes(realm))
+                this.realms = new Set(realms)
+            }
+
+            if (queryFilters.tier) {
+                const validTiers = Object.values(Tier)
+                const tier = queryFilters.tier as Tier
+                if (validTiers.includes(tier)) {
+                    this.changeTier(tier)
+                }
+            }
+
+            if (queryFilters.boes) {
+                const validBoeIds = getTierBoeIds(this.tier)
+                const boeIds = importArray(queryFilters.boes).filter((boeId) => validBoeIds.includes(boeId))
+                this.boes = new Set(boeIds)
+            }
+
+            if (queryFilters.ilvlRange) {
+                const [min, max] = queryFilters.ilvlRange.split(DELIMITER).map((ilvl) => parseInt(ilvl))
+                const tierIlvls = getIlvlRange(this.tier)
+
+                if (!isNaN(min)) {
+                    this.ilvlRange.min = Math.max(min, tierIlvls.min)
+                }
+                if (!isNaN(max)) {
+                    this.ilvlRange.max = Math.min(max, tierIlvls.max)
+                }
+            }
+
+            if (queryFilters.maxBuyout) {
+                const maxBuyout = parseInt(queryFilters.maxBuyout)
+                if (!isNaN(maxBuyout)) {
+                    this.maxBuyout = _.clamp(maxBuyout, 0, GOLD_CAP)
+                }
+            }
+
+            if (queryFilters.mustHaveSocket) {
+                this.mustHaveSocket = (queryFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
+            }
+
+            if (queryFilters.tertiaries) {
+                const validTertiaries = Object.values(Tertiary)
+                const tertiaries = importArray(queryFilters.tertiaries).filter((tertiary) => validTertiaries.includes(tertiary))
+                this.tertiaries = new Set(tertiaries)
+            }
+        },
+    },
+})
+
+// ----------------------------------------------------------------------------
+// Helpers
+// ----------------------------------------------------------------------------
+
+function exportSet(set: Set<number>): string {
+    return [...set].sort().join(DELIMITER)
 }
 
-export const filterInjectionKey: InjectionKey<TypedStore> = Symbol('Vuex (Filter) InjectionKey')
+function importArray(setString: string): Array<number> {
+    const idStrings = setString.split(',')
+    const ids = idStrings
+        .map((idString) => parseInt(idString))
+        .filter((id) => !isNaN(id))
 
-export function useFilterStore(): TypedStore {
-    return useStore(filterInjectionKey)
+    return ids
 }

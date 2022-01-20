@@ -1,3 +1,43 @@
+<script lang="ts">
+import { Tertiary } from '@/common/BonusId'
+import { useFilterStore } from '@/web/store/Filter'
+import { defineComponent, computed } from 'vue'
+
+type SelectedTertiaries = Array<Tertiary>
+
+export default defineComponent({
+    setup() {
+        const filterStore = useFilterStore()
+        const selectedTeriary = computed<SelectedTertiaries>({
+            get() {
+                return [...filterStore.tertiaries]
+            },
+            set(tertiaries) {
+                filterStore.tertiaries = new Set(tertiaries)
+            },
+        })
+
+        const allTertiaries: Array<{ label: string; bonusId: number }> = []
+        for (const [label, tertiaryId] of Object.entries(Tertiary)) {
+            const bonusId = Number(tertiaryId)
+            if (isNaN(bonusId)) {
+                continue
+            }
+
+            allTertiaries.push({
+                label,
+                bonusId,
+            })
+        }
+
+        return {
+            selectedTeriary,
+            allTertiaries,
+        }
+    },
+})
+</script>
+
 <template>
     <div class="group">
         <h2>Tertiaries</h2>
@@ -23,44 +63,3 @@
         </q-list>
     </div>
 </template>
-
-<script lang="ts">
-import { Tertiary } from '@/common/BonusId'
-import { useFilterStore } from '@/web/store/Filter'
-import { FilterMutation } from '@/web/store/Filter/mutations'
-import { defineComponent, computed } from 'vue'
-
-type SelectedTertiaries = Array<Tertiary>
-
-export default defineComponent({
-    setup() {
-        const filterStore = useFilterStore()
-        const selectedTeriary = computed<SelectedTertiaries>({
-            get() {
-                return [...filterStore.state.tertiaries]
-            },
-            set(tertiaries) {
-                filterStore.commit(FilterMutation.SET_TERTIARIES, new Set(tertiaries))
-            },
-        })
-
-        const allTertiaries: Array<{ label: string; bonusId: number }> = []
-        for (const [label, tertiaryId] of Object.entries(Tertiary)) {
-            const bonusId = Number(tertiaryId)
-            if (isNaN(bonusId)) {
-                continue
-            }
-
-            allTertiaries.push({
-                label,
-                bonusId,
-            })
-        }
-
-        return {
-            selectedTeriary,
-            allTertiaries,
-        }
-    },
-})
-</script>

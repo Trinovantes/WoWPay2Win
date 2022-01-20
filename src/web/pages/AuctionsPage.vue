@@ -1,55 +1,3 @@
-<template>
-    <q-table
-        v-model:pagination="pagination"
-        class="auctions"
-        row-key="id"
-        :rows="filteredAuctions"
-        :columns="columns"
-        :sort-method="sortAuctions"
-        :no-data-label="noDataLabel"
-        hide-pagination
-    >
-        <template #body-cell-itemId="props">
-            <q-td :props="props">
-                <a
-                    :href="getWowheadLink(props.row)"
-                    :data-wowhead="`item=${props.row.itemId}`"
-                    class="boe"
-                    rel="noopener"
-                    target="_blank"
-                >
-                    <q-avatar
-                        rounded
-                        size="20px"
-                    >
-                        <img :src="getItemIcon(props.row.itemId)" :alt="getItemName(props.row.itemId)" width="20" height="20">
-                    </q-avatar>
-                    {{ getItemName(props.row.itemId) }}
-                </a>
-            </q-td>
-        </template>
-        <template #body-cell-hasSocket="props">
-            <q-td :props="props">
-                <q-icon
-                    v-if="props.row.hasSocket"
-                    name="check_circle_outline"
-                    title="Has Socket"
-                />
-            </q-td>
-        </template>
-    </q-table>
-
-    <q-pagination
-        v-if="filteredAuctions.length > 0"
-        v-model="pagination.page"
-        :max="numPages"
-        boundary-links
-        direction-links
-        input
-        color="secondary"
-    />
-</template>
-
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useFilterStore } from '@/web/store/Filter'
@@ -60,21 +8,22 @@ import { ItemAuctionData } from '@/common/Data'
 import { ROWS_PER_PAGE } from '@/common/Constants'
 import { Tertiary } from '@/common/BonusId'
 import { Auctions, useAuctionsStore } from '@/web/store/Auctions'
-import { AuctionsGetter } from '@/web/store/Auctions/getters'
+
+type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
 
 export default defineComponent({
     setup() {
         const filterStore = useFilterStore()
-        const filteredRegion = computed(() => filterStore.state.region)
+        const filteredRegion = computed(() => filterStore.region)
 
         const auctionsStore = useAuctionsStore()
         const filteredAuctions = ref<Auctions>([])
         const updateFilteredAuctions = () => {
-            filteredAuctions.value = auctionsStore.getters[AuctionsGetter.FILTERED_AUCTIONS](filterStore.state)
+            filteredAuctions.value = auctionsStore.filteredAuctions
         }
 
         onMounted(updateFilteredAuctions)
-        watch(filterStore.state, updateFilteredAuctions)
+        watch(filterStore.$state, updateFilteredAuctions)
 
         const columns: QTable['columns'] = [
             {
@@ -172,25 +121,23 @@ export default defineComponent({
         }
 
         const noDataLabel = computed(() => {
-            if (!filterStore.state.region) {
+            if (!filterStore.region) {
                 return 'No region selected'
             }
 
-            if (filterStore.state.boes.size === 0) {
+            if (filterStore.boes.size === 0) {
                 return 'No BoE selected'
             }
 
             return 'No auctions found'
         })
 
-        const pagination = ref<Required<QTable>['pagination']>({
+        const numPages = computed(() => Math.ceil(filteredAuctions.value.length / ROWS_PER_PAGE))
+        const pagination = ref<Pagination>({
             page: 1,
             rowsPerPage: ROWS_PER_PAGE,
             descending: false,
             sortBy: 'buyout',
-        })
-        const numPages = computed(() => {
-            return Math.ceil(filteredAuctions.value.length / ROWS_PER_PAGE)
         })
 
         const getConnectedRealmName = (crId: number): string => {
@@ -252,6 +199,58 @@ function formatNum(val: number): string {
     return fmt.format(val)
 }
 </script>
+
+<template>
+    <q-table
+        v-model:pagination="pagination"
+        class="auctions"
+        row-key="id"
+        :rows="filteredAuctions"
+        :columns="columns"
+        :sort-method="sortAuctions"
+        :no-data-label="noDataLabel"
+        hide-pagination
+    >
+        <template #body-cell-itemId="props">
+            <q-td :props="props">
+                <a
+                    :href="getWowheadLink(props.row)"
+                    :data-wowhead="`item=${props.row.itemId}`"
+                    class="boe"
+                    rel="noopener"
+                    target="_blank"
+                >
+                    <q-avatar
+                        rounded
+                        size="20px"
+                    >
+                        <img :src="getItemIcon(props.row.itemId)" :alt="getItemName(props.row.itemId)" width="20" height="20">
+                    </q-avatar>
+                    {{ getItemName(props.row.itemId) }}
+                </a>
+            </q-td>
+        </template>
+        <template #body-cell-hasSocket="props">
+            <q-td :props="props">
+                <q-icon
+                    v-if="props.row.hasSocket"
+                    name="check_circle_outline"
+                    title="Has Socket"
+                />
+            </q-td>
+        </template>
+    </q-table>
+
+    <q-pagination
+        v-if="filteredAuctions.length > 0"
+        v-model="pagination.page"
+        :max="numPages"
+        boundary-links
+        direction-links
+        input
+        color="secondary"
+    />
+</template>
 
 <style lang="scss">
 .auctions{

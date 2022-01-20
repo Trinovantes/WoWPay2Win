@@ -48,6 +48,6 @@ export interface ItemAuctionData {
 }
 
 export interface RegionAuctionsData extends Data {
-    lastUpdate: number
+    lastUpdate: number // from Date.now()
     auctions: Array<ItemAuctionData>
 }

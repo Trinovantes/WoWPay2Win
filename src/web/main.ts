@@ -1,8 +1,6 @@
 import './assets/css/main.scss'
 import { createApp } from 'vue'
 import { createAppRouter } from './router'
-import { createFilterStore, filterInjectionKey } from './store/Filter'
-import { auctionsInjectionKey, createAuctionsStore } from './store/Auctions'
 import AppLoader from './components/AppLoader.vue'
 import { Quasar } from 'quasar'
 import dayjs from 'dayjs'
@@ -11,6 +9,8 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { SENTRY_DSN } from '@/common/Constants'
 import * as Sentry from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
+import { createPinia } from 'pinia'
+import { cleanLocalStorage } from './store/Hydration'
 
 dayjs.extend(relativeTime)
 dayjs.extend(localizedFormat)
@@ -34,12 +34,9 @@ async function main() {
     app.use(router)
     await router.isReady()
 
-    // Vuex
-    const filterStore = await createFilterStore(router)
-    app.use(filterStore, filterInjectionKey)
-
-    const auctionsStore = await createAuctionsStore(filterStore)
-    app.use(auctionsStore, auctionsInjectionKey)
+    // Pinia
+    const pinia = createPinia()
+    app.use(pinia)
 
     // Quasar
     app.use(Quasar, {
@@ -54,4 +51,5 @@ async function main() {
 main().catch((err) => {
     console.warn(err)
     Sentry.captureException(err)
+    cleanLocalStorage()
 })

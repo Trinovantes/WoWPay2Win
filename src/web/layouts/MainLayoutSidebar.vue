@@ -1,3 +1,41 @@
+<script lang="ts">
+import { APP_DESC, APP_NAME } from '@/common/Constants'
+import { useAuctionsStore } from '@/web/store/Auctions'
+import { useFilterStore } from '@/web/store/Filter'
+import { defineAsyncComponent, defineComponent, computed } from 'vue'
+
+export default defineComponent({
+    components: {
+        RealmFilter: defineAsyncComponent(() => import('@/web/components/Filters/RealmFilter.vue')),
+        BoeFilter: defineAsyncComponent(() => import('@/web/components/Filters/BoeFilter.vue')),
+        ItemLevelFilter: defineAsyncComponent(() => import('@/web/components/Filters/ItemLevelFilter.vue')),
+        MaxBuyoutFilter: defineAsyncComponent(() => import('@/web/components/Filters/MaxBuyoutFilter.vue')),
+        SocketFilter: defineAsyncComponent(() => import('@/web/components/Filters/SocketFilter.vue')),
+        TertiaryFilter: defineAsyncComponent(() => import('@/web/components/Filters/TertiaryFilter.vue')),
+    },
+
+    setup() {
+        const filterStore = useFilterStore()
+        const selectedRegion = computed(() => filterStore.region)
+
+        const auctionsStore = useAuctionsStore()
+        const lastUpdateIso = computed(() => auctionsStore.lastUpdateIso)
+        const lastUpdateString = computed(() => auctionsStore.lastUpdateFull)
+        const lastUpdateFromNow = computed(() => auctionsStore.lastUpdateFromNow)
+
+        return {
+            APP_NAME,
+            APP_DESC,
+
+            selectedRegion,
+            lastUpdateIso,
+            lastUpdateString,
+            lastUpdateFromNow,
+        }
+    },
+})
+</script>
+
 <template>
     <div class="sidebar-content">
         <div class="group">
@@ -27,45 +65,6 @@
         </q-banner>
     </div>
 </template>
-
-<script lang="ts">
-import { APP_DESC, APP_NAME } from '@/common/Constants'
-import { useAuctionsStore } from '@/web/store/Auctions'
-import { useFilterStore } from '@/web/store/Filter'
-import { defineAsyncComponent, defineComponent, computed } from 'vue'
-import { AuctionsGetter } from '@/web/store/Auctions/getters'
-
-export default defineComponent({
-    components: {
-        RealmFilter: defineAsyncComponent(() => import('@/web/components/Filters/RealmFilter.vue')),
-        BoeFilter: defineAsyncComponent(() => import('@/web/components/Filters/BoeFilter.vue')),
-        ItemLevelFilter: defineAsyncComponent(() => import('@/web/components/Filters/ItemLevelFilter.vue')),
-        MaxBuyoutFilter: defineAsyncComponent(() => import('@/web/components/Filters/MaxBuyoutFilter.vue')),
-        SocketFilter: defineAsyncComponent(() => import('@/web/components/Filters/SocketFilter.vue')),
-        TertiaryFilter: defineAsyncComponent(() => import('@/web/components/Filters/TertiaryFilter.vue')),
-    },
-
-    setup() {
-        const filterStore = useFilterStore()
-        const selectedRegion = computed(() => filterStore.state.region)
-
-        const auctionsStore = useAuctionsStore()
-        const lastUpdateIso = computed(() => auctionsStore.getters[AuctionsGetter.LAST_UPDATE_ISO])
-        const lastUpdateString = computed(() => auctionsStore.getters[AuctionsGetter.LAST_UPDATE_STRING])
-        const lastUpdateFromNow = computed(() => auctionsStore.getters[AuctionsGetter.LAST_UPDATE_FROM_NOW])
-
-        return {
-            APP_NAME,
-            APP_DESC,
-
-            selectedRegion,
-            lastUpdateIso,
-            lastUpdateString,
-            lastUpdateFromNow,
-        }
-    },
-})
-</script>
 
 <style lang="scss">
 .sidebar-content{

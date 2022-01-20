@@ -1,22 +1,6 @@
-<template>
-    <div class="group">
-        <h2>Max Buyout</h2>
-        <div class="wrapper">
-            <q-slider
-                v-model="sliderPosition"
-                :label-value="formatedMaxBuyout"
-                :min="0"
-                :max="100"
-                label
-            />
-        </div>
-    </div>
-</template>
-
 <script lang="ts">
 import { GOLD_CAP } from '@/common/Constants'
 import { useFilterStore } from '@/web/store/Filter'
-import { FilterMutation } from '@/web/store/Filter/mutations'
 import { ref, watch, computed, defineComponent } from 'vue'
 import { throttle } from 'lodash'
 
@@ -25,12 +9,12 @@ export default defineComponent({
         const filterStore = useFilterStore()
 
         const formatter = Intl.NumberFormat(undefined, { maximumFractionDigits: 0 })
-        const formatedMaxBuyout = computed(() => formatter.format(filterStore.state.maxBuyout))
+        const formatedMaxBuyout = computed(() => formatter.format(filterStore.maxBuyout))
 
-        const sliderPosition = ref(convertGoldToPos(filterStore.state.maxBuyout))
+        const sliderPosition = ref(convertGoldToPos(filterStore.maxBuyout))
         watch(sliderPosition, throttle((sliderPosition: number) => {
             const maxBuyout = convertPositionToGold(sliderPosition)
-            filterStore.commit(FilterMutation.SET_MAX_BUYOUT, maxBuyout)
+            filterStore.maxBuyout = maxBuyout
         }, 250))
 
         return {
@@ -83,3 +67,18 @@ function convertGoldToPos(gold: number): number {
     throw new Error(`Invalid gold amount for conversion ${gold}`)
 }
 </script>
+
+<template>
+    <div class="group">
+        <h2>Max Buyout</h2>
+        <div class="wrapper">
+            <q-slider
+                v-model="sliderPosition"
+                :label-value="formatedMaxBuyout"
+                :min="0"
+                :max="100"
+                label
+            />
+        </div>
+    </div>
+</template>

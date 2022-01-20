@@ -87,6 +87,10 @@ module.exports = {
             'ignores': ['ExternalLink', 'pre', 'router-link', ...INLINE_ELEMENTS],
         }],
 
+        'vue/component-tags-order': ['error', {
+            'order': ['script', 'template', 'style'],
+        }],
+
         '@typescript-eslint/type-annotation-spacing': 'error',
         '@typescript-eslint/restrict-template-expressions': ['error', {
             allowNumber: true,

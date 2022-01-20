@@ -25,6 +25,7 @@
         "dayjs": "^1.9.5",
         "dotenv": "^14.2.0",
         "lodash": "^4.17.20",
+        "pinia": "^2.0.9",
         "quasar": "^2.0.0-beta.12",
         "source-map-support": "^0.5.19",
         "vue": "^3",

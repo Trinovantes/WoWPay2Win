@@ -1,3 +1,18 @@
+<script lang="ts">
+import { defineComponent } from 'vue'
+import MainLayoutHeader from './MainLayoutHeader.vue'
+import MainLayoutFooter from './MainLayoutFooter.vue'
+import MainLayoutSidebar from './MainLayoutSidebar.vue'
+
+export default defineComponent({
+    components: {
+        MainLayoutHeader,
+        MainLayoutFooter,
+        MainLayoutSidebar,
+    },
+})
+</script>
+
 <template>
     <div class="main-layout">
         <MainLayoutHeader class="layout-row" />
@@ -16,21 +31,6 @@
         </div>
     </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import MainLayoutHeader from './MainLayoutHeader.vue'
-import MainLayoutFooter from './MainLayoutFooter.vue'
-import MainLayoutSidebar from './MainLayoutSidebar.vue'
-
-export default defineComponent({
-    components: {
-        MainLayoutHeader,
-        MainLayoutFooter,
-        MainLayoutSidebar,
-    },
-})
-</script>
 
 <style lang="scss">
 .main-layout{

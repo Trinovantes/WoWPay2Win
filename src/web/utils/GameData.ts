@@ -1,5 +1,6 @@
 import { ItemData, RegionCache } from '@/common/Data'
 import { getRegionLocale, RegionSlug } from '@/common/Constants'
+import { RegionFilter } from '../store/Filter'
 
 // ----------------------------------------------------------------------------
 // Load Data
@@ -57,6 +58,19 @@ export function getRegionData(region: RegionSlug): RegionCache | undefined {
     }
 
     return regionFiles.get(region)
+}
+
+export function getValidRealmIds(region: RegionFilter): Array<number> {
+    if (!region) {
+        return []
+    }
+
+    const connectedRealms = getRegionData(region)?.connectedRealms
+    if (!connectedRealms) {
+        return []
+    }
+
+    return connectedRealms.flatMap((cr) => cr.realms.map((r) => r.id))
 }
 
 export function getWowheadItemLinkById(itemId: number, region: RegionSlug): string {

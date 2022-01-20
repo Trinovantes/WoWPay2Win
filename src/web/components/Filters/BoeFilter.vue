@@ -1,3 +1,97 @@
+<script lang="ts">
+import { TIER_CONFIGS } from '@/common/Constants'
+import { useFilterStore } from '@/web/store/Filter'
+import { computed, defineComponent } from 'vue'
+import { getItemIcon } from '@/web/utils/ImageLoader'
+import { getItemNameById, getWowheadItemLinkById } from '@/web/utils/GameData'
+
+export default defineComponent({
+    setup() {
+        const filterStore = useFilterStore()
+        const boeCategories = computed(() => TIER_CONFIGS[filterStore.tier].boes)
+        const selectedBoes = computed<Array<number>>({
+            get() {
+                return [...filterStore.boes]
+            },
+            set(boes) {
+                filterStore.boes = new Set(boes)
+            },
+        })
+
+        const toggleAll = (idsToAdd: Set<number>) => {
+            const currentSelected = new Set(filterStore.boes)
+            for (const id of idsToAdd) {
+                currentSelected.add(id)
+            }
+
+            filterStore.boes = currentSelected
+        }
+        const toggleNone = (idsToRemove: Set<number>) => {
+            const currentSelected = new Set(filterStore.boes)
+            for (const id of idsToRemove) {
+                currentSelected.delete(id)
+            }
+
+            filterStore.boes = currentSelected
+        }
+
+        const isAllActive = (idsToCheck: Set<number>): boolean => {
+            for (const id of idsToCheck) {
+                if (!selectedBoes.value.includes(id)) {
+                    return false
+                }
+            }
+
+            return true
+        }
+        const isNoneActive = (idsToCheck: Set<number>): boolean => {
+            for (const id of idsToCheck) {
+                if (selectedBoes.value.includes(id)) {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        const region = computed(() => filterStore.region)
+        const getWowheadLink = (itemId: number) => {
+            if (!region.value) {
+                return ''
+            }
+
+            return getWowheadItemLinkById(itemId, region.value)
+        }
+        const getItemName = (itemId: number) => {
+            if (!region.value) {
+                return ''
+            }
+
+            return getItemNameById(itemId, region.value)
+        }
+
+        const tierName = computed(() => TIER_CONFIGS[filterStore.tier].name)
+
+        return {
+            boeCategories,
+            selectedBoes,
+
+            toggleAll,
+            toggleNone,
+
+            isAllActive,
+            isNoneActive,
+
+            getWowheadLink,
+            getItemIcon,
+            getItemName,
+
+            tierName,
+        }
+    },
+})
+</script>
+
 <template>
     <div
         v-if="boeCategories.length > 0"
@@ -83,101 +177,6 @@
         </strong>
     </q-banner>
 </template>
-
-<script lang="ts">
-import { TIER_CONFIGS } from '@/common/Constants'
-import { useFilterStore } from '@/web/store/Filter'
-import { FilterMutation } from '@/web/store/Filter/mutations'
-import { computed, defineComponent } from 'vue'
-import { getItemIcon } from '@/web/utils/ImageLoader'
-import { getItemNameById, getWowheadItemLinkById } from '@/web/utils/GameData'
-
-export default defineComponent({
-    setup() {
-        const filterStore = useFilterStore()
-        const boeCategories = computed(() => TIER_CONFIGS[filterStore.state.tier].boes)
-        const selectedBoes = computed<Array<number>>({
-            get() {
-                return [...filterStore.state.boes]
-            },
-            set(boes) {
-                filterStore.commit(FilterMutation.SET_BOES, new Set(boes))
-            },
-        })
-
-        const toggleAll = (idsToAdd: Set<number>) => {
-            const currentSelected = new Set(filterStore.state.boes)
-            for (const id of idsToAdd) {
-                currentSelected.add(id)
-            }
-
-            filterStore.commit(FilterMutation.SET_BOES, currentSelected)
-        }
-        const toggleNone = (idsToRemove: Set<number>) => {
-            const currentSelected = new Set(filterStore.state.boes)
-            for (const id of idsToRemove) {
-                currentSelected.delete(id)
-            }
-
-            filterStore.commit(FilterMutation.SET_BOES, currentSelected)
-        }
-
-        const isAllActive = (idsToCheck: Set<number>): boolean => {
-            for (const id of idsToCheck) {
-                if (!selectedBoes.value.includes(id)) {
-                    return false
-                }
-            }
-
-            return true
-        }
-        const isNoneActive = (idsToCheck: Set<number>): boolean => {
-            for (const id of idsToCheck) {
-                if (selectedBoes.value.includes(id)) {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        const region = computed(() => filterStore.state.region)
-        const getWowheadLink = (itemId: number) => {
-            if (!region.value) {
-                return ''
-            }
-
-            return getWowheadItemLinkById(itemId, region.value)
-        }
-        const getItemName = (itemId: number) => {
-            if (!region.value) {
-                return ''
-            }
-
-            return getItemNameById(itemId, region.value)
-        }
-
-        const tierName = computed(() => TIER_CONFIGS[filterStore.state.tier].name)
-
-        return {
-            boeCategories,
-            selectedBoes,
-
-            toggleAll,
-            toggleNone,
-
-            isAllActive,
-            isNoneActive,
-
-            getWowheadLink,
-            getItemIcon,
-            getItemName,
-
-            tierName,
-        }
-    },
-})
-</script>
 
 <style lang="scss">
 .boes{

@@ -1,80 +1,123 @@
-import { ItemAuctionData, RegionAuctionsData } from '@/common/Data'
-import { computed, InjectionKey, watch } from 'vue'
-import { CommitOptions, createStore, DispatchOptions, Store, useStore } from 'vuex'
-import { actions, AuctionsAction, AuctionsActions } from './actions'
-import { mutations, AuctionsMutations } from './mutations'
-import { AuctionsGetters, getters } from './getters'
 import { RegionSlug } from '@/common/Constants'
-import { useFilterStore } from '@/web/store/Filter'
+import { ItemAuctionData, RegionAuctionsData } from '@/common/Data'
+import { getBaseIlvl, realmToConnectedRealmMaps } from '@/web/utils/GameData'
+import axios from 'axios'
+import dayjs from 'dayjs'
+import { defineStore } from 'pinia'
+import { useFilterStore } from '../Filter'
 
 // ----------------------------------------------------------------------------
 // Store
 // ----------------------------------------------------------------------------
 
 export type Auctions = Array<ItemAuctionData>
-export const cachedRequests = new Map<RegionSlug, RegionAuctionsData>()
 
 export interface AuctionsState {
     lastUpdate: number | null
+    cachedRequests: Map<RegionSlug, RegionAuctionsData>
 }
 
 export function createDefaultAuctionsState(): AuctionsState {
     const defaultState: AuctionsState = {
         lastUpdate: null,
+        cachedRequests: new Map(),
     }
 
     return defaultState
 }
 
-export async function createAuctionsStore(filterStore: ReturnType<typeof useFilterStore>): Promise<Store<AuctionsState>> {
-    const store = createStore<AuctionsState>({
-        strict: DEFINE.IS_DEV,
+export const useAuctionsStore = defineStore('auctions', {
+    state: createDefaultAuctionsState,
 
-        state: createDefaultAuctionsState,
-        mutations,
-        actions,
-        getters,
-    })
-
-    const region = computed(() => filterStore.state.region)
-    const fetchAuctions = async() => {
-        if (!region.value) {
-            return
-        }
-
-        await store.dispatch(AuctionsAction.LOAD_AUCTIONS, region.value)
-    }
-
-    watch(region, fetchAuctions)
-    await fetchAuctions()
-
-    return store
-}
-
-// ----------------------------------------------------------------------------
-// TypeScript Helpers
-// ----------------------------------------------------------------------------
-
-type TypedStore = Omit<Store<AuctionsState>, 'commit' | 'dispatch' | 'getters'> & {
-    commit<K extends keyof AuctionsMutations>(
-        key: K,
-        payload?: Parameters<AuctionsMutations[K]>[1],
-        options?: CommitOptions
-    ): ReturnType<AuctionsMutations[K]>
-} & {
-    dispatch<K extends keyof AuctionsActions>(
-        key: K,
-        payload?: Parameters<AuctionsActions[K]>[1],
-        options?: DispatchOptions
-    ): ReturnType<AuctionsActions[K]>
-} & {
     getters: {
-        [K in keyof AuctionsGetters]: ReturnType<AuctionsGetters[K]>
-    }
-}
+        lastUpdateIso: (state) => {
+            if (state.lastUpdate === null) {
+                return ''
+            }
 
-export const auctionsInjectionKey: InjectionKey<TypedStore> = Symbol('Vuex (Auctions) InjectionKey')
+            return dayjs(state.lastUpdate).toISOString()
+        },
 
-export function useAuctionsStore(): TypedStore {
-    return useStore(auctionsInjectionKey)
-}
+        lastUpdateFull: (state) => {
+            if (state.lastUpdate === null) {
+                return ''
+            }
+
+            return dayjs(state.lastUpdate).format('ll LT')
+        },
+
+        lastUpdateFromNow: (state) => {
+            if (state.lastUpdate === null) {
+                return ''
+            }
+
+            return dayjs(state.lastUpdate).fromNow()
+        },
+
+        filteredAuctions: (state): Auctions => {
+            const filterStore = useFilterStore()
+
+            if (!filterStore.region) {
+                return []
+            }
+
+            // If the user filtered by realms, we need to find their corresponding parent crIds
+            const connectedRealms = new Set<number>()
+            for (const realm of filterStore.realms) {
+                const cr = realmToConnectedRealmMaps.get(filterStore.region)?.[realm]
+                if (cr !== undefined) {
+                    connectedRealms.add(cr)
+                }
+            }
+
+            const auctions = state.cachedRequests.get(filterStore.region)?.auctions ?? []
+            return auctions.filter((auction) => {
+                if (!filterStore.boes.has(auction.itemId)) {
+                    return false
+                }
+
+                const auctionIlvl = getBaseIlvl(auction.itemId) + (auction.bonusIlvl ?? 0)
+                if (auctionIlvl < filterStore.ilvlRange.min || auctionIlvl > filterStore.ilvlRange.max) {
+                    return false
+                }
+
+                if (auction.buyout > filterStore.maxBuyout) {
+                    return false
+                }
+
+                if (filterStore.mustHaveSocket && !auction.hasSocket) {
+                    return false
+                }
+
+                if (filterStore.tertiaries.size > 0 && (!auction.tertiary || !filterStore.tertiaries.has(auction.tertiary))) {
+                    return false
+                }
+
+                if (connectedRealms.size > 0 && !connectedRealms.has(auction.crId)) {
+                    return false
+                }
+
+                return true
+            })
+        },
+    },
+
+    actions: {
+        async loadAuctions(regionSlug: RegionSlug) {
+            try {
+                const hasCachedRegion = this.cachedRequests.has(regionSlug)
+                const cachedRegionExpired = (Date.now() - (this.cachedRequests.get(regionSlug)?.lastUpdate ?? 0)) > (3600 * 1000) // Expire after 1 hour
+
+                if (!hasCachedRegion || cachedRegionExpired) {
+                    const auctionsFile = `/data/auctions-${regionSlug}.json`
+                    const response = await axios.get<RegionAuctionsData>(auctionsFile)
+                    this.cachedRequests.set(regionSlug, response.data)
+                }
+
+                this.lastUpdate = this.cachedRequests.get(regionSlug)?.lastUpdate ?? null
+            } catch (err) {
+                console.warn(err)
+            }
+        },
+    },
+})
