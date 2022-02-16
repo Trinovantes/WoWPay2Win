@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useFilterStore } from '@/web/store/Filter'
 import { getBaseIlvl, getItemNameById, getRegionData, getWowheadItemLinkById } from '@/web/utils/GameData'
 import { getItemIcon } from '@/web/utils/ImageLoader'
@@ -17,13 +17,7 @@ export default defineComponent({
         const filteredRegion = computed(() => filterStore.region)
 
         const auctionsStore = useAuctionsStore()
-        const filteredAuctions = ref<Auctions>([])
-        const updateFilteredAuctions = () => {
-            filteredAuctions.value = auctionsStore.filteredAuctions
-        }
-
-        onMounted(updateFilteredAuctions)
-        watch(filterStore.$state, updateFilteredAuctions)
+        const filteredAuctions = computed(() => auctionsStore.filteredAuctions)
 
         const columns: QTable['columns'] = [
             {

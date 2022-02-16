@@ -6,9 +6,9 @@ import { useSyncFilterQuery } from '../store/Filter/useSyncFilterQuery'
 
 export default defineComponent({
     setup() {
-        useLiveAuctions()
         useSyncFilterLocalStorage()
         useSyncFilterQuery()
+        useLiveAuctions()
     },
 })
 </script>
