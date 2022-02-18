@@ -15,7 +15,7 @@ export function useSyncFilterQuery() {
             return
         }
 
-        const exportedQuery = filterStore.exportedQuery
+        const exportedQuery = filterStore.exportToQuery()
         void router.push({ query: exportedQuery })
     }
 

@@ -73,46 +73,6 @@ type QueryFilters = Partial<Record<QueryFiltersField, string>>
 export const useFilterStore = defineStore('filter', {
     state: createDefaultFilterState,
 
-    getters: {
-        exportedQuery: (state): QueryFilters => {
-            const queryFilters: QueryFilters = {}
-
-            if (state.tier) {
-                queryFilters.tier = state.tier
-            }
-
-            if (state.region) {
-                queryFilters.region = state.region
-            }
-
-            if (state.realms.size > 0) {
-                queryFilters.realms = exportSet(state.realms)
-            }
-
-            if (state.boes.size > 0) {
-                queryFilters.boes = exportSet(state.boes)
-            }
-
-            if (!_.isEqual(state.ilvlRange, getIlvlRange(state.tier))) {
-                queryFilters.ilvlRange = state.ilvlRange.min.toString() + DELIMITER + state.ilvlRange.max.toString()
-            }
-
-            if (state.maxBuyout < GOLD_CAP) {
-                queryFilters.maxBuyout = state.maxBuyout.toString()
-            }
-
-            if (state.mustHaveSocket) {
-                queryFilters.mustHaveSocket = MUST_HAVE_SOCKET_VALUE
-            }
-
-            if (state.tertiaries.size > 0) {
-                queryFilters.tertiaries = exportSet(state.tertiaries)
-            }
-
-            return queryFilters
-        },
-    },
-
     actions: {
         changeTier(tier: Tier) {
             this.tier = tier
@@ -123,6 +83,44 @@ export const useFilterStore = defineStore('filter', {
         changeRegion(region: RegionFilter) {
             this.region = region
             this.realms = new Set()
+        },
+
+        exportToQuery(): QueryFilters {
+            const queryFilters: QueryFilters = {}
+
+            if (this.tier) {
+                queryFilters.tier = this.tier
+            }
+
+            if (this.region) {
+                queryFilters.region = this.region
+            }
+
+            if (this.realms.size > 0) {
+                queryFilters.realms = exportSet(this.realms)
+            }
+
+            if (this.boes.size > 0) {
+                queryFilters.boes = exportSet(this.boes)
+            }
+
+            if (!_.isEqual(this.ilvlRange, getIlvlRange(this.tier))) {
+                queryFilters.ilvlRange = this.ilvlRange.min.toString() + DELIMITER + this.ilvlRange.max.toString()
+            }
+
+            if (this.maxBuyout < GOLD_CAP) {
+                queryFilters.maxBuyout = this.maxBuyout.toString()
+            }
+
+            if (this.mustHaveSocket) {
+                queryFilters.mustHaveSocket = MUST_HAVE_SOCKET_VALUE
+            }
+
+            if (this.tertiaries.size > 0) {
+                queryFilters.tertiaries = exportSet(this.tertiaries)
+            }
+
+            return queryFilters
         },
 
         importFromQuery(queryFilters: QueryFilters) {
