@@ -8,32 +8,38 @@ export function useSyncFilterQuery() {
     const routeQuery = computed(() => router.currentRoute.value.query)
 
     // Avoid infinite loop due to one handler causing changes that will trigger the other handler
-    let isImporting = false
+    let isProcessing = false
 
-    const exportQuery = () => {
-        if (isImporting) {
+    const exportQuery = async() => {
+        if (isProcessing) {
             return
         }
 
+        isProcessing = true
         const exportedQuery = filterStore.exportToQuery()
-        void router.push({ query: exportedQuery })
+        await router.push({ query: exportedQuery })
+        isProcessing = false
     }
 
     const importQuery = () => {
-        isImporting = true
+        if (isProcessing) {
+            return
+        }
+
+        isProcessing = true
         filterStore.importFromQuery(routeQuery.value)
-        isImporting = false
+        isProcessing = false
     }
 
     // Whenever the url changes, we import the query into the state
     watch(routeQuery, () => importQuery(), { deep: true })
 
     // Whenever the state changes, we export the query into the url
-    filterStore.$subscribe(() => exportQuery())
+    filterStore.$subscribe(() => { void exportQuery() })
 
     // This runs once on page load: load url query (and filtering out invalid params) then save result back to url
-    onMounted(() => {
+    onMounted(async() => {
         importQuery()
-        exportQuery()
+        await exportQuery()
     })
 }
