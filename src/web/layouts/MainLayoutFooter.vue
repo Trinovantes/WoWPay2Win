@@ -40,7 +40,6 @@ export default defineComponent({
 
         <p class="links">
             <a href="https://github.com/Trinovantes/WoWPay2Win">GitHub</a>
-            <a href="https://www.patreon.com/user?u=10301737">Patreon</a>
         </p>
     </footer>
 </template>
