@@ -105,7 +105,7 @@ export enum Tier {
     SepulcherOfTheFirstOnes = 't29',
 }
 
-export const DEFAULT_TIER = Tier.SanctumOfDomination
+export const DEFAULT_TIER = Tier.SepulcherOfTheFirstOnes
 
 export interface BoeCategory {
     label: string
@@ -131,6 +131,34 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         name: 'Sepulcher of the First Ones',
         iconPath: 'shadowlands.png',
         boes: [
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    190630,
+                    190631,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    190627,
+                    190626,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    190629,
+                    190628,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    190625,
+                    190624,
+                ]),
+            },
         ],
         ilvls: {
             min: 239,
