@@ -93,8 +93,23 @@ export function getItemNameById(itemId: number, region: RegionSlug): string {
     }
 
     const itemCache = itemFiles.get(itemId)
+    if (!itemCache) {
+        return ''
+    }
+
     const locale = getRegionLocale(region)
-    return itemCache?.localizedName[locale] ?? ''
+    const localeName = itemCache.localizedName[locale]
+    if (localeName) {
+        return localeName
+    }
+
+    for (const name of Object.values(itemCache.localizedName)) {
+        if (name) {
+            return name
+        }
+    }
+
+    return ''
 }
 
 export function getBaseIlvl(itemId: number): number {
