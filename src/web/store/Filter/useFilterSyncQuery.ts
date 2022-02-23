@@ -1,4 +1,4 @@
-import { computed, onMounted, watch } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFilterStore } from '.'
 
@@ -38,7 +38,15 @@ export function useFilterSyncQuery() {
     filterStore.$subscribe(() => { void exportQuery() })
 
     // This runs once on page load: load url query (and filtering out invalid params) then save result back to url
-    onMounted(async() => {
+    // Use onBeforeMount hook instead of onMounted so that this executes before children components' onMounted hooks (that may modify state)
+    onBeforeMount(async() => {
+        const hasInitQuery = Object.keys(routeQuery.value).length > 0
+        if (hasInitQuery) {
+            isProcessing = true
+            filterStore.$reset()
+            isProcessing = false
+        }
+
         importQuery()
         await exportQuery()
     })
