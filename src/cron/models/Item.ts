@@ -112,10 +112,13 @@ export class Item extends Cacheable {
         }
 
         const cmd = `${this.iconUrl} to ${this.iconPath}`
-        const fileWriter = createWriteStream(this.iconPath)
         const stream = await ApiAccessor.fetchFile(iconUrl)
+        if (!stream) {
+            console.debug(`Failed to obtain stream for ${this.iconUrl}`)
+            return
+        }
 
-        // Register listeners first
+        const fileWriter = createWriteStream(this.iconPath)
         const fileWriterResult = new Promise<void>((resolve, reject) => {
             fileWriter.on('finish', () => {
                 console.debug(`File writer finished ${this.iconPath}`)
@@ -127,16 +130,13 @@ export class Item extends Cacheable {
             })
         })
 
-        // Then run the fileWriter
-        if (stream) {
+        try {
             console.debug(`Starting to download ${cmd}`)
             stream.pipe(fileWriter)
-        } else {
-            console.debug(`Failed to obtain stream for ${this.iconUrl}`)
+            await fileWriterResult
+        } catch (err) {
             fileWriter.close()
         }
-
-        return fileWriterResult
     }
 
     override toString(): string {
