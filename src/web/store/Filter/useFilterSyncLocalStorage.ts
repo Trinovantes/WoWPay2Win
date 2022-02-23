@@ -1,7 +1,7 @@
 import { useFilterStore } from '.'
 import { HydrationKey, loadStateFromLocalStorage, saveStateToLocalStorage } from '../Hydration'
 
-export function useSyncFilterLocalStorage() {
+export function useFilterSyncLocalStorage() {
     const filterStore = useFilterStore()
 
     const savedState = loadStateFromLocalStorage(HydrationKey.FILTER)

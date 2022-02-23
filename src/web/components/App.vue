@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useLiveAuctions } from '../store/Auctions/useLiveAuctions'
-import { useSyncFilterLocalStorage } from '../store/Filter/useSyncFilterLocalStorage'
-import { useSyncFilterQuery } from '../store/Filter/useSyncFilterQuery'
+import { useFilterSyncLocalStorage } from '../store/Filter/useFilterSyncLocalStorage'
+import { useFilterSyncQuery } from '../store/Filter/useFilterSyncQuery'
 
 export default defineComponent({
     setup() {
-        useSyncFilterLocalStorage()
-        useSyncFilterQuery()
+        useFilterSyncLocalStorage()
+        useFilterSyncQuery()
         useLiveAuctions()
     },
 })

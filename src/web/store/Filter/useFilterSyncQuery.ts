@@ -2,7 +2,7 @@ import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useFilterStore } from '.'
 
-export function useSyncFilterQuery() {
+export function useFilterSyncQuery() {
     const filterStore = useFilterStore()
     const router = useRouter()
     const routeQuery = computed(() => router.currentRoute.value.query)
