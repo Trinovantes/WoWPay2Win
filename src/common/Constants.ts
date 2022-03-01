@@ -168,7 +168,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     },
     [Tier.SanctumOfDomination]: {
         name: 'Sanctum of Domination',
-        iconPath: 'sanctum-of-domination.png',
+        iconPath: '28-sanctum-of-domination.png',
         boes: [
             {
                 label: 'Cloth',
@@ -207,7 +207,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     },
     [Tier.CastleNathria]: {
         name: 'Castle Nathria',
-        iconPath: 'castle-nathria.png',
+        iconPath: '26-castle-nathria.png',
         boes: [
             {
                 label: 'Cloth',
@@ -253,7 +253,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     },
     [Tier.Shadowlands]: {
         name: 'Shadowlands World Drops',
-        iconPath: 'shadowlands.png',
+        iconPath: '0-shadowlands.png',
         boes: [
             {
                 label: 'Trinket',
@@ -334,7 +334,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     },
     [Tier.Nyalotha]: {
         name: "Ny'alotha, the Waking City",
-        iconPath: 'nyalotha.png',
+        iconPath: '24-nyalotha.png',
         boes: [
             {
                 label: 'Raid BoEs',
