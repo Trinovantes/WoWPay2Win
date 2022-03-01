@@ -129,7 +129,7 @@ export interface TierConfig {
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     [Tier.SepulcherOfTheFirstOnes]: {
         name: 'Sepulcher of the First Ones',
-        iconPath: 'shadowlands.png',
+        iconPath: '29-sepulcher-of-the-first-ones.png',
         boes: [
             {
                 label: 'Cloth',
