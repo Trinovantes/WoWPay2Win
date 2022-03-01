@@ -16,7 +16,7 @@ export default defineComponent({
             },
         })
 
-        const allTiers = Object.keys(TIER_CONFIGS).map((key) => key as Tier).reverse()
+        const allTiers = Object.keys(TIER_CONFIGS).map((key) => key as Tier)
         const getTierName = (tier: Tier): string => {
             return TIER_CONFIGS[tier].name
         }
