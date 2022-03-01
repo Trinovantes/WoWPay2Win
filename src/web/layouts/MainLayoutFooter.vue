@@ -9,7 +9,6 @@ export default defineComponent({
         const nonClassicExpansions = ['WotLK', 'Cataclysm', 'MoP', 'WoD', 'Legion'] // We don't talk about BfA here
 
         const memes = [
-            'If you still use WoWProgress for recruitment, check out this <a href="https://github.com/Trinovantes/userscript-wowprogress-character-page" rel="noopener">browser extension</a> I\'ve made',
             ...nonClassicExpansions.map((expac) => `${expac} Classic waiting room`),
             'Does anybody else think we should delete pandas from the game?',
             'Sometimes I wonder how much money I would make if I had put ads on this site',
