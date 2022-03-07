@@ -159,6 +159,12 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                     190624,
                 ]),
             },
+            {
+                label: 'Cape',
+                ids: new Set([
+                    190334,
+                ]),
+            },
         ],
         ilvls: {
             min: 239,
