@@ -1,4 +1,4 @@
-import { checkIsBonusIlvl, checkIsDifficultyId, checkIsSocket, checkIsTertiary, isCorruptionBonusId, Tertiary } from '@/common/BonusId'
+import { checkIsBonusIlvl, checkIsSocket, checkIsTertiary, isCorruptionBonusId, Tertiary } from '@/common/BonusId'
 import { ItemAuctionData } from '@/common/Data'
 import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
 
@@ -29,10 +29,6 @@ export class ItemAuction {
 
         for (const bonusId of bonuses) {
             if (isCorruptionBonusId(bonusId)) {
-                continue
-            }
-
-            if (checkIsDifficultyId(bonusId)) {
                 continue
             }
 

@@ -1,26 +1,4 @@
 // ----------------------------------------------------------------------------
-// Difficulty Ids
-// ----------------------------------------------------------------------------
-
-export function checkIsDifficultyId(bonusId: number): boolean {
-    switch (bonusId) {
-        case 4825: // Nyalotha LFR
-        case 4822: // Nyalotha Normal
-        case 4818: // Nyalotha Heroic
-        case 4823: // Nyalotha Heroic
-        case 4819: // Nyalotha Mythic
-        case 4824: // Nyalotha Mythic
-        case 7186: // Castle LFR
-        case 7189: // Castle Normal
-        case 7188: // Castle Heroic
-        case 7187: // Castle Mythic
-            return true
-    }
-
-    return false
-}
-
-// ----------------------------------------------------------------------------
 // Bonus ilvl
 // ----------------------------------------------------------------------------
 
