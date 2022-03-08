@@ -68,12 +68,12 @@ export enum Secondary {
     Haste = 'Haste',
     Mastery = 'Mastery',
     Versatility = 'Versatility',
-    CritHaste = 'Crit/Haste',
-    CritMastery = 'Crit/Mastery',
-    CritVersatility = 'Crit/Versatility',
-    HasteMastery = 'Haste/Mastery',
-    HasteVersatility = 'Haste/Versatility',
-    MasteryVersatility = 'Mastery/Versatility',
+    CritHaste = 'Crit / Haste',
+    CritMastery = 'Crit / Mastery',
+    CritVersatility = 'Crit / Versatility',
+    HasteMastery = 'Haste / Mastery',
+    HasteVersatility = 'Haste / Versatility',
+    MasteryVersatility = 'Mastery / Versatility',
 }
 
 export function checkIsSecondary(bonusId: number): Secondary | undefined {
