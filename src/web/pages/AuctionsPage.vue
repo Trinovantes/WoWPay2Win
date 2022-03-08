@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { useFilterStore } from '@/web/store/Filter'
-import { getBaseIlvl, getItemNameById, getRegionData, getWowheadItemLinkById } from '@/web/utils/GameData'
+import { getBaseIlvl, getItemAffix, getItemNameById, getRegionData, getWowheadItemLinkById } from '@/web/utils/GameData'
 import { getItemIcon } from '@/web/utils/ImageLoader'
 import { QTable } from 'quasar'
 import { ItemAuctionData } from '@/common/Data'
@@ -25,7 +25,7 @@ export default defineComponent({
                 label: 'Item',
                 align: 'left',
                 sortable: true,
-                field: (auction: ItemAuctionData) => getItemName(auction.itemId),
+                field: (auction: ItemAuctionData) => getItemName(auction),
                 classes: 'md-col',
                 headerClasses: 'md-col',
             },
@@ -79,8 +79,8 @@ export default defineComponent({
                     let comp = 0
                     switch (key) {
                         case 'itemId': {
-                            const x = getItemName(a[key])
-                            const y = getItemName(b[key])
+                            const x = getItemName(a)
+                            const y = getItemName(b)
                             comp = x.localeCompare(y)
                             break
                         }
@@ -161,12 +161,19 @@ export default defineComponent({
             const itemLink = getWowheadItemLinkById(auction.itemId, filteredRegion.value)
             return `${itemLink}&bonus=${auction.bonuses.join(':')}`
         }
-        const getItemName = (itemId: number) => {
+        const getItemName = (auction: ItemAuctionData) => {
             if (!filteredRegion.value) {
                 return ''
             }
 
-            return getItemNameById(itemId, filteredRegion.value)
+            const itemName = getItemNameById(auction.itemId, filteredRegion.value)
+            const affix = getItemAffix(auction.bonuses)
+
+            if (affix) {
+                return `${itemName} (${affix})`
+            } else {
+                return itemName
+            }
         }
 
         return {
@@ -218,9 +225,9 @@ function formatNum(val: number): string {
                         rounded
                         size="20px"
                     >
-                        <img :src="getItemIcon(props.row.itemId)" :alt="getItemName(props.row.itemId)" width="20" height="20">
+                        <img :src="getItemIcon(props.row.itemId)" :alt="getItemName(props.row)" width="20" height="20">
                     </q-avatar>
-                    {{ getItemName(props.row.itemId) }}
+                    {{ getItemName(props.row) }}
                 </a>
             </q-td>
         </template>

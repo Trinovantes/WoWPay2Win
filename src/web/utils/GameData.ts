@@ -1,6 +1,7 @@
 import { ItemData, RegionCache } from '@/common/Data'
 import { getRegionLocale, RegionSlug } from '@/common/Constants'
 import { RegionFilter } from '../store/Filter'
+import { checkIsSecondary } from '@/common/BonusId'
 
 // ----------------------------------------------------------------------------
 // Load Data
@@ -106,6 +107,17 @@ export function getItemNameById(itemId: number, region: RegionSlug): string {
     for (const name of Object.values(itemCache.localizedName)) {
         if (name) {
             return name
+        }
+    }
+
+    return ''
+}
+
+export function getItemAffix(bonusIds: Array<number>): string {
+    for (const id of bonusIds) {
+        const secondary = checkIsSecondary(id)
+        if (secondary) {
+            return secondary
         }
     }
 

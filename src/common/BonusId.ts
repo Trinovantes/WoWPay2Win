@@ -60,6 +60,67 @@ export function checkIsTertiary(bonusId: number): Tertiary | undefined {
 }
 
 // ----------------------------------------------------------------------------
+// Secondary
+// ----------------------------------------------------------------------------
+
+export enum Secondary {
+    Crit = 'Crit',
+    Haste = 'Haste',
+    Mastery = 'Mastery',
+    Versatility = 'Versatility',
+    CritHaste = 'Crit/Haste',
+    CritMastery = 'Crit/Mastery',
+    CritVersatility = 'Crit/Versatility',
+    HasteMastery = 'Haste/Mastery',
+    HasteVersatility = 'Haste/Versatility',
+    MasteryVersatility = 'Mastery/Versatility',
+}
+
+export function checkIsSecondary(bonusId: number): Secondary | undefined {
+    if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002)) {
+        return Secondary.CritVersatility
+    }
+
+    if ((bonusId >= 1683 && bonusId <= 1689) || (bonusId >= 8003 && bonusId <= 8020)) {
+        return Secondary.CritMastery
+    }
+
+    if ((bonusId >= 1690 && bonusId <= 1696) || (bonusId >= 8021 && bonusId <= 8038)) {
+        return Secondary.CritHaste
+    }
+
+    if ((bonusId >= 1697 && bonusId <= 1703) || (bonusId >= 8039 && bonusId <= 8056)) {
+        return Secondary.HasteMastery
+    }
+
+    if ((bonusId >= 1704 && bonusId <= 1710) || (bonusId >= 8057 && bonusId <= 8074)) {
+        return Secondary.HasteVersatility
+    }
+
+    if ((bonusId >= 1711 && bonusId <= 1717) || (bonusId >= 8075 && bonusId <= 8092)) {
+        return Secondary.MasteryVersatility
+    }
+
+    if (bonusId === 1718) {
+        return Secondary.Crit
+    }
+
+    if (bonusId === 1719) {
+        return Secondary.Versatility
+    }
+
+    if (bonusId === 1720) {
+        return Secondary.Haste
+    }
+
+    if (bonusId === 1721) {
+        return Secondary.Mastery
+    }
+
+    return undefined
+}
+
+// ----------------------------------------------------------------------------
 // BfA Corruptions
 // ----------------------------------------------------------------------------
 
