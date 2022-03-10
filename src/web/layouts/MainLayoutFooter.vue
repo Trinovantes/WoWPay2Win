@@ -10,6 +10,7 @@ export default defineComponent({
 
         const memes = [
             ...nonClassicExpansions.map((expac) => `${expac} Classic waiting room`),
+            'We are trying to reach you about your mount\'s extended warranty.',
             'Does anybody else think we should delete pandas from the game?',
             'Sometimes I wonder how much money I would make if I had put ads on this site',
             'Imagine if I got a commission everytime somebody made a purchase because of this site',
