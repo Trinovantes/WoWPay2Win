@@ -29,8 +29,7 @@
         "quasar": "^2.0.0-beta.12",
         "source-map-support": "^0.5.19",
         "vue": "^3",
-        "vue-router": "^4",
-        "vuex": "^4"
+        "vue-router": "^4"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
