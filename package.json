@@ -27,6 +27,7 @@
         "lodash": "^4.17.20",
         "pinia": "^2.0.9",
         "quasar": "^2.0.0-beta.12",
+        "quasar-unused-plugin": "^0.1.3",
         "source-map-support": "^0.5.19",
         "vue": "^3",
         "vue-router": "^4"

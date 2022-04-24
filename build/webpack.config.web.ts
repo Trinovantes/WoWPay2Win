@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.common'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
 import 'webpack-dev-server'
 
 // ----------------------------------------------------------------------------
@@ -65,6 +66,9 @@ export default merge(commonConfig, {
     },
 
     plugins: [
+        new QuasarUnusedPlugin({
+            enableSsr: false,
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 {
