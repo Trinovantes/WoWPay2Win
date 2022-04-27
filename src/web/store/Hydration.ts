@@ -1,4 +1,4 @@
-import { FilterState } from './Filter'
+import type { FilterState } from './Filter'
 
 export enum HydrationKey {
     FILTER = '__INITIAL_FILTER_STATE__',

@@ -1,5 +1,5 @@
 import { checkIsBonusIlvl, checkIsSocket, checkIsTertiary, isCorruptionBonusId, Tertiary } from '@/common/BonusId'
-import { ItemAuctionData } from '@/common/Data'
+import type { ItemAuctionData } from '@/common/Data'
 import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
 
 // ----------------------------------------------------------------------------

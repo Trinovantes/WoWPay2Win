@@ -1,10 +1,10 @@
-import { RegionSlug } from '@/common/Constants'
-import { ItemAuctionData, RegionAuctionsData } from '@/common/Data'
-import { getBaseIlvl, realmToConnectedRealmMaps } from '@/web/utils/GameData'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
 import { useFilterStore } from '../Filter'
+import type { RegionSlug } from '@/common/Constants'
+import type { ItemAuctionData, RegionAuctionsData } from '@/common/Data'
+import { getBaseIlvl, realmToConnectedRealmMaps } from '@/web/utils/GameData'
 
 // ----------------------------------------------------------------------------
 // Store

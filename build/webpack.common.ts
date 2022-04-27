@@ -1,6 +1,6 @@
 import path from 'path'
-import webpack, { DefinePlugin } from 'webpack'
 import { VueLoaderPlugin } from 'vue-loader'
+import webpack, { DefinePlugin } from 'webpack'
 import { getGitHash } from './utils/secrets'
 
 // ----------------------------------------------------------------------------
@@ -37,6 +37,7 @@ export const commonConfig: webpack.Configuration = {
         alias: {
             // Need to match aliases in tsconfig.json
             '@': path.resolve(srcDir),
+            // vue: path.resolve('..', '..', 'Externals/core/packages/vue'),
         },
     },
 

@@ -1,101 +1,91 @@
-<script lang="ts">
+<script lang="ts" setup>
+import { useQuasar } from 'quasar/src/index.all'
+import { computed } from 'vue'
 import { TIER_CONFIGS } from '@/common/Constants'
 import { useFilterStore } from '@/web/store/Filter'
-import { computed, defineComponent } from 'vue'
-import { getItemIcon } from '@/web/utils/ImageLoader'
 import { getItemNameById, getWowheadItemLinkById } from '@/web/utils/GameData'
+import { getItemIcon } from '@/web/utils/ImageLoader'
 
-export default defineComponent({
-    setup() {
-        const filterStore = useFilterStore()
-        const boeCategories = computed(() => TIER_CONFIGS[filterStore.tier].boes)
-        const selectedBoes = computed<Array<number>>({
-            get() {
-                return [...filterStore.boes]
-            },
-            set(boes) {
-                filterStore.boes = new Set(boes)
-            },
-        })
+defineExpose({
+    $q: useQuasar(),
+})
 
-        const toggleAll = (idsToAdd: Set<number>) => {
-            const currentSelected = new Set(filterStore.boes)
-            for (const id of idsToAdd) {
-                currentSelected.add(id)
-            }
-
-            filterStore.boes = currentSelected
-        }
-        const toggleNone = (idsToRemove: Set<number>) => {
-            const currentSelected = new Set(filterStore.boes)
-            for (const id of idsToRemove) {
-                currentSelected.delete(id)
-            }
-
-            filterStore.boes = currentSelected
-        }
-
-        const isAllActive = (idsToCheck: Set<number>): boolean => {
-            for (const id of idsToCheck) {
-                if (!selectedBoes.value.includes(id)) {
-                    return false
-                }
-            }
-
-            return true
-        }
-        const isNoneActive = (idsToCheck: Set<number>): boolean => {
-            for (const id of idsToCheck) {
-                if (selectedBoes.value.includes(id)) {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        const region = computed(() => filterStore.region)
-        const getWowheadLink = (itemId: number) => {
-            if (!region.value) {
-                return ''
-            }
-
-            return getWowheadItemLinkById(itemId, region.value)
-        }
-        const getItemName = (itemId: number) => {
-            if (!region.value) {
-                return ''
-            }
-
-            return getItemNameById(itemId, region.value)
-        }
-
-        const tierName = computed(() => TIER_CONFIGS[filterStore.tier].name)
-
-        return {
-            boeCategories,
-            selectedBoes,
-
-            toggleAll,
-            toggleNone,
-
-            isAllActive,
-            isNoneActive,
-
-            getWowheadLink,
-            getItemIcon,
-            getItemName,
-
-            tierName,
-        }
+const filterStore = useFilterStore()
+const boeCategories = computed(() => TIER_CONFIGS[filterStore.tier].boes)
+const selectedBoes = computed<Array<number>>({
+    get() {
+        return [...filterStore.boes]
+    },
+    set(boes) {
+        filterStore.boes = new Set(boes)
     },
 })
+
+const toggleAll = (idsToAdd: Set<number>) => {
+    const currentSelected = new Set(filterStore.boes)
+    for (const id of idsToAdd) {
+        currentSelected.add(id)
+    }
+
+    filterStore.boes = currentSelected
+}
+const toggleNone = (idsToRemove: Set<number>) => {
+    const currentSelected = new Set(filterStore.boes)
+    for (const id of idsToRemove) {
+        currentSelected.delete(id)
+    }
+
+    filterStore.boes = currentSelected
+}
+
+const isAllActive = (idsToCheck: Set<number>): boolean => {
+    for (const id of idsToCheck) {
+        if (!selectedBoes.value.includes(id)) {
+            return false
+        }
+    }
+
+    return true
+}
+const isNoneActive = (idsToCheck: Set<number>): boolean => {
+    for (const id of idsToCheck) {
+        if (selectedBoes.value.includes(id)) {
+            return false
+        }
+    }
+
+    return true
+}
+
+const region = computed(() => filterStore.region)
+const getWowheadLink = (itemId: number) => {
+    if (!region.value) {
+        return ''
+    }
+
+    return getWowheadItemLinkById(itemId, region.value)
+}
+const getItemName = (itemId: number) => {
+    if (!region.value) {
+        return ''
+    }
+
+    return getItemNameById(itemId, region.value)
+}
+
+const tierName = computed(() => TIER_CONFIGS[filterStore.tier].name)
 </script>
 
 <template>
+    <q-banner
+        v-if="boeCategories.length === 0"
+    >
+        No BoEs available for {{ tierName }}
+    </q-banner>
+
     <div
-        v-if="boeCategories.length > 0"
-        class="group boes"
+        v-else
+        class="group"
     >
         <div
             v-for="category of boeCategories"
@@ -122,6 +112,7 @@ export default defineComponent({
                     </a>
                 </div>
             </h2>
+
             <q-list dense>
                 <a
                     v-for="id of category.ids"
@@ -171,15 +162,20 @@ export default defineComponent({
             </q-list>
         </div>
     </div>
-    <q-banner v-else>
-        <strong>
-            No BoEs available for {{ tierName }}
-        </strong>
-    </q-banner>
 </template>
 
-<style lang="scss">
-.boes{
+<style lang="scss" scoped>
+.group{
+    display: flex;
+    flex-direction: column;
+    gap: $side-padding;
+    padding: $side-padding 0;
+}
+
+h2 {
+    display: flex;
+    align-items: center;
+
     .toggles{
         flex: 1;
 
@@ -207,21 +203,31 @@ export default defineComponent({
             }
         }
     }
+}
 
+.q-list{
     a.boe{
         display: block;
         text-decoration: none;
 
-        .q-item{
-            color: white;
+        .q-checkbox{
+            display: none;
+        }
 
+        .q-item{
             &.q-item--active{
                 background: $primary
             }
-        }
 
-        .q-checkbox{
-            display: none;
+            .q-item__section--avatar{
+                padding-right: $padding;
+            }
+
+            .q-item__label--caption{
+                color: #aaa;
+                line-height: $line-height !important;
+                margin-top: math.div($padding, 2);
+            }
         }
     }
 }

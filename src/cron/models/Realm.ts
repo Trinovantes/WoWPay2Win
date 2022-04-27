@@ -1,5 +1,5 @@
-import { RealmData } from '@/common/Data'
-import { Region } from '@/cron/models/Region'
+import type { RealmData } from '@/common/Data'
+import type { Region } from '@/cron/models/Region'
 
 // ----------------------------------------------------------------------------
 // Realm

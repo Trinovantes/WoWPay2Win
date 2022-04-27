@@ -1,9 +1,9 @@
+import { isEqual, clamp } from 'lodash-es'
+import { defineStore } from 'pinia'
 import { Tertiary } from '@/common/BonusId'
 import { DEFAULT_TIER, GOLD_CAP, IlvlRange, RegionSlug, Tier } from '@/common/Constants'
 import { getIlvlRange, getTierBoeIds } from '@/common/utils'
 import { getValidRealmIds } from '@/web/utils/GameData'
-import _ from 'lodash'
-import { defineStore } from 'pinia'
 
 // ----------------------------------------------------------------------------
 // State
@@ -104,7 +104,7 @@ export const useFilterStore = defineStore('filter', {
                 queryFilters.boes = exportSet(this.boes)
             }
 
-            if (!_.isEqual(this.ilvlRange, getIlvlRange(this.tier))) {
+            if (!isEqual(this.ilvlRange, getIlvlRange(this.tier))) {
                 queryFilters.ilvlRange = this.ilvlRange.min.toString() + DELIMITER + this.ilvlRange.max.toString()
             }
 
@@ -167,7 +167,7 @@ export const useFilterStore = defineStore('filter', {
             if (queryFilters.maxBuyout) {
                 const maxBuyout = parseInt(queryFilters.maxBuyout)
                 if (!isNaN(maxBuyout)) {
-                    this.maxBuyout = _.clamp(maxBuyout, 0, GOLD_CAP)
+                    this.maxBuyout = clamp(maxBuyout, 0, GOLD_CAP)
                 }
             }
 

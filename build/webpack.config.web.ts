@@ -1,10 +1,10 @@
-import { merge } from 'webpack-merge'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
-import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.common'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
 import 'webpack-dev-server'
+import { merge } from 'webpack-merge'
+import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.common'
 
 // ----------------------------------------------------------------------------
 // Web

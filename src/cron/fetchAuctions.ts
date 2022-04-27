@@ -1,10 +1,10 @@
-import { fetchRegions } from './utils/fetchRegions'
-import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
 import path from 'path'
-import { mkdirp } from './utils/mkdirp'
-import { SENTRY_DSN } from '@/common/Constants'
 import * as Sentry from '@sentry/node'
 import * as Tracing from '@sentry/tracing'
+import { SENTRY_DSN } from '@/common/Constants'
+import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
+import { fetchRegions } from './utils/fetchRegions'
+import { mkdirp } from './utils/mkdirp'
 
 Tracing.addExtensionMethods()
 

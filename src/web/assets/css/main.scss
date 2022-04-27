@@ -4,13 +4,6 @@
 // General Elements
 // ----------------------------------------------------------------------------
 
-.noscript{
-    background: $warning;
-    font-weight: bold;
-    text-align: center;
-    padding: $padding;
-}
-
 :root {
     --q-primary: #{$primary};
     --q-secondary: #{$secondary};
@@ -25,18 +18,123 @@
     --q-dark-page: #{$dark-page};
 }
 
+noscript{
+    background: $warning;
+    font-weight: bold;
+    text-align: center;
+    padding: $padding;
+}
+
 body.body--dark{
     color: $text;
     font-size: 1rem;
+    font-family: Arial, Helvetica, sans-serif;
     line-height: $line-height;
 }
 
-a{
+a:not(.q-btn){
     color: $secondary;
     text-decoration: none;
     transition: 0.25s;
 
     &:hover{
         text-decoration: underline;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Helper Classes
+// ----------------------------------------------------------------------------
+
+.group{
+    border-bottom: 1px solid $bg-main;
+
+    &.vpad{
+        padding-top: $side-padding;
+        padding-bottom: $side-padding;
+    }
+
+    &.padded{
+        padding: $side-padding;
+
+        h2{
+            padding: 0;
+        }
+    }
+
+    &:not(.padded) {
+        h2{
+            padding: 0 $side-padding;
+        }
+    }
+
+    h2{
+        color: white;
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 30px;
+        margin-top: 0;
+        margin-bottom: $side-padding;
+    }
+}
+
+.q-banner{
+    background: $warning;
+    color: $dark;
+    padding: $padding $side-padding;
+
+    .q-banner__content{
+        font-weight: bold;
+    }
+}
+
+.q-list{
+    .q-item{
+        color: white;
+        padding-left: $side-padding;
+        padding-right: $side-padding;
+    }
+
+    &:not(.q-list--dense) {
+        label.q-item{
+            padding-top: $padding;
+            padding-bottom: $padding;
+        }
+    }
+
+    .q-item__label--caption{
+        color: #aaa;
+        line-height: $line-height !important;
+        margin-top: math.div($padding, 2);
+    }
+}
+
+.q-slider{
+    padding: 0 $padding;
+}
+
+.q-table{
+    th,
+    td{
+        padding: $padding ($side-padding);
+
+        &.sm-col {
+            width: 150px;
+        }
+        &.md-col {
+            width: 400px;
+        }
+    }
+
+    th{
+        font-weight: bold;
+    }
+
+    td{
+        color: $text;
+
+        .q-avatar{
+            margin-right: $padding;
+        }
     }
 }

@@ -1,9 +1,9 @@
 import querystring from 'querystring'
-import { IncomingMessage } from 'http'
-import { BnetOauthResponse } from '@/cron/api/Responses'
-import { Region } from '@/cron/models/Region'
+import type { BnetOauthResponse } from '@/cron/api/Responses'
+import type { Region } from '@/cron/models/Region'
 import { getSecret, Secrets } from '@/cron/utils/secrets'
 import { tryExponentialBackoff } from '@/cron/utils/tryExponentialBackoff'
+import type { IncomingMessage } from 'http'
 
 export class ApiAccessor<T> {
     readonly endpoint: string

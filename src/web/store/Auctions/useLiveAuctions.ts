@@ -1,6 +1,6 @@
 import { computed, onMounted, watch } from 'vue'
-import { useAuctionsStore } from '.'
 import { useFilterStore } from '../Filter'
+import { useAuctionsStore } from '.'
 
 export function useLiveAuctions() {
     const auctionsStore = useAuctionsStore()

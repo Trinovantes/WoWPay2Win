@@ -1,11 +1,11 @@
 import { existsSync, createWriteStream } from 'fs'
 import path from 'path'
-import { Locale } from '@/common/Constants'
-import { Data, ItemData } from '@/common/Data'
-import { BnetItemMediaResponse, BnetItemResponse } from '@/cron/api/Responses'
+import type { Locale } from '@/common/Constants'
+import type { Data, ItemData } from '@/common/Data'
 import { ApiAccessor } from '@/cron/api/ApiAccessor'
-import { Region } from '@/cron/models/Region'
+import type { BnetItemMediaResponse, BnetItemResponse } from '@/cron/api/Responses'
 import { Cacheable } from '@/cron/models/Cacheable'
+import type { Region } from '@/cron/models/Region'
 
 // ----------------------------------------------------------------------------
 // Item

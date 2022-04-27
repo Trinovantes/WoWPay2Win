@@ -1,7 +1,7 @@
-import { ItemData, RegionCache } from '@/common/Data'
-import { getRegionLocale, RegionSlug } from '@/common/Constants'
-import { RegionFilter } from '../store/Filter'
 import { checkIsSecondary } from '@/common/BonusId'
+import { getRegionLocale, RegionSlug } from '@/common/Constants'
+import type { ItemData, RegionCache } from '@/common/Data'
+import type { RegionFilter } from '../store/Filter'
 
 // ----------------------------------------------------------------------------
 // Load Data

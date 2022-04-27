@@ -1,10 +1,10 @@
+import type { ConnectedRealmData } from '@/common/Data'
 import { getAllBoeIds } from '@/common/utils'
-import { ConnectedRealmData } from '@/common/Data'
-import { BnetAuctionsResponse, BnetConnectedRealmResponse } from '@/cron/api/Responses'
 import { ApiAccessor } from '@/cron/api/ApiAccessor'
+import type { BnetAuctionsResponse, BnetConnectedRealmResponse } from '@/cron/api/Responses'
 import { ItemAuction } from '@/cron/models/ItemAuctions'
 import { Realm } from '@/cron/models/Realm'
-import { Region } from '@/cron/models/Region'
+import type { Region } from '@/cron/models/Region'
 
 // ----------------------------------------------------------------------------
 // ConnectedRealm

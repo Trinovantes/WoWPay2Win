@@ -22,6 +22,7 @@ module.exports = {
     env: {
         browser: true,
         node: true,
+        'vue/setup-compiler-macros': true,
     },
 
     // Disable warnings for variables that are accessed but not defined in same file
@@ -68,6 +69,22 @@ module.exports = {
         'import/extensions': 'off',
         'import/no-unresolved': 'off',
         'import/no-extraneous-dependencies': 'off',
+        'import/order': ['error', {
+            warnOnUnassignedImports: true,
+            alphabetize: {
+                order: 'asc',
+                caseInsensitive: false,
+            },
+            pathGroups: [
+                {
+                    'pattern': '@/**',
+                    'group': 'parent',
+                },
+            ],
+            groups: [
+                'builtin', 'external', 'parent', 'sibling', 'index', 'object', 'type',
+            ],
+        }],
 
         'comma-dangle': 'off',
         '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],

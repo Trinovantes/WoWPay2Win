@@ -1,7 +1,7 @@
 import path from 'path'
 import { getAllBoeIds } from '@/common/utils'
-import { batchRequests } from '@/cron/utils/batchRequests'
 import { Item } from '@/cron/models/Item'
+import { batchRequests } from '@/cron/utils/batchRequests'
 import { fetchRegions } from './utils/fetchRegions'
 import { mkdirp } from './utils/mkdirp'
 

@@ -1,15 +1,9 @@
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 export const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        component: () => import('@/web/layouts/MainLayout.vue'),
-        children: [
-            {
-                path: '',
-                component: () => import('@/web/pages/AuctionsPage.vue'),
-            },
-        ],
+        component: () => import('@/web/components/HomePage.vue'),
     },
     {
         path: '/:pathMatch(.*)*',

@@ -1,12 +1,12 @@
 import path from 'path'
-import { RegionConfig } from '@/common/Constants'
-import { RegionAuctionsData, Data, RegionCache } from '@/common/Data'
-import { batchRequests } from '@/cron/utils/batchRequests'
-import { BnetRegionResponse } from '@/cron/api/Responses'
+import type { RegionConfig } from '@/common/Constants'
+import type { RegionAuctionsData, Data, RegionCache } from '@/common/Data'
 import { ApiAccessor } from '@/cron/api/ApiAccessor'
-import { ConnectedRealm } from '@/cron/models/ConnectedRealm'
+import type { BnetRegionResponse } from '@/cron/api/Responses'
 import { Cacheable, saveDataToCache } from '@/cron/models/Cacheable'
+import { ConnectedRealm } from '@/cron/models/ConnectedRealm'
 import { Realm } from '@/cron/models/Realm'
+import { batchRequests } from '@/cron/utils/batchRequests'
 
 // ----------------------------------------------------------------------------
 // Region (us, eu, tw, kr)

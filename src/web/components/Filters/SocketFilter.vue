@@ -1,28 +1,25 @@
-<script lang="ts">
+<script lang="ts" setup>
+import { useQuasar } from 'quasar/src/index.all'
+import { computed } from 'vue'
 import { useFilterStore } from '@/web/store/Filter'
-import { computed, defineComponent } from 'vue'
 
-export default defineComponent({
-    setup() {
-        const filterStore = useFilterStore()
-        const mustHaveSocket = computed<boolean>({
-            get() {
-                return filterStore.mustHaveSocket
-            },
-            set(mustHaveSocket) {
-                filterStore.mustHaveSocket = mustHaveSocket
-            },
-        })
+defineExpose({
+    $q: useQuasar(),
+})
 
-        return {
-            mustHaveSocket,
-        }
+const filterStore = useFilterStore()
+const mustHaveSocket = computed<boolean>({
+    get() {
+        return filterStore.mustHaveSocket
+    },
+    set(mustHaveSocket) {
+        filterStore.mustHaveSocket = mustHaveSocket
     },
 })
 </script>
 
 <template>
-    <div class="group">
+    <div class="group vpad">
         <q-list>
             <q-item v-ripple tag="label">
                 <q-item-section avatar>
@@ -35,7 +32,7 @@ export default defineComponent({
                         <strong>Must have socket</strong>
                     </q-item-label>
                     <q-item-label caption>
-                        This option does not include gear with guaranteed sockets
+                        This will also filter out gear with guaranteed sockets
                     </q-item-label>
                 </q-item-section>
             </q-item>

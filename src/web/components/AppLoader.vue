@@ -1,12 +1,5 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import App from './App.vue'
-
-export default defineComponent({
-    components: {
-        App,
-    },
-})
 </script>
 
 <template>
@@ -25,7 +18,7 @@ export default defineComponent({
     </suspense>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .app-loader{
     align-items: center;
     display: grid;

@@ -1,4 +1,4 @@
-import { ItemAuction } from '@/cron/models/ItemAuctions'
+import type { ItemAuction } from '@/cron/models/ItemAuctions'
 
 const MAX_UNRECOGNIZED_IDS = 10
 

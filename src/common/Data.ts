@@ -1,5 +1,5 @@
-import { Tertiary } from '@/common/BonusId'
-import { Locale } from '@/common/Constants'
+import type { Tertiary } from '@/common/BonusId'
+import type { Locale } from '@/common/Constants'
 
 export abstract class Data {}
 

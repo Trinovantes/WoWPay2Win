@@ -1,35 +1,23 @@
-<script lang="ts">
+<script lang="ts" setup>
+import { computed } from 'vue'
 import { Tier, TIER_CONFIGS } from '@/common/Constants'
-import { defineComponent, computed } from 'vue'
-import { getTierIcon } from '@/web/utils/ImageLoader'
 import { useFilterStore } from '@/web/store/Filter'
+import { getTierIcon } from '@/web/utils/ImageLoader'
 
-export default defineComponent({
-    setup() {
-        const filterStore = useFilterStore()
-        const selectedTier = computed<Tier>({
-            get() {
-                return filterStore.tier
-            },
-            set(tier) {
-                filterStore.changeTier(tier)
-            },
-        })
-
-        const allTiers = Object.keys(TIER_CONFIGS).map((key) => key as Tier)
-        const getTierName = (tier: Tier): string => {
-            return TIER_CONFIGS[tier].name
-        }
-
-        return {
-            selectedTier,
-            allTiers,
-
-            getTierIcon,
-            getTierName,
-        }
+const filterStore = useFilterStore()
+const selectedTier = computed<Tier>({
+    get() {
+        return filterStore.tier
+    },
+    set(tier) {
+        filterStore.changeTier(tier)
     },
 })
+
+const allTiers = Object.keys(TIER_CONFIGS).map((key) => key as Tier)
+const getTierName = (tier: Tier): string => {
+    return TIER_CONFIGS[tier].name
+}
 </script>
 
 <template>
