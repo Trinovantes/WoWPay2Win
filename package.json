@@ -9,7 +9,7 @@
         "buildWeb": " cross-env NODE_ENV=production  webpack         --config build/webpack.config.web.ts",
         "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
         "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
-        "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore ."
+        "lint": "vue-tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore ."
     },
     "babel": {
         "presets": [
@@ -66,6 +66,7 @@
         "sharp": "^0.30.4",
         "typescript": "^4.2.4",
         "vue-loader": "^17.0.0",
+        "vue-tsc": "^0.34.11",
         "webpack": "^5.28.2",
         "webpack-cli": "^4.6.0",
         "webpack-dev-server": "^4.0.0"
