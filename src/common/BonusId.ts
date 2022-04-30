@@ -77,27 +77,27 @@ export enum Secondary {
 }
 
 export function checkIsSecondary(bonusId: number): Secondary | undefined {
-    if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002)) {
+    if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002) || bonusId === 8180 || bonusId === 8181) {
         return Secondary.CritVersatility
     }
 
-    if ((bonusId >= 1683 && bonusId <= 1689) || (bonusId >= 8003 && bonusId <= 8020)) {
+    if ((bonusId >= 1683 && bonusId <= 1689) || (bonusId >= 8003 && bonusId <= 8020) || bonusId === 8178 || bonusId === 8179) {
         return Secondary.CritMastery
     }
 
-    if ((bonusId >= 1690 && bonusId <= 1696) || (bonusId >= 8021 && bonusId <= 8038)) {
+    if ((bonusId >= 1690 && bonusId <= 1696) || (bonusId >= 8021 && bonusId <= 8038) || bonusId === 8176 || bonusId === 8177) {
         return Secondary.CritHaste
     }
 
-    if ((bonusId >= 1697 && bonusId <= 1703) || (bonusId >= 8039 && bonusId <= 8056)) {
+    if ((bonusId >= 1697 && bonusId <= 1703) || (bonusId >= 8039 && bonusId <= 8056) || bonusId === 8182 || bonusId === 8183) {
         return Secondary.HasteMastery
     }
 
-    if ((bonusId >= 1704 && bonusId <= 1710) || (bonusId >= 8057 && bonusId <= 8074)) {
+    if ((bonusId >= 1704 && bonusId <= 1710) || (bonusId >= 8057 && bonusId <= 8074) || bonusId === 8184 || bonusId === 8185) {
         return Secondary.HasteVersatility
     }
 
-    if ((bonusId >= 1711 && bonusId <= 1717) || (bonusId >= 8075 && bonusId <= 8092)) {
+    if ((bonusId >= 1711 && bonusId <= 1717) || (bonusId >= 8075 && bonusId <= 8092) || bonusId === 8186 || bonusId === 8187) {
         return Secondary.MasteryVersatility
     }
 
