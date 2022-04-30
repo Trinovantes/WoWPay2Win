@@ -2,6 +2,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import 'webpack-dev-server'
 import { merge } from 'webpack-merge'
 import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.common'
@@ -66,6 +67,10 @@ export default merge(commonConfig, {
     },
 
     plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'disabled',
+            generateStatsFile: false,
+        }),
         new QuasarUnusedPlugin({
             enableSsr: false,
         }),

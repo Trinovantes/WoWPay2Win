@@ -9,7 +9,8 @@
         "buildWeb": " cross-env NODE_ENV=production  webpack         --config build/webpack.config.web.ts",
         "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
         "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
-        "lint": "vue-tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore ."
+        "lint": "vue-tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
+        "analyze": "webpack-bundle-analyzer dist/web/stats.json"
     },
     "babel": {
         "presets": [
@@ -38,6 +39,7 @@
         "@babel/register": "^7.13.14",
         "@types/lodash-es": "^4.17.6",
         "@types/node": "^14",
+        "@types/webpack-bundle-analyzer": "^4.4.1",
         "@types/webpack-env": "^1.15.3",
         "@typescript-eslint/eslint-plugin": "^5.10.0",
         "@typescript-eslint/parser": "^5.10.0",
@@ -67,6 +69,7 @@
         "vue-loader": "^17.0.0",
         "vue-tsc": "^0.34.11",
         "webpack": "^5.28.2",
+        "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "^4.6.0",
         "webpack-dev-server": "^4.0.0"
     }
