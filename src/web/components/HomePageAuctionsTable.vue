@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { QTable } from 'quasar'
+import { QTable } from 'quasar/src/index.all'
 import { computed, ref } from 'vue'
 import { Tertiary } from '@/common/BonusId'
 import { ROWS_PER_PAGE } from '@/common/Constants'
