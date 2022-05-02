@@ -2,7 +2,8 @@ import { isEqual, clamp } from 'lodash-es'
 import { defineStore } from 'pinia'
 import { Tertiary } from '@/common/BonusId'
 import { DEFAULT_TIER, GOLD_CAP, IlvlRange, RegionSlug, Tier } from '@/common/Constants'
-import { getIlvlRange, getTierBoeIds } from '@/common/utils'
+import { getIlvlRange } from '@/common/utils/getIlvlRange'
+import { getTierBoeIds } from '@/common/utils/getTierBoeIds'
 import { getValidRealmIds } from '@/web/utils/GameData'
 
 // ----------------------------------------------------------------------------

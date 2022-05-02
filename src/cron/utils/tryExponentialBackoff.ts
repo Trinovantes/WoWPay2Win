@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { API_TIMEOUT, MAX_API_ATTEMPTS } from '@/common/Constants'
-import { sleep } from '@/common/utils'
+import { sleep } from '@/common/utils/sleep'
 
 export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
     // Retry with exponential backoff if server is temporarily unavilable

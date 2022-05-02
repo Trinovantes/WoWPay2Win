@@ -1,5 +1,5 @@
 import type { ConnectedRealmData } from '@/common/Data'
-import { getAllBoeIds } from '@/common/utils'
+import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { ApiAccessor } from '@/cron/api/ApiAccessor'
 import type { BnetAuctionsResponse, BnetConnectedRealmResponse } from '@/cron/api/Responses'
 import { ItemAuction } from '@/cron/models/ItemAuctions'

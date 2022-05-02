@@ -1,5 +1,5 @@
 import path from 'path'
-import { getAllBoeIds } from '@/common/utils'
+import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { Item } from '@/cron/models/Item'
 import { batchRequests } from '@/cron/utils/batchRequests'
 import { fetchRegions } from './utils/fetchRegions'
