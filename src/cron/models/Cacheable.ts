@@ -1,10 +1,7 @@
 import { existsSync } from 'fs'
 import fs from 'fs/promises'
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import type { Data } from '@/common/Data'
-
-dayjs.extend(relativeTime)
 
 // ----------------------------------------------------------------------------
 // Cacheable

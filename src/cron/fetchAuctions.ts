@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/order
+import '@/common/utils/setupDayjs'
+
 import path from 'path'
 import * as Sentry from '@sentry/node'
 import * as Tracing from '@sentry/tracing'

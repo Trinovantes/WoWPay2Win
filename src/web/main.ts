@@ -1,8 +1,8 @@
+// eslint-disable-next-line import/order
+import '@/common/utils/setupDayjs'
+
 import { Integrations } from '@sentry/tracing'
 import * as Sentry from '@sentry/vue'
-import dayjs from 'dayjs'
-import localizedFormat from 'dayjs/plugin/localizedFormat'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { createPinia } from 'pinia'
 import { Quasar } from 'quasar/src/index.all'
 import { createApp } from 'vue'
@@ -11,9 +11,6 @@ import './assets/css/main.scss'
 import AppLoader from './components/AppLoader.vue'
 import { createAppRouter } from './router'
 import { cleanLocalStorage } from './store/Hydration'
-
-dayjs.extend(relativeTime)
-dayjs.extend(localizedFormat)
 
 async function main() {
     // Vue
