@@ -24,9 +24,6 @@ export default merge(commonConfig, {
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
-        chunkFilename: isDev
-            ? '[name].js'
-            : '[name].[contenthash].js',
     },
 
     devServer: {
@@ -83,9 +80,6 @@ export default merge(commonConfig, {
         }),
         new MiniCssExtractPlugin({
             filename: isDev
-                ? '[name].css'
-                : '[name].[contenthash].css',
-            chunkFilename: isDev
                 ? '[name].css'
                 : '[name].[contenthash].css',
         }),
