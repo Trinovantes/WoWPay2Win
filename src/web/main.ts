@@ -1,6 +1,5 @@
-
-import * as Sentry from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
+import * as Sentry from '@sentry/vue'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -15,16 +14,6 @@ import { cleanLocalStorage } from './store/Hydration'
 
 dayjs.extend(relativeTime)
 dayjs.extend(localizedFormat)
-
-Sentry.init({
-    dsn: SENTRY_DSN,
-    release: DEFINE.GIT_HASH,
-    integrations: [
-        new Integrations.BrowserTracing(),
-    ],
-    tracesSampleRate: 0,
-    enabled: !DEFINE.IS_DEV,
-})
 
 async function main() {
     // Vue
@@ -46,11 +35,23 @@ async function main() {
         },
     })
 
+    // Sentry
+    Sentry.init({
+        dsn: SENTRY_DSN,
+        release: DEFINE.GIT_HASH,
+        integrations: [
+            new Integrations.BrowserTracing({
+                routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+            }),
+        ],
+        tracesSampleRate: 0,
+        enabled: !DEFINE.IS_DEV,
+    })
+
     app.mount('#app')
 }
 
 main().catch((err) => {
     console.warn(err)
-    Sentry.captureException(err)
     cleanLocalStorage()
 })

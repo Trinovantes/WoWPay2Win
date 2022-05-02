@@ -19,8 +19,8 @@
         ]
     },
     "dependencies": {
-        "@sentry/browser": "^6.3.5",
         "@sentry/node": "^6.3.5",
+        "@sentry/vue": "^6.3.5",
         "@sentry/tracing": "^6.3.5",
         "axios": "^0.27.1",
         "dayjs": "^1.9.5",
