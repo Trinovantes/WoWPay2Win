@@ -12,16 +12,10 @@
         "lint": "vue-tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
         "analyze": "webpack-bundle-analyzer dist/web/stats.json"
     },
-    "babel": {
-        "presets": [
-            "@babel/preset-env",
-            "@babel/preset-typescript"
-        ]
-    },
     "dependencies": {
         "@sentry/node": "^6.3.5",
-        "@sentry/vue": "^6.3.5",
         "@sentry/tracing": "^6.3.5",
+        "@sentry/vue": "^6.3.5",
         "axios": "^0.27.1",
         "dayjs": "^1.9.5",
         "dotenv": "^16.0.0",
@@ -33,6 +27,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
+        "@babel/plugin-transform-runtime": "^7.17.10",
         "@babel/preset-env": "^7.12.11",
         "@babel/preset-typescript": "^7.12.7",
         "@babel/register": "^7.13.14",
@@ -43,6 +38,8 @@
         "@typescript-eslint/eslint-plugin": "^5.10.0",
         "@typescript-eslint/parser": "^5.10.0",
         "@vue/compiler-sfc": "^3.0.11",
+        "babel-plugin-root-import": "^6.6.0",
+        "babel-plugin-transform-define": "^2.0.1",
         "concurrently": "^7.0.0",
         "copy-webpack-plugin": "^10.2.0",
         "cross-env": "^7.0.3",
