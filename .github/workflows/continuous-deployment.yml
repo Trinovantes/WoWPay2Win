@@ -16,19 +16,22 @@ env:
   CRON_IMAGE: ghcr.io/trinovantes/wowpay2win-cron
 
 jobs:
-  lint:
-    name: Run Linter
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Save yarn cache location to env
+        run: echo "YARN_CACHE=$(yarn cache dir)" >> $GITHUB_ENV
 
       - name: Cache node_modules
         uses: actions/cache@v2
         env:
           CACHE_NAME: cache-node-modules
         with:
-          path: '**/node_modules'
+          path: ${{ env.YARN_CACHE }}
           key: ${{ runner.os }}-build-${{ env.CACHE_NAME }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
 
       - name: Install dependencies
@@ -38,7 +41,7 @@ jobs:
         run: yarn lint
 
   build:
-    needs: lint
+    needs: test
     name: Build
     runs-on: ubuntu-latest
     environment: development
@@ -46,11 +49,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Create .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Pull images from registry
         run: make pull || true
@@ -86,12 +89,15 @@ jobs:
 
   deploy:
     needs: build
-    name: Deploy to Production
+    name: Deploy
     runs-on: ubuntu-latest
     environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -108,9 +114,6 @@ jobs:
         run: |
           docker context create remote --docker "host=ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
           docker context use remote
-
-      - name: Create .env file
-        run: echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: Pull images from registry
         run: make pull
