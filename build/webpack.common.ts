@@ -1,7 +1,7 @@
 import path from 'path'
 import { VueLoaderPlugin } from 'vue-loader'
 import webpack, { DefinePlugin } from 'webpack'
-import { getGitHash } from './utils/secrets'
+import { getGitHash } from './utils/BuildSecret'
 
 // ----------------------------------------------------------------------------
 // Constants

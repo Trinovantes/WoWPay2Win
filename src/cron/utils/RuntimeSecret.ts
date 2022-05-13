@@ -4,14 +4,14 @@ import { config } from 'dotenv'
 // Loads .env into process.env
 config()
 
-export enum Secrets {
+export enum RuntimeSecret {
     CLIENT_ID = 'CLIENT_ID',
     CLIENT_SECRET = 'CLIENT_SECRET',
 }
 
-const secretsCache = new Map<Secrets, string>()
+const secretsCache = new Map<RuntimeSecret, string>()
 
-export function getSecret(key: Secrets): string {
+export function getRuntimeSecret(key: RuntimeSecret): string {
     // Check if it's already defined in process.env
     const envValue = process.env[key]
     if (envValue) {

@@ -1,7 +1,7 @@
 import querystring from 'querystring'
 import type { BnetOauthResponse } from '@/cron/api/Responses'
 import type { Region } from '@/cron/models/Region'
-import { getSecret, Secrets } from '@/cron/utils/secrets'
+import { getRuntimeSecret, RuntimeSecret } from '@/cron/utils/RuntimeSecret'
 import { tryExponentialBackoff } from '@/cron/utils/tryExponentialBackoff'
 import type { IncomingMessage } from 'http'
 
@@ -25,8 +25,8 @@ export class ApiAccessor<T> {
     }
 
     async fetchAccessToken(): Promise<string> {
-        const user = getSecret(Secrets.CLIENT_ID)
-        const pass = getSecret(Secrets.CLIENT_SECRET)
+        const user = getRuntimeSecret(RuntimeSecret.CLIENT_ID)
+        const pass = getRuntimeSecret(RuntimeSecret.CLIENT_SECRET)
 
         console.debug('Fetching', this.region.config.oauthEndpoint)
 

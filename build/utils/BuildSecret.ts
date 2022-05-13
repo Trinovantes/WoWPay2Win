@@ -6,11 +6,13 @@ import { config } from 'dotenv'
 // Loads .env into process.env
 config()
 
-enum Secrets {
+export enum BuildSecret {
     GIT_HASH = 'GIT_HASH',
+    APP_URL = 'APP_URL',
+    APP_PORT = 'APP_PORT',
 }
 
-function getSecret(key: string): string {
+export function getBuildSecret(key: string): string {
     // Check if it's already defined in process.env
     const envValue = process.env[key]
     if (envValue) {
@@ -34,5 +36,5 @@ export function getGitHash(rootDir: string): string {
         return execSync('git rev-parse HEAD').toString().trim()
     }
 
-    return getSecret(Secrets.GIT_HASH)
+    return getBuildSecret(BuildSecret.GIT_HASH)
 }
