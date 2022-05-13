@@ -37,7 +37,6 @@ export const commonConfig: webpack.Configuration = {
         alias: {
             // Need to match aliases in tsconfig.json
             '@': path.resolve(srcDir),
-            // vue: path.resolve('..', '..', 'Externals/core/packages/vue'),
         },
     },
 
