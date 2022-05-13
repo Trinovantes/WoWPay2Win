@@ -43,7 +43,7 @@ export const commonConfig: webpack.Configuration = {
 
     plugins: [
         new DefinePlugin({
-            __VUE_OPTIONS_API__: JSON.stringify(false),
+            __VUE_OPTIONS_API__: JSON.stringify(true),
             __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
 
             'DEFINE.IS_DEV': JSON.stringify(isDev),
