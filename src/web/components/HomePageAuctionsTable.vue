@@ -70,8 +70,8 @@ const columns: QTable['columns'] = [
     },
 ]
 
-const sortAuctions = (auctions: Auctions, sortBy: string, descending: boolean) => {
-    auctions.sort((a, b) => {
+const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: boolean) => {
+    return [...auctions].sort((a, b) => {
         const compare = (key: string, ascending = true) => {
             let comp = 0
             switch (key) {
@@ -107,8 +107,6 @@ const sortAuctions = (auctions: Auctions, sortBy: string, descending: boolean) =
 
         return (sortBy && compare(sortBy, !descending)) || compare('buyout') || compare('bonusIlvl', false) || compare('itemId') || compare('hasSocket', false)
     })
-
-    return auctions
 }
 
 const noDataLabel = computed(() => {
