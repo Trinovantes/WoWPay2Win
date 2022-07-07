@@ -30,6 +30,11 @@ body.body--dark{
     font-size: 1rem;
     font-family: Arial, Helvetica, sans-serif;
     line-height: $line-height;
+
+    > iframe{
+        // Hide cloudflare's injected iframe
+        position: fixed;
+    }
 }
 
 a:not(.q-btn){
