@@ -31,7 +31,7 @@ COPY yarn.lock package.json     ./
 RUN yarn install
 
 # Mount points
-RUN mkdir -p                    ./src/web/assets/data
+RUN mkdir -p                    ./src/web/client/assets/data
 RUN mkdir -p                    ./dist/web/data
 
 # Copy app

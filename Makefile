@@ -69,7 +69,7 @@ run-cron: stop-cron
 	docker run \
 		--env-file .env \
 		--mount type=bind,source=/var/www/wowpay2win/auctions,target=/app/dist/web/data \
-		--mount type=bind,source=/var/www/wowpay2win/gamedata,target=/app/src/web/assets/data \
+		--mount type=bind,source=/var/www/wowpay2win/gamedata,target=/app/src/web/client/assets/data \
 		--log-driver local \
 		--restart=always \
 		--detach \

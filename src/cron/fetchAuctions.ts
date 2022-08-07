@@ -5,8 +5,9 @@ import path from 'path'
 import * as Sentry from '@sentry/node'
 import * as Tracing from '@sentry/tracing'
 import { SENTRY_DSN } from '@/common/Constants'
-import { unrecognizedBonusIdTracker } from '@/cron/utils/UnrecognizedBonusIdTracker'
-import { fetchRegions } from './utils/fetchRegions'
+import { REGION_CONFIGS } from '@/common/RegionConfig'
+import { ApiAccessor } from './api/ApiAccessor'
+import { CacheableRegion } from './api/CacheableRegion'
 import { mkdirp } from './utils/mkdirp'
 
 Tracing.addExtensionMethods()
@@ -30,7 +31,6 @@ async function main() {
         dataDir,
         auctionsDir,
     })
-
     mkdirp(dataDir)
     mkdirp(auctionsDir)
 
@@ -39,22 +39,21 @@ async function main() {
         name: 'Fetch Auctions Cron Job',
     })
 
-    const child = transaction.startChild({ op: 'fetchRegions' })
-    const regions = await fetchRegions(dataDir, auctionsDir)
-    child.finish()
+    for (const regionConfig of REGION_CONFIGS) {
+        const apiAccessor = new ApiAccessor(regionConfig)
+        const region = new CacheableRegion(apiAccessor, dataDir, auctionsDir)
 
-    for (const region of regions) {
-        const child = transaction.startChild({ op: 'fetchAuctions', description: region.config.slug })
+        const child = transaction.startChild({ op: 'fetchAuctions', description: region.slug })
+        await region.fetch()
         await region.fetchAuctions()
         child.finish()
     }
 
-    unrecognizedBonusIdTracker.print()
     transaction.finish()
 }
 
 main().catch((err) => {
-    console.warn(err)
     Sentry.captureException(err)
+    console.warn(err)
     process.exit(1)
 })

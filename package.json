@@ -1,8 +1,8 @@
 {
     "private": true,
     "scripts": {
-        "fetchItems": "   node -r source-map-support/register -r dotenv/config dist/cron/fetchItems.js    src/web/assets/data src/web/assets/img",
-        "fetchAuctions": "node -r source-map-support/register -r dotenv/config dist/cron/fetchAuctions.js src/web/assets/data dist/web/data",
+        "fetchItems": "   node -r source-map-support/register -r dotenv/config dist/cron/fetchItems.js    src/web/client/assets/data src/web/client/assets/img",
+        "fetchAuctions": "node -r source-map-support/register -r dotenv/config dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
         "devCron": "  cross-env NODE_ENV=development webpack --watch --config build/webpack.config.cron.ts",
         "devWeb": "   cross-env NODE_ENV=development webpack serve   --config build/webpack.config.web.ts",
         "buildCron": "cross-env NODE_ENV=production  webpack         --config build/webpack.config.cron.ts",

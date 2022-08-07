@@ -1,44 +1,33 @@
-import querystring from 'querystring'
-import type { BnetOauthResponse } from '@/cron/api/Responses'
-import type { Region } from '@/cron/models/Region'
-import { getRuntimeSecret, RuntimeSecret } from '@/cron/utils/RuntimeSecret'
-import { tryExponentialBackoff } from '@/cron/utils/tryExponentialBackoff'
-import type { IncomingMessage } from 'http'
+import { getRuntimeSecret, RuntimeSecret } from '../utils/RuntimeSecret'
+import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
+import type { RegionConfig } from '@/common/RegionConfig'
+import type { BnetOauthResponse } from '../api/BnetResponse'
 
-export class ApiAccessor<T> {
-    readonly endpoint: string
-    readonly isDynamic: boolean
-    readonly region: Region
+export class ApiAccessor {
+    readonly regionConfig: RegionConfig
+    #accessToken?: string
 
-    constructor(endpoint: string, isDynamic: boolean, region: Region) {
-        this.endpoint = endpoint
-        this.isDynamic = isDynamic
-        this.region = region
+    constructor(regionConfig: RegionConfig) {
+        this.regionConfig = regionConfig
     }
 
-    private get _accessToken(): string {
-        if (!this.region.accessToken) {
-            throw new Error('Region does not have accessToken')
+    async #fetchAccessToken(): Promise<void> {
+        if (this.#accessToken) {
+            return
         }
 
-        return this.region.accessToken
-    }
+        const clientId = getRuntimeSecret(RuntimeSecret.CLIENT_ID)
+        const clientSecret = getRuntimeSecret(RuntimeSecret.CLIENT_SECRET)
+        const data = new URLSearchParams({ grant_type: 'client_credentials' }).toString()
 
-    async fetchAccessToken(): Promise<string> {
-        const user = getRuntimeSecret(RuntimeSecret.CLIENT_ID)
-        const pass = getRuntimeSecret(RuntimeSecret.CLIENT_SECRET)
-
-        console.debug('Fetching', this.region.config.oauthEndpoint)
-
+        console.info('Fetching', this.regionConfig.oauthEndpoint)
         const response = await tryExponentialBackoff<BnetOauthResponse>({
             method: 'POST',
-            url: this.region.config.oauthEndpoint,
-            data: querystring.stringify({
-                grant_type: 'client_credentials',
-            }),
+            url: this.regionConfig.oauthEndpoint,
+            data,
             auth: {
-                username: user,
-                password: pass,
+                username: clientId,
+                password: clientSecret,
             },
         })
 
@@ -46,35 +35,34 @@ export class ApiAccessor<T> {
             throw new Error('Failed to get access token')
         }
 
-        return response.access_token
+        this.#accessToken = response.access_token
     }
 
-    async fetch(isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
-        const url = this.endpoint.replace(this.region.config.apiHost, '')
-        console.debug('Fetching', url)
+    /**
+     * Calls Bnet API
+     *
+     * @param endpoint API path excluding the region prefix e.g. "/data/wow/item/1"
+     * @param isDynamic Type of API request (check with docs)
+     * @param isValidResponse Optional function to validate the returned result e.g. sometimes auctions endpoint return 200 but is malformed response
+     */
+    async fetch<T>(endpoint: string, isDynamic: boolean, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
+        await this.#fetchAccessToken()
+
+        const url = this.regionConfig.apiHost + endpoint
+        console.info('Fetching', url)
 
         const response = await tryExponentialBackoff<T>({
             method: 'GET',
-            url: this.endpoint,
+            url,
             headers: {
-                Authorization: `Bearer ${this._accessToken}`,
+                Authorization: `Bearer ${this.#accessToken}`,
             },
             params: {
-                regionSlug: this.region.config.slug,
-                locale: this.region.config.locale,
-                namespace: `${this.isDynamic ? 'dynamic' : 'static'}-${this.region.config.slug}`,
+                regionSlug: this.regionConfig.slug,
+                locale: this.regionConfig.locale,
+                namespace: `${isDynamic ? 'dynamic' : 'static'}-${this.regionConfig.slug}`,
             },
         }, isValidResponse)
-
-        return response
-    }
-
-    static async fetchFile(fileUrl: string): Promise<IncomingMessage | null> {
-        const response = await tryExponentialBackoff<IncomingMessage>({
-            method: 'GET',
-            url: fileUrl,
-            responseType: 'stream',
-        })
 
         return response
     }

@@ -2,7 +2,7 @@
 // Bonus ilvl
 // ----------------------------------------------------------------------------
 
-export function checkIsBonusIlvl(bonusId: number): number | undefined {
+export function isIlvlBonusId(bonusId: number): number | undefined {
     if (bonusId >= 1372 && bonusId <= 1672) {
         const ZERO_ILVL = 1472
         return bonusId - ZERO_ILVL
@@ -15,7 +15,7 @@ export function checkIsBonusIlvl(bonusId: number): number | undefined {
 // Socket
 // ----------------------------------------------------------------------------
 
-export function checkIsSocket(bonusId: number): true | undefined {
+export function isSocketBonusId(bonusId: number): true | undefined {
     switch (bonusId) {
         case 1808:
         case 6514: // Nyalotha
@@ -41,7 +41,7 @@ export enum Tertiary {
     Indestructible = 43,
 }
 
-export function checkIsTertiary(bonusId: number): Tertiary | undefined {
+export function isTertiaryBonusId(bonusId: number): Tertiary | undefined {
     switch (bonusId) {
         case 40:
             return Tertiary.Avoidance
@@ -76,7 +76,7 @@ export enum Secondary {
     MasteryVersatility = 'Mastery / Versatility',
 }
 
-export function checkIsSecondary(bonusId: number): Secondary | undefined {
+export function isSecondaryBonusId(bonusId: number): Secondary | undefined {
     if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002) || bonusId === 8180 || bonusId === 8181) {
         return Secondary.CritVersatility
     }
@@ -115,6 +115,30 @@ export function checkIsSecondary(bonusId: number): Secondary | undefined {
 
     if (bonusId === 1721) {
         return Secondary.Mastery
+    }
+
+    return undefined
+}
+
+// ----------------------------------------------------------------------------
+// Shadowlands Fated
+// ----------------------------------------------------------------------------
+
+export function isShadowlandsFatedBonusId(bonusId: number): true | undefined {
+    switch (bonusId) {
+        case 7926: // Fated
+        case 8756: // Fated Raid Finder
+        case 8757: // Fated
+        case 8758: // Fated Heroic
+        case 8759: // Fated Mythic
+        case 8761: // Fated
+        case 8762: // Fated Mythic
+        case 8763: // Fated Raid Finder
+        case 8764: // Fated Heroic
+        case 8938: // Fated
+        case 8939: // Fated Heroic
+        case 8940: // Fated Mythic
+            return true
     }
 
     return undefined
@@ -196,7 +220,7 @@ const hotfixCorruptionIds = [
     6457,
 ]
 
-export function isCorruptionBonusId(bonusId: number): boolean {
+export function isBfaCorruptionBonusId(bonusId: number): boolean {
     for (const corruption of corruptions) {
         const corruptionAmountId = corruption[0]
         const corruptionEffectId = corruption[1]

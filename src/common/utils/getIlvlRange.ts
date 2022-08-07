@@ -1,4 +1,4 @@
-import { type Tier, type IlvlRange, TIER_CONFIGS } from '../Constants'
+import { IlvlRange, Tier, TIER_CONFIGS } from '../TierConfig'
 
 export function getIlvlRange(tier: Tier): IlvlRange {
     return Object.assign({}, TIER_CONFIGS[tier].ilvls)

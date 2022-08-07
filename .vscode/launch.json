@@ -12,8 +12,8 @@
             ],
 
             "args": [
-                "src/web/assets/data",
-                "src/web/assets/img",
+                "src/web/client/assets/data",
+                "src/web/client/assets/img",
             ],
 
             "envFile": "${workspaceRoot}/.env",
@@ -30,7 +30,7 @@
             ],
 
             "args": [
-                "src/web/assets/data",
+                "src/web/client/assets/data",
                 "dist/web/data",
             ],
 

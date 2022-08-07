@@ -2,9 +2,10 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { API_TIMEOUT, MAX_API_ATTEMPTS } from '@/common/Constants'
 import { sleep } from '@/common/utils/sleep'
 
-export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isValidResponse?: (data: T | null) => string | null): Promise<T | null> {
-    // Retry with exponential backoff if server is temporarily unavilable
-    for (let attempt = 1; attempt <= MAX_API_ATTEMPTS; attempt++) {
+export type ResponseValidator<T> = (data: T | null) => string | null
+
+export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
+    for (let attempt = 0; attempt < MAX_API_ATTEMPTS; attempt++) {
         const timeout = axios.CancelToken.source()
         const timeoutId = setTimeout(() => {
             timeout.cancel(`Request timeout: ${request.url}`)
@@ -15,10 +16,6 @@ export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isVa
                 cancelToken: timeout.token,
                 ...request,
             })
-
-            if (response.status !== 200) {
-                throw new Error(`Request returned ${response.status}: ${JSON.stringify(response.data)}`)
-            }
 
             const errorMessage = isValidResponse?.(response?.data as T)
             if (errorMessage) {

@@ -1,4 +1,4 @@
-import { Tier, TIER_CONFIGS } from '../Constants'
+import { Tier, TIER_CONFIGS } from '../TierConfig'
 
 export function getTierBoeIds(tier: Tier): Array<number> {
     const tierConfig = TIER_CONFIGS[tier]
