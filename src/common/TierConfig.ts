@@ -78,7 +78,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                 ]),
             },
             {
-                label: 'Cape',
+                label: 'Back',
                 ids: new Set([
                     190334,
                 ]),
@@ -162,10 +162,15 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                 ]),
             },
             {
+                label: 'Back',
+                ids: new Set([
+                    184778,
+                ]),
+            },
+            {
                 label: 'Misc.',
                 ids: new Set([
                     183035,
-                    184778,
                 ]),
             },
         ],
@@ -194,7 +199,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                 ]),
             },
             {
-                label: 'Cloak',
+                label: 'Back',
                 ids: new Set([
                     184782,
                     184781,
