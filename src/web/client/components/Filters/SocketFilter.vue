@@ -1,11 +1,6 @@
 <script lang="ts" setup>
-import { useQuasar } from 'quasar/src/index.all'
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
-
-defineExpose({
-    $q: useQuasar(),
-})
 
 const filterStore = useFilterStore()
 const mustHaveSocket = computed<boolean>({

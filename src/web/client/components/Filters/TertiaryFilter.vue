@@ -1,12 +1,7 @@
 <script lang="ts" setup>
-import { useQuasar } from 'quasar/src/index.all'
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
 import { Tertiary } from '@/common/BonusId'
-
-defineExpose({
-    $q: useQuasar(),
-})
 
 type SelectedTertiaries = Array<Tertiary>
 

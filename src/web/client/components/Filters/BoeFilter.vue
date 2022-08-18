@@ -1,15 +1,10 @@
 <script lang="ts" setup>
-import { useQuasar } from 'quasar/src/index.all'
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
 import { getItemIcon } from '../../utils/ImageLoader'
 import { getItemNameById } from '../../utils/getItemNameById'
 import { getWowheadItemLinkById } from '../../utils/getWowheadItemLinkById'
 import { TIER_CONFIGS } from '@/common/TierConfig'
-
-defineExpose({
-    $q: useQuasar(),
-})
 
 const filterStore = useFilterStore()
 const boeCategories = computed(() => TIER_CONFIGS[filterStore.tier].boes)
