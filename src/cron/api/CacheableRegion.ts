@@ -1,5 +1,6 @@
 import path from 'path'
 import { batchRequests } from '../utils/batchRequests'
+import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
 import type { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'
 import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { Cacheable } from './Cacheable'
@@ -136,7 +137,7 @@ export class CacheableRegion extends Cacheable<Region> {
                 })
             }
 
-            console.info(`Found ${regionAuctions.auctions.length.toString().padStart(4, ' ')} auctions for ${crStr}`)
+            console.info(`Found ${regionAuctions.auctions.length.toString().padStart(5, ' ')} auctions for ${crStr} (${getProcessMemoryStats()})`)
         })
 
         const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.apiAccessor.regionConfig.slug}.json`)
