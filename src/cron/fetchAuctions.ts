@@ -47,6 +47,11 @@ async function main() {
         await region.fetch()
         await region.fetchAuctions()
         child.finish()
+
+        // Only run on 1 region during dev
+        if (DEFINE.IS_DEV) {
+            break
+        }
     }
 
     transaction.finish()
