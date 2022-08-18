@@ -226,7 +226,7 @@ const formatNum = (val: number): string => {
         <template #body-cell-hasSocket="props">
             <q-td :props="props">
                 <q-icon
-                    v-if="props.row.hasSocket"
+                    v-if="auctionHasSocket(props.row)"
                     name="check_circle_outline"
                     title="Has Socket"
                 />
