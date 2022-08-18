@@ -21,9 +21,10 @@ export enum Tier {
     CastleNathria = 't26',
     SanctumOfDomination = 't28',
     SepulcherOfTheFirstOnes = 't29',
+    ShadowlandsFatedRaids = 'shadowlands-fated',
 }
 
-export const DEFAULT_TIER = Tier.SepulcherOfTheFirstOnes
+export const DEFAULT_TIER = Tier.ShadowlandsFatedRaids
 
 export interface BoeCategory {
     label: string
@@ -45,6 +46,74 @@ export interface TierConfig {
 }
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
+    [Tier.ShadowlandsFatedRaids]: {
+        name: 'Shadowlands Fated Raids',
+        iconPath: '0-shadowlands.png',
+        boes: [
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    190630,
+                    190631,
+                    186356,
+                    186358,
+                    183008,
+                    183017,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    190627,
+                    190626,
+                    186362,
+                    186359,
+                    183010,
+                    182978,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    190629,
+                    190628,
+                    186367,
+                    186364,
+                    182990,
+                    182982,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    190625,
+                    190624,
+                    186373,
+                    186371,
+                    183013,
+                    183031,
+                ]),
+            },
+            {
+                label: 'Back',
+                ids: new Set([
+                    190334,
+                    184778,
+                ]),
+            },
+            {
+                label: 'Misc.',
+                ids: new Set([
+                    183035,
+                ]),
+            },
+        ],
+        ilvls: {
+            min: 265,
+            max: 304,
+            step: 13,
+        },
+    },
     [Tier.SepulcherOfTheFirstOnes]: {
         name: 'Sepulcher of the First Ones',
         iconPath: '29-sepulcher-of-the-first-ones.png',
