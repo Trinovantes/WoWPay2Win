@@ -48,7 +48,7 @@ export interface TierConfig {
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
     [Tier.ShadowlandsFatedRaids]: {
         name: 'Shadowlands Fated Raids',
-        iconPath: '0-shadowlands.png',
+        iconPath: '0-shadowlands-fated.jpg',
         boes: [
             {
                 label: 'Cloth',
