@@ -26,17 +26,17 @@ export enum Tier {
 
 export const DEFAULT_TIER = Tier.ShadowlandsFatedRaids
 
-export interface BoeCategory {
+export type BoeCategory = {
     label: string
     ids: Set<number>
 }
 
-export interface IlvlRange {
+export type IlvlRange = {
     min: number
     max: number
 }
 
-export interface TierConfig {
+export type TierConfig = {
     name: string
     iconPath: string
     boes: ReadonlyArray<BoeCategory>

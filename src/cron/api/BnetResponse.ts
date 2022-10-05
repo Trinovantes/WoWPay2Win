@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 
-export interface BnetOauthResponse {
+export type BnetOauthResponse = {
     access_token: string
 }
 
-export interface BnetRegionResponse {
+export type BnetRegionResponse = {
     connected_realms: Array<{
         href: string
     }>
 }
 
-export interface BnetConnectedRealmResponse {
+export type BnetConnectedRealmResponse = {
     id: number
     realms: Array<{
         id: number
@@ -18,13 +18,13 @@ export interface BnetConnectedRealmResponse {
     }>
 }
 
-export interface BnetItemResponse {
+export type BnetItemResponse = {
     id: number
     name: string
     level: number
 }
 
-export interface BnetItemMediaResponse {
+export type BnetItemMediaResponse = {
     id: number
     assets: Array<{
         key: string
@@ -32,7 +32,7 @@ export interface BnetItemMediaResponse {
     }>
 }
 
-export interface BnetAuctionsResponse {
+export type BnetAuctionsResponse = {
     auctions?: Array<{
         id: number
         item: {

@@ -4,17 +4,17 @@ import type { Locale } from './RegionConfig'
 // Region
 // ----------------------------------------------------------------------------
 
-export interface Realm {
+export type Realm = {
     id: number
     name: string
 }
 
-export interface ConnectedRealm {
+export type ConnectedRealm = {
     id: number
     realms: Array<Realm>
 }
 
-export interface Region {
+export type Region = {
     connectedRealms: Array<ConnectedRealm>
 }
 
@@ -22,7 +22,7 @@ export interface Region {
 // Item
 // ----------------------------------------------------------------------------
 
-export interface Item {
+export type Item = {
     localizedName: Partial<Record<Locale, string>>
     baseLevel: number
 }
@@ -31,7 +31,7 @@ export interface Item {
 // ItemAuction
 // ----------------------------------------------------------------------------
 
-export interface ItemAuction {
+export type ItemAuction = {
     id: number
     crId: number
     itemId: number
@@ -39,7 +39,7 @@ export interface ItemAuction {
     bonuses: Array<number>
 }
 
-export interface RegionAuctions {
+export type RegionAuctions = {
     lastUpdate: number // from Date.now()
     auctions: Array<ItemAuction>
 }

@@ -4,7 +4,7 @@ export enum HydrationKey {
     FILTER = '__INITIAL_FILTER_STATE__',
 }
 
-interface HydrationStateMap {
+type HydrationStateMap = {
     [HydrationKey.FILTER]: FilterState
 }
 

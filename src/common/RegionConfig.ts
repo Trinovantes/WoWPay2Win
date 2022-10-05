@@ -14,7 +14,7 @@ export enum Locale {
     KO_KR = 'ko_KR',
 }
 
-export interface RegionConfig {
+export type RegionConfig = {
     slug: RegionSlug
     locale: Locale
     apiHost: string

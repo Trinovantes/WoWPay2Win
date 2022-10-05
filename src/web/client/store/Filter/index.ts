@@ -17,7 +17,7 @@ export type RealmFilter = Set<number>
 export type BoeFilter = Set<number>
 export type TertiaryFilter = Set<Tertiary>
 
-export interface FilterState {
+export type FilterState = {
     tier: Tier
     region: RegionFilter
     realms: RealmFilter

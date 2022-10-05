@@ -15,7 +15,7 @@ import type { RegionSlug } from '@/common/RegionConfig'
 
 export type Auctions = Array<ItemAuction>
 
-export interface AuctionsState {
+export type AuctionsState = {
     auctions: Map<RegionSlug, RegionAuctions>
 }
 
