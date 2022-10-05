@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { QTable } from 'quasar/src/index.all'
+import { QTable } from 'quasar'
 import { computed, ref } from 'vue'
 import { Auctions, useAuctionsStore } from '../store/Auctions'
 import { useFilterStore } from '../store/Filter'

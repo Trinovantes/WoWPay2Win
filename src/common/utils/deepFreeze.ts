@@ -3,6 +3,10 @@ export function deepFreeze<T>(obj: T): T {
         return obj
     }
 
+    if (obj === null) {
+        return obj
+    }
+
     for (const key of Object.getOwnPropertyNames(obj) as Array<keyof T>) {
         if (typeof obj[key] === 'object') {
             obj[key] = deepFreeze(obj[key])
