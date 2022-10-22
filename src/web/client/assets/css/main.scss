@@ -19,9 +19,11 @@
 }
 
 noscript{
-    background: $warning;
     font-weight: bold;
     text-align: center;
+
+    background: $warning;
+    display: block;
     padding: $padding;
 }
 
