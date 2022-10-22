@@ -2,10 +2,11 @@ import path from 'path'
 import { batchRequests } from '../utils/batchRequests'
 import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
 import type { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'
+import { convertCopperToGold } from '@/common/utils/convertCopperToGold'
 import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { Cacheable } from './Cacheable'
 import type { ApiAccessor } from '../api/ApiAccessor'
-import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse } from '../api/BnetResponse'
+import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse } from '../api/BnetResponse'
 
 // ----------------------------------------------------------------------------
 // Region (us, eu, tw, kr)
@@ -93,8 +94,13 @@ export class CacheableRegion extends Cacheable<Region> {
     async fetchAuctions() {
         console.info(`CacheableRegion::fetchAuctions ${this.toString()}`)
 
+        const tokenEndpoint = '/data/wow/token/index'
+        const tokenResponse = await this.apiAccessor.fetch<BnetTokenResponse>(tokenEndpoint, true)
+        const tokenPrice = convertCopperToGold(tokenResponse?.price ?? 0)
+
         const regionAuctions: RegionAuctions = {
             lastUpdate: Date.now(),
+            tokenPrice,
             auctions: [],
         }
 
@@ -120,7 +126,7 @@ export class CacheableRegion extends Cacheable<Region> {
                     continue
                 }
 
-                const buyout = Math.round((auctionResponse.buyout ?? 0) / (100 * 100)) // 1 gold = 100 silver * 100 copper/silver
+                const buyout = convertCopperToGold(auctionResponse.buyout ?? 0)
                 if (buyout === 0) {
                     continue
                 }

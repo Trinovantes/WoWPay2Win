@@ -28,7 +28,7 @@ export type Item = {
 }
 
 // ----------------------------------------------------------------------------
-// ItemAuction
+// RegionAuctions
 // ----------------------------------------------------------------------------
 
 export type ItemAuction = {
@@ -41,5 +41,6 @@ export type ItemAuction = {
 
 export type RegionAuctions = {
     lastUpdate: number // from Date.now()
+    tokenPrice: number // gold
     auctions: Array<ItemAuction>
 }

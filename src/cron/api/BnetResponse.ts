@@ -42,3 +42,8 @@ export type BnetAuctionsResponse = {
         buyout?: number
     }>
 }
+
+export type BnetTokenResponse = {
+    last_updated_timestamp: number
+    price: number
+}

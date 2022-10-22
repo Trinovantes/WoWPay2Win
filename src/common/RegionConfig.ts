@@ -47,3 +47,18 @@ export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = deepFreeze([
         oauthEndpoint: 'https://apac.battle.net/oauth/token',
     },
 ])
+
+type LocalCurrencyAmount = number
+export const tokenPrice = new Map<RegionSlug, LocalCurrencyAmount>([
+    [RegionSlug.US, 20],
+    [RegionSlug.EU, 20],
+    [RegionSlug.KR, 22000],
+    [RegionSlug.TW, 500],
+])
+
+export const currencyCode = new Map<RegionSlug, string>([
+    [RegionSlug.US, 'USD'],
+    [RegionSlug.EU, 'EUR'],
+    [RegionSlug.KR, 'KRW '],
+    [RegionSlug.TW, 'TWD'],
+])
