@@ -31,6 +31,20 @@ export const useAuctionsStore = defineStore('Auctions', {
     state: createDefaultAuctionsState,
 
     getters: {
+        tokenPrice: (state): number | undefined => {
+            const filterStore = useFilterStore()
+            if (!filterStore.region) {
+                return
+            }
+
+            const tokenPrice = state.auctions.get(filterStore.region)?.tokenPrice
+            if (tokenPrice === undefined) {
+                return
+            }
+
+            return tokenPrice
+        },
+
         lastUpdateIso: (state) => {
             const filterStore = useFilterStore()
             if (!filterStore.region) {

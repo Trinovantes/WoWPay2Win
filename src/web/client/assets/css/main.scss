@@ -85,6 +85,15 @@ a:not(.q-btn){
     }
 }
 
+.q-tooltip{
+    background: $bg-main;
+    padding: $padding;
+
+    color: $text;
+    font-size: 1rem;
+    line-height: $line-height;
+}
+
 .q-banner{
     background: $warning;
     color: $dark;

@@ -14,6 +14,7 @@ import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
 import { Tertiary } from '@/common/BonusId'
 import type { ItemAuction } from '@/common/Cache'
 import { ROWS_PER_PAGE } from '@/common/Constants'
+import { currencyCode, tokenPrice } from '@/common/RegionConfig'
 
 type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
 
@@ -37,7 +38,6 @@ const columns: QTable['columns'] = [
         label: 'Buyout',
         sortable: true,
         field: (auction: ItemAuction) => auction.buyout,
-        format: (val: number) => formatNum(val),
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },
@@ -183,13 +183,56 @@ const getItemName = (auction: ItemAuction) => {
     }
 }
 
-const formatNum = (val: number): string => {
-    const fmt = new Intl.NumberFormat(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    })
+const numFormatter = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+})
+const fractionFormatter = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+})
 
-    return fmt.format(val)
+const currencyFormatter = computed(() => {
+    const region = filterStore.region
+    if (!region) {
+        return
+    }
+
+    const currency = currencyCode.get(region)
+    if (!currency) {
+        return
+    }
+
+    return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency,
+    })
+})
+
+const getBuyoutTooltip = (val: number): string => {
+    const region = filterStore.region
+    if (!region) {
+        return ''
+    }
+
+    if (auctionsStore.tokenPrice === undefined) {
+        return ''
+    }
+
+    const numTokens = val / auctionsStore.tokenPrice
+    const localCurrency = numTokens * (tokenPrice.get(region) ?? 0)
+    if (!(localCurrency > 0)) {
+        return ''
+    }
+
+    if (!currencyFormatter.value) {
+        return ''
+    }
+
+    const formatedNumTokens = fractionFormatter.format(numTokens)
+    const formatedCurrency = currencyFormatter.value.format(localCurrency)
+
+    return `${formatedNumTokens} ${numTokens === 1 ? 'Token' : 'Tokens'} (${formatedCurrency})`
 }
 </script>
 
@@ -221,6 +264,19 @@ const formatNum = (val: number): string => {
                     </q-avatar>
                     {{ getItemName(props.row) }}
                 </a>
+            </q-td>
+        </template>
+        <template #body-cell-buyout="props: { row: ItemAuction }">
+            <q-td :props="props">
+                {{ numFormatter.format(props.row.buyout) }}
+
+                <q-tooltip
+                    anchor="center right"
+                    self="center left"
+                    :offset="[0, 0]"
+                >
+                    {{ getBuyoutTooltip(props.row.buyout) }}
+                </q-tooltip>
             </q-td>
         </template>
         <template #body-cell-hasSocket="props">
