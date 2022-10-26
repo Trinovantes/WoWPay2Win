@@ -49,16 +49,16 @@ export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = deepFreeze([
 ])
 
 type LocalCurrencyAmount = number
-export const tokenPrice = new Map<RegionSlug, LocalCurrencyAmount>([
+export const tokenPrices = new Map<RegionSlug, LocalCurrencyAmount>([
     [RegionSlug.US, 20],
     [RegionSlug.EU, 20],
     [RegionSlug.KR, 22000],
     [RegionSlug.TW, 500],
 ])
 
-export const currencyCode = new Map<RegionSlug, string>([
-    [RegionSlug.US, 'USD'],
-    [RegionSlug.EU, 'EUR'],
-    [RegionSlug.KR, 'KRW '],
-    [RegionSlug.TW, 'TWD'],
+export const currencyFormatters = new Map<RegionSlug, Intl.NumberFormat>([
+    [RegionSlug.US, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' })],
+    [RegionSlug.EU, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' })],
+    [RegionSlug.KR, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'KRW' })],
+    [RegionSlug.TW, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'TWD' })],
 ])

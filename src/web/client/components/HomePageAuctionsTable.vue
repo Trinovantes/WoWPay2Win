@@ -14,7 +14,7 @@ import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
 import { Tertiary } from '@/common/BonusId'
 import type { ItemAuction } from '@/common/Cache'
 import { ROWS_PER_PAGE } from '@/common/Constants'
-import { currencyCode, tokenPrice } from '@/common/RegionConfig'
+import { currencyFormatters, tokenPrices } from '@/common/RegionConfig'
 
 type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
 
@@ -192,23 +192,6 @@ const fractionFormatter = new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 2,
 })
 
-const currencyFormatter = computed(() => {
-    const region = filterStore.region
-    if (!region) {
-        return
-    }
-
-    const currency = currencyCode.get(region)
-    if (!currency) {
-        return
-    }
-
-    return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency,
-    })
-})
-
 const getBuyoutTooltip = (val: number): string => {
     const region = filterStore.region
     if (!region) {
@@ -220,17 +203,18 @@ const getBuyoutTooltip = (val: number): string => {
     }
 
     const numTokens = val / auctionsStore.tokenPrice
-    const localCurrency = numTokens * (tokenPrice.get(region) ?? 0)
+    const localCurrency = numTokens * (tokenPrices.get(region) ?? 0)
     if (!(localCurrency > 0)) {
         return ''
     }
 
-    if (!currencyFormatter.value) {
+    const currencyFormatter = currencyFormatters.get(region)
+    if (!currencyFormatter) {
         return ''
     }
 
     const formatedNumTokens = fractionFormatter.format(numTokens)
-    const formatedCurrency = currencyFormatter.value.format(localCurrency)
+    const formatedCurrency = currencyFormatter.format(localCurrency)
 
     return `${formatedNumTokens} ${numTokens === 1 ? 'Token' : 'Tokens'} (${formatedCurrency})`
 }
