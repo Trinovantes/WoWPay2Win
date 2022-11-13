@@ -2,7 +2,7 @@ import { deepFreeze } from './utils/deepFreeze'
 
 /*
 Use this script to quickly extract item ids from wowhead item search
-https://www.wowhead.com/items/quality:4?filter=3:166:128:16;1:9:4:13224;0:0:0:0
+https://www.wowhead.com/items/quality:4?filter=3:166:128:16;1:10:4:14030;0:0:0:0
 
 $('#tab-items table').find('a.q4').each((idx, el) => {
     const href = $(el).attr('href')
