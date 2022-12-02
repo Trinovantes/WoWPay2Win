@@ -22,6 +22,7 @@ export function isSocketBonusId(bonusId: number): true | undefined {
         case 6935: // Castle Nathria
         case 7576: // Sanctum of Domination
         case 7580: // Sepulcher of the First Ones
+        case 7935: // Vault of the Incarnates
             return true
     }
 

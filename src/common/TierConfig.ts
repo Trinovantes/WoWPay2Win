@@ -22,6 +22,10 @@ export enum Tier {
     SanctumOfDomination = 't28',
     SepulcherOfTheFirstOnes = 't29',
     ShadowlandsFatedRaids = 'shadowlands-fated',
+
+    // Dragonflight
+    Dragonflight = 'dragonflight',
+    VaultOfTheIncarnates = 't31',
 }
 
 export const DEFAULT_TIER = Tier.ShadowlandsFatedRaids
@@ -46,6 +50,114 @@ export type TierConfig = {
 }
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
+    [Tier.VaultOfTheIncarnates]: {
+        name: 'Vault of the Incarnates',
+        iconPath: '31-vault-of-the-incarnates.png',
+        boes: [
+            {
+                label: 'Weapons',
+                ids: new Set([
+                    195510,
+                    195505,
+                    195529,
+                    195528,
+                    195527,
+                ]),
+            },
+            {
+                label: 'Back',
+                ids: new Set([
+                    195511,
+                ]),
+            },
+            {
+                label: 'Trinkets',
+                ids: new Set([
+                    194304,
+                    194310,
+                    194309,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    195533,
+                    195506,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    195530,
+                    195509,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    195507,
+                    195531,
+                ]),
+            },
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    195508,
+                    195532,
+                ]),
+            },
+        ],
+        ilvls: {
+            min: 376,
+            max: 376 + (13 * 3) + 9, // Later bosses drop up to base+9
+            step: 13,
+        },
+    },
+    [Tier.Dragonflight]: {
+        name: 'Dragonflight World Drops',
+        iconPath: '0-dragonflight.png',
+        boes: [
+            {
+                label: 'Ring',
+                ids: new Set([
+                    201992,
+                ]),
+            },
+            {
+                label: 'Plate',
+                ids: new Set([
+                    202006,
+                    202010,
+                ]),
+            },
+            {
+                label: 'Mail',
+                ids: new Set([
+                    202005,
+                    202009,
+                ]),
+            },
+            {
+                label: 'Leather',
+                ids: new Set([
+                    202004,
+                    202008,
+                ]),
+            },
+            {
+                label: 'Cloth',
+                ids: new Set([
+                    202003,
+                    202007,
+                ]),
+            },
+        ],
+        ilvls: {
+            min: 389,
+            max: 395,
+            step: 1,
+        },
+    },
     [Tier.ShadowlandsFatedRaids]: {
         name: 'Shadowlands Fated Raids',
         iconPath: '0-shadowlands-fated.jpg',
