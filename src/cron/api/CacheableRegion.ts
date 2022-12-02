@@ -33,7 +33,7 @@ export class CacheableRegion extends Cacheable<Region> {
     }
 
     get regionEndpoint(): string {
-        return '/data/wow/connected-realm/index'
+        return '/data/wow/connected-realm'
     }
 
     get slug(): string {
@@ -64,7 +64,14 @@ export class CacheableRegion extends Cacheable<Region> {
             return
         }
 
-        const regionResponse = await this.apiAccessor.fetch<BnetRegionResponse>(this.regionEndpoint, true)
+        const regionResponse = await this.apiAccessor.fetch<BnetRegionResponse>(this.regionEndpoint, true, (res) => {
+            if (!res?.connected_realms) {
+                return 'Missing connected_realms in response'
+            }
+
+            return null
+        })
+
         if (!regionResponse) {
             console.warn(`Failed to fetch region data ${this.toString()}`)
             return
@@ -80,7 +87,14 @@ export class CacheableRegion extends Cacheable<Region> {
 
             const crId = parseInt(matches[1])
             const endpoint = `/data/wow/connected-realm/${crId}`
-            const crResponse = await this.apiAccessor.fetch<BnetConnectedRealmResponse>(endpoint, true)
+            const crResponse = await this.apiAccessor.fetch<BnetConnectedRealmResponse>(endpoint, true, (res) => {
+                if (!res?.realms) {
+                    return 'Missing realms in response'
+                }
+
+                return null
+            })
+
             this.#connectedRealms.push({
                 id: crId,
                 realms: crResponse?.realms ?? [],
@@ -95,9 +109,15 @@ export class CacheableRegion extends Cacheable<Region> {
         console.info(`CacheableRegion::fetchAuctions ${this.toString()}`)
 
         const tokenEndpoint = '/data/wow/token/index'
-        const tokenResponse = await this.apiAccessor.fetch<BnetTokenResponse>(tokenEndpoint, true)
-        const tokenPrice = convertCopperToGold(tokenResponse?.price ?? 0)
+        const tokenResponse = await this.apiAccessor.fetch<BnetTokenResponse>(tokenEndpoint, true, (res) => {
+            if (res?.price === undefined) {
+                return 'Missing price in response'
+            }
 
+            return null
+        })
+
+        const tokenPrice = convertCopperToGold(tokenResponse?.price ?? 0)
         const regionAuctions: RegionAuctions = {
             lastUpdate: Date.now(),
             tokenPrice,

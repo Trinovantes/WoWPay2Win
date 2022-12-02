@@ -1,6 +1,7 @@
 import { existsSync } from 'fs'
 import fs from 'fs/promises'
 import dayjs from 'dayjs'
+import { CACHE_DURATION } from '@/common/Constants'
 import type { ApiAccessor } from './ApiAccessor'
 
 // ----------------------------------------------------------------------------
@@ -32,7 +33,7 @@ export abstract class Cacheable<T> {
         const stat = await fs.stat(this.cacheFile)
         const now = dayjs()
         const modDate = dayjs(stat.mtime)
-        if (modDate.isBefore(now.subtract(1, 'week'))) {
+        if (modDate.isBefore(now.subtract(CACHE_DURATION, 'week'))) {
             console.info(`Cache file ${this.cacheFile} is too old: ${modDate.fromNow()}`)
             return false
         }

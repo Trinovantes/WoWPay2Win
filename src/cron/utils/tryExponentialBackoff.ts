@@ -12,6 +12,7 @@ export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isVa
         }, API_TIMEOUT)
 
         try {
+            console.info(`Attempt:${attempt} Fetching:${request.url}`)
             const response = await axios({
                 cancelToken: timeout.token,
                 ...request,
@@ -22,6 +23,7 @@ export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isVa
                 throw new Error(errorMessage)
             }
 
+            console.info(`Attempt:${attempt} Fetching:${request.url} SUCCEEDED`)
             return response.data as T
         } catch (err) {
             const error = err as Error

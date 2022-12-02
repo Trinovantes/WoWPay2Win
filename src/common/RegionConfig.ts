@@ -26,25 +26,25 @@ export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = deepFreeze([
         slug: RegionSlug.US,
         locale: Locale.EN_US,
         apiHost: 'https://us.api.blizzard.com',
-        oauthEndpoint: 'https://us.battle.net/oauth/token',
+        oauthEndpoint: 'https://oauth.battle.net/token',
     },
     {
         slug: RegionSlug.EU,
         locale: Locale.EN_GB,
         apiHost: 'https://eu.api.blizzard.com',
-        oauthEndpoint: 'https://eu.battle.net/oauth/token',
+        oauthEndpoint: 'https://oauth.battle.net/token',
     },
     {
         slug: RegionSlug.TW,
         locale: Locale.ZH_TW,
         apiHost: 'https://tw.api.blizzard.com',
-        oauthEndpoint: 'https://apac.battle.net/oauth/token',
+        oauthEndpoint: 'https://oauth.battle.net/token',
     },
     {
         slug: RegionSlug.KR,
         locale: Locale.KO_KR,
         apiHost: 'https://kr.api.blizzard.com',
-        oauthEndpoint: 'https://apac.battle.net/oauth/token',
+        oauthEndpoint: 'https://oauth.battle.net/token',
     },
 ])
 

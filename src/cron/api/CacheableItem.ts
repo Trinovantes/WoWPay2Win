@@ -46,10 +46,12 @@ export class CacheableItem extends Cacheable<Item> {
         this.#baseLevel = cachedItem.baseLevel
 
         if (!this.#localizedName[this.apiAccessor.regionConfig.locale]) {
+            console.info(`Cache file ${this.cacheFile} is missing this region's locale:${this.apiAccessor.regionConfig.locale}`)
             return false
         }
 
         if (!existsSync(this.iconPath)) {
+            console.info(`Cache file ${this.cacheFile} is missing icon on disk`)
             return false
         }
 
@@ -73,7 +75,14 @@ export class CacheableItem extends Cacheable<Item> {
             return
         }
 
-        const itemResponse = await this.apiAccessor.fetch<BnetItemResponse>(this.itemEndpoint, false)
+        const itemResponse = await this.apiAccessor.fetch<BnetItemResponse>(this.itemEndpoint, false, (res) => {
+            if (!res?.name) {
+                return 'Missing name in response'
+            }
+
+            return null
+        })
+
         if (!itemResponse) {
             console.warn(`Failed to fetch ${this.toString()}`)
             return
@@ -92,11 +101,18 @@ export class CacheableItem extends Cacheable<Item> {
             return
         }
 
-        const itemMediaResponse = await this.apiAccessor.fetch<BnetItemMediaResponse>(this.itemMediaEndpoint, false)
+        const itemMediaResponse = await this.apiAccessor.fetch<BnetItemMediaResponse>(this.itemMediaEndpoint, false, (res) => {
+            if (!res?.assets) {
+                return 'Missing iconUrl in response'
+            }
+
+            return null
+        })
+
         const assets = itemMediaResponse?.assets || []
         const iconUrl = assets.find((asset) => asset.key === 'icon')?.value
         if (!iconUrl) {
-            console.warn(`Cannot download media due to missing ironUrl ${this.toString()}`, itemMediaResponse)
+            console.warn(`Cannot download media due to missing iconUrl ${this.toString()}`, itemMediaResponse)
             return
         }
 

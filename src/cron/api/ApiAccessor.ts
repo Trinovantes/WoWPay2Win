@@ -2,6 +2,7 @@ import { getRuntimeSecret, RuntimeSecret } from '../utils/RuntimeSecret'
 import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
 import type { RegionConfig } from '@/common/RegionConfig'
 import type { BnetOauthResponse } from '../api/BnetResponse'
+import type { AxiosRequestConfig } from 'axios'
 
 export class ApiAccessor {
     readonly regionConfig: RegionConfig
@@ -19,8 +20,6 @@ export class ApiAccessor {
         const clientId = getRuntimeSecret(RuntimeSecret.CLIENT_ID)
         const clientSecret = getRuntimeSecret(RuntimeSecret.CLIENT_SECRET)
         const data = new URLSearchParams({ grant_type: 'client_credentials' }).toString()
-
-        console.info('Fetching', this.regionConfig.oauthEndpoint)
         const response = await tryExponentialBackoff<BnetOauthResponse>({
             method: 'POST',
             url: this.regionConfig.oauthEndpoint,
@@ -29,6 +28,12 @@ export class ApiAccessor {
                 username: clientId,
                 password: clientSecret,
             },
+        }, (res) => {
+            if (!res?.access_token) {
+                return 'Missing access_token in response'
+            }
+
+            return null
         })
 
         if (!response) {
@@ -45,25 +50,23 @@ export class ApiAccessor {
      * @param isDynamic Type of API request (check with docs)
      * @param isValidResponse Optional function to validate the returned result e.g. sometimes auctions endpoint return 200 but is malformed response
      */
-    async fetch<T>(endpoint: string, isDynamic: boolean, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
+    async fetch<T>(endpoint: string, isDynamic: boolean, isValidResponse: ResponseValidator<T>): Promise<T | null> {
         await this.#fetchAccessToken()
 
-        const url = this.regionConfig.apiHost + endpoint
-        console.info('Fetching', url)
+        const url = new URL(this.regionConfig.apiHost + endpoint)
+        url.searchParams.set('region', this.regionConfig.slug)
+        url.searchParams.set('locale', this.regionConfig.locale)
+        url.searchParams.set('namespace', `${isDynamic ? 'dynamic' : 'static'}-${this.regionConfig.slug}`)
 
-        const response = await tryExponentialBackoff<T>({
+        const config: AxiosRequestConfig = {
             method: 'GET',
-            url,
+            url: url.toString(),
             headers: {
                 Authorization: `Bearer ${this.#accessToken}`,
             },
-            params: {
-                regionSlug: this.regionConfig.slug,
-                locale: this.regionConfig.locale,
-                namespace: `${isDynamic ? 'dynamic' : 'static'}-${this.regionConfig.slug}`,
-            },
-        }, isValidResponse)
+        }
 
+        const response = await tryExponentialBackoff<T>(config, isValidResponse)
         return response
     }
 }
