@@ -28,7 +28,7 @@ export enum Tier {
     VaultOfTheIncarnates = 't31',
 }
 
-export const DEFAULT_TIER = Tier.ShadowlandsFatedRaids
+export const DEFAULT_TIER = Tier.VaultOfTheIncarnates
 
 export type BoeCategory = {
     label: string
