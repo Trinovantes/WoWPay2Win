@@ -33,7 +33,7 @@ export class CacheableRegion extends Cacheable<Region> {
     }
 
     get regionEndpoint(): string {
-        return '/data/wow/connected-realm'
+        return '/data/wow/connected-realm/index'
     }
 
     get slug(): string {
