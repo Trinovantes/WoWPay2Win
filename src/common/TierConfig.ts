@@ -30,8 +30,10 @@ export enum Tier {
 
 export const DEFAULT_TIER = Tier.VaultOfTheIncarnates
 
+export type BoeLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
+
 export type BoeCategory = {
-    label: string
+    label: BoeLabel
     ids: Set<number>
 }
 
@@ -168,7 +170,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                 ]),
             },
             {
-                label: 'Misc.',
+                label: 'Jewelry',
                 ids: new Set([
                     183035,
                 ]),
@@ -303,7 +305,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                 ]),
             },
             {
-                label: 'Misc.',
+                label: 'Jewelry',
                 ids: new Set([
                     183035,
                 ]),
