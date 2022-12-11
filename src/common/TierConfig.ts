@@ -55,75 +55,6 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         iconPath: '31-vault-of-the-incarnates.png',
         boes: [
             {
-                label: 'Weapons',
-                ids: new Set([
-                    195510,
-                    195505,
-                    195529,
-                    195528,
-                    195527,
-                ]),
-            },
-            {
-                label: 'Back',
-                ids: new Set([
-                    195511,
-                ]),
-            },
-            {
-                label: 'Trinkets',
-                ids: new Set([
-                    194304,
-                    194310,
-                    194309,
-                ]),
-            },
-            {
-                label: 'Plate',
-                ids: new Set([
-                    195533,
-                    195506,
-                ]),
-            },
-            {
-                label: 'Leather',
-                ids: new Set([
-                    195530,
-                    195509,
-                ]),
-            },
-            {
-                label: 'Mail',
-                ids: new Set([
-                    195507,
-                    195531,
-                ]),
-            },
-            {
-                label: 'Cloth',
-                ids: new Set([
-                    195508,
-                    195532,
-                ]),
-            },
-        ],
-        ilvls: {
-            min: 376,
-            max: 376 + (13 * 3) + 9, // Later bosses drop up to base+9
-            step: 13,
-        },
-    },
-    [Tier.Dragonflight]: {
-        name: 'Dragonflight World Drops',
-        iconPath: '0-dragonflight.png',
-        boes: [
-            {
-                label: 'Ring',
-                ids: new Set([
-                    201992,
-                ]),
-            },
-            {
                 label: 'Plate',
                 ids: new Set([
                     202006,
@@ -151,10 +82,33 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                     202007,
                 ]),
             },
+            {
+                label: 'Jewelry',
+                ids: new Set([
+                    201992,
+                ]),
+            },
         ],
         ilvls: {
-            min: 389,
-            max: 395,
+            min: 376,
+            max: 376 + (13 * 3) + 9, // Later bosses drop up to base+9
+            step: 13,
+        },
+    },
+    [Tier.Dragonflight]: {
+        name: 'Dragonflight World Drops',
+        iconPath: '0-dragonflight.png',
+        boes: [
+            {
+                label: 'Trinket',
+                ids: new Set([
+                    200161,
+                ]),
+            },
+        ],
+        ilvls: {
+            min: 376,
+            max: 376 + (13 * 3) + 9,
             step: 1,
         },
     },
