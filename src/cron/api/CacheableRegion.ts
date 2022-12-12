@@ -1,6 +1,7 @@
 import path from 'path'
 import { batchRequests } from '../utils/batchRequests'
 import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
+import { hasBannedId } from '@/common/BonusId'
 import type { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'
 import { convertCopperToGold } from '@/common/utils/convertCopperToGold'
 import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
@@ -153,6 +154,9 @@ export class CacheableRegion extends Cacheable<Region> {
 
                 const id = auctionResponse.id
                 const bonuses = auctionResponse.item.bonus_lists ?? []
+                if (hasBannedId(bonuses)) {
+                    continue
+                }
 
                 regionAuctions.auctions.push({
                     bonuses,

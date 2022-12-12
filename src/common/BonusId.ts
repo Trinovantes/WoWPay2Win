@@ -1,4 +1,31 @@
 // ----------------------------------------------------------------------------
+// Banned
+// ----------------------------------------------------------------------------
+
+// In Dragonflight, "Razorwind Talisman" has base ilvl of 398 but drops with these ids that override the ilvl instead of using the 1372-1672 ids
+// Thus we need to ignore items with these ids
+export function isBannedId(bonusId: number): boolean {
+    switch (bonusId) {
+        case 9233: // 236
+        case 9156: // 327
+        case 9232: // 340
+            return true
+    }
+
+    return false
+}
+
+export function hasBannedId(bonusIds: Array<number>): boolean {
+    for (const id of bonusIds) {
+        if (isBannedId(id)) {
+            return true
+        }
+    }
+
+    return false
+}
+
+// ----------------------------------------------------------------------------
 // Bonus ilvl
 // ----------------------------------------------------------------------------
 
