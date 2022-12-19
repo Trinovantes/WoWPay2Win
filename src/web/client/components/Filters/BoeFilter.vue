@@ -17,7 +17,7 @@ const selectedBoes = computed<Array<number>>({
     },
 })
 
-const toggleAll = (idsToAdd: Set<number>) => {
+const toggleAll = (idsToAdd: ReadonlyArray<number>) => {
     const currentSelected = new Set(filterStore.boes)
     for (const id of idsToAdd) {
         currentSelected.add(id)
@@ -25,7 +25,7 @@ const toggleAll = (idsToAdd: Set<number>) => {
 
     filterStore.boes = currentSelected
 }
-const toggleNone = (idsToRemove: Set<number>) => {
+const toggleNone = (idsToRemove: ReadonlyArray<number>) => {
     const currentSelected = new Set(filterStore.boes)
     for (const id of idsToRemove) {
         currentSelected.delete(id)
@@ -34,7 +34,7 @@ const toggleNone = (idsToRemove: Set<number>) => {
     filterStore.boes = currentSelected
 }
 
-const isAllActive = (idsToCheck: Set<number>): boolean => {
+const isAllActive = (idsToCheck: ReadonlyArray<number>): boolean => {
     for (const id of idsToCheck) {
         if (!selectedBoes.value.includes(id)) {
             return false
@@ -43,7 +43,7 @@ const isAllActive = (idsToCheck: Set<number>): boolean => {
 
     return true
 }
-const isNoneActive = (idsToCheck: Set<number>): boolean => {
+const isNoneActive = (idsToCheck: ReadonlyArray<number>): boolean => {
     for (const id of idsToCheck) {
         if (selectedBoes.value.includes(id)) {
             return false
@@ -91,7 +91,7 @@ const tierName = computed(() => TIER_CONFIGS[filterStore.tier].name)
                 {{ category.label }}
 
                 <div
-                    v-if="category.ids.size > 1"
+                    v-if="category.ids.length > 1"
                     class="toggles"
                 >
                     <a

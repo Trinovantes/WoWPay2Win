@@ -1,5 +1,3 @@
-import { deepFreeze } from './utils/deepFreeze'
-
 export enum RegionSlug {
     US = 'us',
     EU = 'eu',
@@ -14,14 +12,14 @@ export enum Locale {
     KO_KR = 'ko_KR',
 }
 
-export type RegionConfig = {
+export type RegionConfig = Readonly<{
     slug: RegionSlug
     locale: Locale
     apiHost: string
     oauthEndpoint: string
-}
+}>
 
-export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = deepFreeze([
+export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = [
     {
         slug: RegionSlug.US,
         locale: Locale.EN_US,
@@ -46,7 +44,7 @@ export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = deepFreeze([
         apiHost: 'https://kr.api.blizzard.com',
         oauthEndpoint: 'https://oauth.battle.net/token',
     },
-])
+]
 
 type LocalCurrencyAmount = number
 export const tokenPrices = new Map<RegionSlug, LocalCurrencyAmount>([

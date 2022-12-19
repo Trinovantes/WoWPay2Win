@@ -13,8 +13,9 @@ const selectedIlvlRange = computed<IlvlRange>({
     },
 })
 
-const tierIlvls = computed(() => TIER_CONFIGS[filterStore.tier].ilvls)
-const isValidRange = computed(() => tierIlvls.value.min !== tierIlvls.value.max && tierIlvls.value.step > 0)
+const ilvlRange = computed(() => TIER_CONFIGS[filterStore.tier].ilvlRange)
+const ilvlStep = computed(() => TIER_CONFIGS[filterStore.tier].ilvlStep)
+const isValidRange = computed(() => ilvlRange.value.min !== ilvlRange.value.max && ilvlStep.value > 0)
 </script>
 
 <template>
@@ -28,9 +29,9 @@ const isValidRange = computed(() => tierIlvls.value.min !== tierIlvls.value.max 
 
         <q-range
             v-model="selectedIlvlRange"
-            :min="tierIlvls.min"
-            :max="tierIlvls.max"
-            :step="tierIlvls.step"
+            :min="ilvlRange.min"
+            :max="ilvlRange.max"
+            :step="ilvlStep"
             snap
             label
         />

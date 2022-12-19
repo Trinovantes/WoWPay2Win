@@ -1,5 +1,3 @@
-import { deepFreeze } from './utils/deepFreeze'
-
 /*
 Use this script to quickly extract item ids from wowhead item search
 https://www.wowhead.com/items/quality:4?filter=3:166:128:16;1:10:4:14030;0:0:0:0
@@ -34,7 +32,7 @@ export type BoeLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back'
 
 export type BoeCategory = {
     label: BoeLabel
-    ids: Set<number>
+    ids: ReadonlyArray<number>
 }
 
 export type IlvlRange = {
@@ -42,59 +40,58 @@ export type IlvlRange = {
     max: number
 }
 
-export type TierConfig = {
+export type TierConfig = Readonly<{
     name: string
     iconPath: string
-    boes: ReadonlyArray<BoeCategory>
-    ilvls: IlvlRange & {
-        step: number
-    }
-}
+    boes: ReadonlyArray<Readonly<BoeCategory>>
+    ilvlStep: number
+    ilvlRange: Readonly<IlvlRange>
+}>
 
-export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
+export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
     [Tier.VaultOfTheIncarnates]: {
         name: 'Vault of the Incarnates',
         iconPath: '31-vault-of-the-incarnates.png',
         boes: [
             {
                 label: 'Plate',
-                ids: new Set([
+                ids: [
                     202006,
                     202010,
-                ]),
+                ],
             },
             {
                 label: 'Mail',
-                ids: new Set([
+                ids: [
                     202005,
                     202009,
-                ]),
+                ],
             },
             {
                 label: 'Leather',
-                ids: new Set([
+                ids: [
                     202004,
                     202008,
-                ]),
+                ],
             },
             {
                 label: 'Cloth',
-                ids: new Set([
+                ids: [
                     202003,
                     202007,
-                ]),
+                ],
             },
             {
                 label: 'Jewelry',
-                ids: new Set([
+                ids: [
                     201992,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 13,
+        ilvlRange: {
             min: 376,
             max: 376 + (13 * 3) + 9, // Later bosses drop up to base+9
-            step: 13,
         },
     },
     [Tier.Dragonflight]: {
@@ -103,15 +100,15 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Trinket',
-                ids: new Set([
+                ids: [
                     200161,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 1,
+        ilvlRange: {
             min: 376,
             max: 376 + (13 * 3) + 9,
-            step: 1,
         },
     },
     [Tier.ShadowlandsFatedRaids]: {
@@ -120,66 +117,66 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Cloth',
-                ids: new Set([
+                ids: [
                     190630,
                     190631,
                     186356,
                     186358,
                     183008,
                     183017,
-                ]),
+                ],
             },
             {
                 label: 'Leather',
-                ids: new Set([
+                ids: [
                     190627,
                     190626,
                     186362,
                     186359,
                     183010,
                     182978,
-                ]),
+                ],
             },
             {
                 label: 'Mail',
-                ids: new Set([
+                ids: [
                     190629,
                     190628,
                     186367,
                     186364,
                     182990,
                     182982,
-                ]),
+                ],
             },
             {
                 label: 'Plate',
-                ids: new Set([
+                ids: [
                     190625,
                     190624,
                     186373,
                     186371,
                     183013,
                     183031,
-                ]),
+                ],
             },
             {
                 label: 'Back',
-                ids: new Set([
+                ids: [
                     190334,
                     184778,
-                ]),
+                ],
             },
             {
                 label: 'Jewelry',
-                ids: new Set([
+                ids: [
                     183035,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 13,
+        ilvlRange: {
             min: 265,
-            max: 304,
-            step: 13,
+            max: 265 + (13 * 3),
         },
     },
     [Tier.SepulcherOfTheFirstOnes]: {
@@ -188,43 +185,43 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Cloth',
-                ids: new Set([
+                ids: [
                     190630,
                     190631,
-                ]),
+                ],
             },
             {
                 label: 'Leather',
-                ids: new Set([
+                ids: [
                     190627,
                     190626,
-                ]),
+                ],
             },
             {
                 label: 'Mail',
-                ids: new Set([
+                ids: [
                     190629,
                     190628,
-                ]),
+                ],
             },
             {
                 label: 'Plate',
-                ids: new Set([
+                ids: [
                     190625,
                     190624,
-                ]),
+                ],
             },
             {
                 label: 'Back',
-                ids: new Set([
+                ids: [
                     190334,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 13,
+        ilvlRange: {
             min: 239,
-            max: 278,
-            step: 13,
+            max: 239 + (13 * 3),
         },
     },
     [Tier.SanctumOfDomination]: {
@@ -233,37 +230,37 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Cloth',
-                ids: new Set([
+                ids: [
                     186356,
                     186358,
-                ]),
+                ],
             },
             {
                 label: 'Leather',
-                ids: new Set([
+                ids: [
                     186362,
                     186359,
-                ]),
+                ],
             },
             {
                 label: 'Mail',
-                ids: new Set([
+                ids: [
                     186367,
                     186364,
-                ]),
+                ],
             },
             {
                 label: 'Plate',
-                ids: new Set([
+                ids: [
                     186373,
                     186371,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 13,
+        ilvlRange: {
             min: 213,
-            max: 252,
-            step: 13,
+            max: 213 + (13 * 3),
         },
     },
     [Tier.CastleNathria]: {
@@ -272,49 +269,49 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Cloth',
-                ids: new Set([
+                ids: [
                     183008,
                     183017,
-                ]),
+                ],
             },
             {
                 label: 'Leather',
-                ids: new Set([
+                ids: [
                     183010,
                     182978,
-                ]),
+                ],
             },
             {
                 label: 'Mail',
-                ids: new Set([
+                ids: [
                     182990,
                     182982,
-                ]),
+                ],
             },
             {
                 label: 'Plate',
-                ids: new Set([
+                ids: [
                     183013,
                     183031,
-                ]),
+                ],
             },
             {
                 label: 'Back',
-                ids: new Set([
+                ids: [
                     184778,
-                ]),
+                ],
             },
             {
                 label: 'Jewelry',
-                ids: new Set([
+                ids: [
                     183035,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 13,
+        ilvlRange: {
             min: 187,
-            max: 226,
-            step: 13,
+            max: 187 + (13 * 3),
         },
     },
     [Tier.Shadowlands]: {
@@ -323,28 +320,28 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Trinket',
-                ids: new Set([
+                ids: [
                     184807,
-                ]),
+                ],
             },
             {
                 label: 'Jewelry',
-                ids: new Set([
+                ids: [
                     184785,
                     184784,
                     184783,
-                ]),
+                ],
             },
             {
                 label: 'Back',
-                ids: new Set([
+                ids: [
                     184782,
                     184781,
-                ]),
+                ],
             },
             {
                 label: 'Weapon',
-                ids: new Set([
+                ids: [
                     184805,
                     184798,
                     184797,
@@ -356,46 +353,46 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                     184804,
                     184802,
                     181393,
-                ]),
+                ],
             },
             {
                 label: 'Cloth',
-                ids: new Set([
+                ids: [
                     184786,
                     184787,
                     184788,
-                ]),
+                ],
             },
             {
                 label: 'Leather',
-                ids: new Set([
+                ids: [
                     184790,
                     184791,
                     184789,
-                ]),
+                ],
             },
             {
                 label: 'Mail',
-                ids: new Set([
+                ids: [
                     184793,
                     184794,
                     184792,
-                ]),
+                ],
             },
             {
                 label: 'Plate',
-                ids: new Set([
+                ids: [
                     184795,
                     184796,
                     184808,
                     184809,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 1,
+        ilvlRange: {
             min: 190,
             max: 207,
-            step: 1,
         },
     },
     [Tier.Nyalotha]: {
@@ -404,7 +401,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
         boes: [
             {
                 label: 'Raid BoEs',
-                ids: new Set([
+                ids: [
                     175004,
                     175005,
                     175010,
@@ -412,13 +409,13 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = deepFreeze({
                     175008,
                     175007,
                     175006,
-                ]),
+                ],
             },
         ],
-        ilvls: {
+        ilvlStep: 15,
+        ilvlRange: {
             min: 85,
             max: 85 + (15 * 3),
-            step: 15,
         },
     },
-})
+}
