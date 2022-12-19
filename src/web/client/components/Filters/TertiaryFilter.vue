@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
 import { Tertiary } from '@/common/BonusId'
+import { useIsTierCategoryGear } from './useIsTierCategoryGear'
 
 type SelectedTertiaries = Array<Tertiary>
 
@@ -27,10 +28,15 @@ for (const [label, tertiaryId] of Object.entries(Tertiary)) {
         bonusId,
     })
 }
+
+const { isTierCategoryGear } = useIsTierCategoryGear()
 </script>
 
 <template>
-    <div class="group vpad">
+    <div
+        v-if="isTierCategoryGear"
+        class="group vpad"
+    >
         <h2>
             Tertiaries
         </h2>

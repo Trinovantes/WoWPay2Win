@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
-import { IlvlRange, TIER_CONFIGS } from '@/common/TierConfig'
+import type { IlvlRange } from '@/common/TierConfig'
+import { useIsTierCategoryGear } from './useIsTierCategoryGear'
 
 const filterStore = useFilterStore()
 const selectedIlvlRange = computed<IlvlRange>({
@@ -13,14 +14,12 @@ const selectedIlvlRange = computed<IlvlRange>({
     },
 })
 
-const ilvlRange = computed(() => TIER_CONFIGS[filterStore.tier].ilvlRange)
-const ilvlStep = computed(() => TIER_CONFIGS[filterStore.tier].ilvlStep)
-const isValidRange = computed(() => ilvlRange.value.min !== ilvlRange.value.max && ilvlStep.value > 0)
+const { ilvlStep, ilvlRange, isTierCategoryGear } = useIsTierCategoryGear()
 </script>
 
 <template>
     <div
-        v-if="isValidRange"
+        v-if="isTierCategoryGear && ilvlStep && ilvlRange"
         class="group padded"
     >
         <h2>

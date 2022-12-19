@@ -22,13 +22,15 @@ export enum Tier {
     ShadowlandsFatedRaids = 'shadowlands-fated',
 
     // Dragonflight
-    Dragonflight = 'dragonflight',
+    DragonflightProfessions = 'dragonflight-professions',
     VaultOfTheIncarnates = 't31',
 }
 
 export const DEFAULT_TIER = Tier.VaultOfTheIncarnates
 
-export type BoeLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
+export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
+export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering'
+export type BoeLabel = BoeGearLabel | BoeProfessionLabel
 
 export type BoeCategory = {
     label: BoeLabel
@@ -44,8 +46,8 @@ export type TierConfig = Readonly<{
     name: string
     iconPath: string
     boes: ReadonlyArray<Readonly<BoeCategory>>
-    ilvlStep: number
-    ilvlRange: Readonly<IlvlRange>
+    ilvlStep?: number
+    ilvlRange?: Readonly<IlvlRange>
 }>
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
@@ -94,22 +96,72 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
             max: 376 + (13 * 3) + 9, // Later bosses drop up to base+9
         },
     },
-    [Tier.Dragonflight]: {
-        name: 'Dragonflight World Drops',
+    [Tier.DragonflightProfessions]: {
+        name: 'Dragonflight Profession Recipes',
         iconPath: '0-dragonflight.png',
         boes: [
             {
-                label: 'Trinket',
+                label: 'Jewelcrafting',
                 ids: [
-                    200161,
+                    194640,
+                    194641,
+                    194642,
+                ],
+            },
+            {
+                label: 'Blacksmithing',
+                ids: [
+                    194484,
+                    194485,
+                    194492,
+                    194491,
+                    194490,
+                    194489,
+                    194486,
+
+                    194483,
+                    194476,
+                    194481,
+                ],
+            },
+            {
+                label: 'Leatherworking',
+                ids: [
+                    193880,
+                    193881,
+                    193882,
+                    193883,
+
+                    193873,
+                    193872,
+                    193868,
+                    193869,
+                ],
+            },
+            {
+                label: 'Tailoring',
+                ids: [
+                    194255,
+                    194260,
+                    194259,
+                    194256,
+                ],
+            },
+            {
+                label: 'Inscription',
+                ids: [
+                    198876,
+                ],
+            },
+            {
+                label: 'Alchemy',
+                ids: [
+                    201740,
+                    191544,
+                    191597,
                 ],
             },
         ],
-        ilvlStep: 1,
-        ilvlRange: {
-            min: 376,
-            max: 376 + (13 * 3) + 9,
-        },
     },
     [Tier.ShadowlandsFatedRaids]: {
         name: 'Shadowlands Fated Raids',

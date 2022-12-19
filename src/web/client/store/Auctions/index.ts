@@ -8,6 +8,7 @@ import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds'
 import { useFilterStore } from '../Filter'
 import type { ItemAuction, RegionAuctions } from '@/common/Cache'
 import type { RegionSlug } from '@/common/RegionConfig'
+import { TIER_CONFIGS } from '@/common/TierConfig'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -93,6 +94,8 @@ export const useAuctionsStore = defineStore('Auctions', {
                 return []
             }
 
+            const isBoeGear = TIER_CONFIGS[filterStore.tier].ilvlRange !== undefined
+
             // If the user filtered by realms, we need to find their corresponding parent crIds
             const connectedRealms = getConnectedRealmIds(filterStore.region, filterStore.realms)
 
@@ -103,23 +106,25 @@ export const useAuctionsStore = defineStore('Auctions', {
                     return false
                 }
 
-                const auctionIlvl = getAuctionIlvl(auction)
-                if (auctionIlvl < filterStore.ilvlRange.min || auctionIlvl > filterStore.ilvlRange.max) {
-                    return false
-                }
-
                 if (auction.buyout > filterStore.maxBuyout) {
                     return false
                 }
 
-                const hasSocket = !auctionHasSocket(auction)
-                if (filterStore.mustHaveSocket && hasSocket) {
-                    return false
-                }
+                if (isBoeGear) {
+                    const auctionIlvl = getAuctionIlvl(auction)
+                    if (auctionIlvl < filterStore.ilvlRange.min || auctionIlvl > filterStore.ilvlRange.max) {
+                        return false
+                    }
 
-                const tertiary = getAuctionTertiary(auction)
-                if (filterStore.tertiaries.size > 0 && (!tertiary || !filterStore.tertiaries.has(tertiary))) {
-                    return false
+                    const hasSocket = !auctionHasSocket(auction)
+                    if (filterStore.mustHaveSocket && hasSocket) {
+                        return false
+                    }
+
+                    const tertiary = getAuctionTertiary(auction)
+                    if (filterStore.tertiaries.size > 0 && (!tertiary || !filterStore.tertiaries.has(tertiary))) {
+                        return false
+                    }
                 }
 
                 if (connectedRealms.size > 0 && !connectedRealms.has(auction.crId)) {
