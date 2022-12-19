@@ -1,5 +1,8 @@
 import { IlvlRange, Tier, TIER_CONFIGS } from '../TierConfig'
 
 export function getIlvlRange(tier: Tier): IlvlRange {
-    return Object.assign({}, TIER_CONFIGS[tier].ilvls)
+    return {
+        max: TIER_CONFIGS[tier].ilvls.max,
+        min: TIER_CONFIGS[tier].ilvls.min,
+    }
 }
