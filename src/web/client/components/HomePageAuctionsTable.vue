@@ -64,7 +64,7 @@ const columns: QTable['columns'] = [
         sortable: true,
         align: 'left',
         field: (auction: ItemAuction) => getAuctionTertiary(auction),
-        format: (val?: Tertiary) => val ? Tertiary[val] : '',
+        format: (val?: Tertiary) => (val !== undefined) ? Tertiary[val] : '',
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },
@@ -121,7 +121,7 @@ const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: 
 }
 
 const noDataLabel = computed(() => {
-    if (!filterStore.region) {
+    if (filterStore.region === null) {
         return 'No region selected'
     }
 
@@ -141,7 +141,7 @@ const pagination = ref<Pagination>({
 })
 
 const getConnectedRealmName = (crId: number): string => {
-    if (!filteredRegion.value) {
+    if (filteredRegion.value === null) {
         return ''
     }
 
@@ -160,7 +160,7 @@ const getConnectedRealmName = (crId: number): string => {
 }
 
 const getWowheadLink = (auction: ItemAuction) => {
-    if (!filteredRegion.value) {
+    if (filteredRegion.value === null) {
         return ''
     }
 
@@ -169,7 +169,7 @@ const getWowheadLink = (auction: ItemAuction) => {
 }
 
 const getItemName = (auction: ItemAuction) => {
-    if (!filteredRegion.value) {
+    if (filteredRegion.value === null) {
         return ''
     }
 
@@ -194,7 +194,7 @@ const fractionFormatter = new Intl.NumberFormat(undefined, {
 
 const getBuyoutTooltip = (val: number): string => {
     const region = filterStore.region
-    if (!region) {
+    if (region === null) {
         return ''
     }
 

@@ -55,14 +55,14 @@ const isNoneActive = (idsToCheck: ReadonlyArray<number>): boolean => {
 
 const region = computed(() => filterStore.region)
 const getWowheadLink = (itemId: number) => {
-    if (!region.value) {
+    if (region.value === null) {
         return ''
     }
 
     return getWowheadItemLinkById(itemId, region.value)
 }
 const getItemName = (itemId: number) => {
-    if (!region.value) {
+    if (region.value === null) {
         return ''
     }
 

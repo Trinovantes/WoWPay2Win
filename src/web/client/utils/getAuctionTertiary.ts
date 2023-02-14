@@ -4,8 +4,7 @@ import type { ItemAuction } from '@/common/Cache'
 export function getAuctionTertiary(auction: ItemAuction): Tertiary | undefined {
     for (const bonusId of auction.bonuses) {
         const tertiary = isTertiaryBonusId(bonusId)
-
-        if (tertiary) {
+        if (tertiary !== undefined) {
             return tertiary
         }
     }

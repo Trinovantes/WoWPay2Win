@@ -34,7 +34,7 @@ export const useAuctionsStore = defineStore('Auctions', {
     getters: {
         tokenPrice: (state): number | undefined => {
             const filterStore = useFilterStore()
-            if (!filterStore.region) {
+            if (filterStore.region === null) {
                 return
             }
 
@@ -48,7 +48,7 @@ export const useAuctionsStore = defineStore('Auctions', {
 
         lastUpdateIso: (state) => {
             const filterStore = useFilterStore()
-            if (!filterStore.region) {
+            if (filterStore.region === null) {
                 return ''
             }
 
@@ -62,7 +62,7 @@ export const useAuctionsStore = defineStore('Auctions', {
 
         lastUpdateFull: (state) => {
             const filterStore = useFilterStore()
-            if (!filterStore.region) {
+            if (filterStore.region === null) {
                 return ''
             }
 
@@ -76,7 +76,7 @@ export const useAuctionsStore = defineStore('Auctions', {
 
         lastUpdateFromNow: (state) => {
             const filterStore = useFilterStore()
-            if (!filterStore.region) {
+            if (filterStore.region === null) {
                 return ''
             }
 
@@ -90,7 +90,7 @@ export const useAuctionsStore = defineStore('Auctions', {
 
         filteredAuctions: (state) => {
             const filterStore = useFilterStore()
-            if (!filterStore.region) {
+            if (filterStore.region === null) {
                 return []
             }
 
@@ -122,7 +122,7 @@ export const useAuctionsStore = defineStore('Auctions', {
                     }
 
                     const tertiary = getAuctionTertiary(auction)
-                    if (filterStore.tertiaries.size > 0 && (!tertiary || !filterStore.tertiaries.has(tertiary))) {
+                    if (filterStore.tertiaries.size > 0 && (tertiary === undefined || !filterStore.tertiaries.has(tertiary))) {
                         return false
                     }
                 }

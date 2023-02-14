@@ -19,7 +19,7 @@ const selectedRealms = computed<SelectedRealms>({
 
 const region = computed(() => filterStore.region)
 const regionRealms = computed<Realms>(() => {
-    if (!region.value) {
+    if (region.value === null) {
         return []
     }
 

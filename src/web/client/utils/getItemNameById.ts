@@ -13,7 +13,7 @@ export function getItemNameById(itemId: number, regionSlug: RegionSlug): string 
     }
 
     const locale = REGION_CONFIGS.find((region) => region.slug === regionSlug)?.locale
-    if (!locale) {
+    if (locale === undefined) {
         return ''
     }
 

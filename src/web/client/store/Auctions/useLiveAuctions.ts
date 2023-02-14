@@ -9,7 +9,7 @@ export function useLiveAuctions() {
     // Load auctions whenever filterStore.region changes
     const region = computed(() => filterStore.region)
     const fetchAuctions = async() => {
-        if (!region.value) {
+        if (region.value === null) {
             return
         }
 

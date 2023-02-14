@@ -91,11 +91,11 @@ export const useFilterStore = defineStore('Filter', {
         exportToQuery(): QueryFilters {
             const queryFilters: QueryFilters = {}
 
-            if (this.tier) {
+            if (this.tier !== null) {
                 queryFilters.tier = this.tier
             }
 
-            if (this.region) {
+            if (this.region !== null) {
                 queryFilters.region = this.region
             }
 

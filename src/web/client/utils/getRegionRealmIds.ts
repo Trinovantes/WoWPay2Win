@@ -2,7 +2,7 @@ import type { RegionSlug } from '@/common/RegionConfig'
 import { getRegion } from './getRegion'
 
 export function getRegionRealmIds(region: RegionSlug | null): Array<number> {
-    if (!region) {
+    if (region === null) {
         return []
     }
 
