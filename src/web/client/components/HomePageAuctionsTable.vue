@@ -223,7 +223,7 @@ const getBuyoutTooltip = (val: number): string => {
 <template>
     <q-table
         v-model:pagination="pagination"
-        class="auctions"
+        class="no-shadow no-border-radius"
         row-key="id"
         :rows="filteredAuctions"
         :columns="columns"
