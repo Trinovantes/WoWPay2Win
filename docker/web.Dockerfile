@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:16 as builder
+FROM node:18 as builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -7,6 +7,7 @@ WORKDIR /app
 # Install dependencies
 COPY tsconfig.json              ./
 COPY yarn.lock package.json     ./
+COPY patches/                   ./patches/
 RUN yarn install
 
 # Build app

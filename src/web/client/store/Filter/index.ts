@@ -1,4 +1,3 @@
-import { isEqual, clamp } from 'lodash-es'
 import { defineStore } from 'pinia'
 import { getRegionRealmIds } from '../../utils/getRegionRealmIds'
 import { Tertiary } from '@/common/BonusId'
@@ -107,7 +106,7 @@ export const useFilterStore = defineStore('Filter', {
                 queryFilters.boes = exportSet(this.boes)
             }
 
-            if (!isEqual(this.ilvlRange, getIlvlRange(this.tier))) {
+            if (!isIlvlRangeEqual(this.ilvlRange, getIlvlRange(this.tier))) {
                 queryFilters.ilvlRange = this.ilvlRange.min.toString() + DELIMITER + this.ilvlRange.max.toString()
             }
 
@@ -190,6 +189,16 @@ export const useFilterStore = defineStore('Filter', {
 // ----------------------------------------------------------------------------
 // Helpers
 // ----------------------------------------------------------------------------
+
+function isIlvlRangeEqual(a: IlvlRange, b: IlvlRange): boolean {
+    return a.max === b.max && a.min === b.min
+}
+
+function clamp(val: number, min: number, max: number): number {
+    val = Math.min(val, max)
+    val = Math.max(val, min)
+    return val
+}
 
 function exportSet(set: Set<number>): string {
     return [...set].sort().join(DELIMITER)

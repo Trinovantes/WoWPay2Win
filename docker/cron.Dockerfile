@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:16 as builder
+FROM node:18 as builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -7,6 +7,7 @@ WORKDIR /app
 # Install dependencies
 COPY tsconfig.json              ./
 COPY yarn.lock package.json     ./
+COPY patches/                   ./patches/
 RUN yarn install
 
 # Build app
@@ -19,7 +20,7 @@ RUN --mount=type=secret,id=GIT_HASH \
     yarn buildCron
 
 # -----------------------------------------------------------------------------
-FROM node:16-alpine
+FROM node:18-alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
@@ -28,6 +29,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY yarn.lock package.json     ./
+COPY patches/                   ./patches/
 RUN yarn install
 
 # Mount points

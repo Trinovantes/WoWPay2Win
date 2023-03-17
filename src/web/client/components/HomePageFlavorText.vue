@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { sample } from 'lodash-es'
 import { onMounted, ref } from 'vue'
 
 const DAYS_OF_WEEK = 7
@@ -24,7 +23,7 @@ const memes = [
 
 const flavorText = ref<string | undefined>('')
 onMounted(() => {
-    flavorText.value = sample(memes)
+    flavorText.value = memes[Math.floor(Math.random() * memes.length)]
 })
 </script>
 
