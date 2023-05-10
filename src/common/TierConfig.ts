@@ -27,7 +27,7 @@ export enum Tier {
     AberrusTheShadowedCrucible = 't33',
 }
 
-export const DEFAULT_TIER = Tier.VaultOfTheIncarnates
+export const DEFAULT_TIER = Tier.AberrusTheShadowedCrucible
 
 export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
 export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering'
