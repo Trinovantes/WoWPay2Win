@@ -1,6 +1,6 @@
 /*
 Use this script to quickly extract item ids from wowhead item search
-https://www.wowhead.com/items/quality:4?filter=3:166:128:16;1:10:4:14030;0:0:0:0
+https://www.wowhead.com/items/quality:4?filter=3:82;1:2;0:100100
 
 $('#tab-items table').find('a.q4').each((idx, el) => {
     const href = $(el).attr('href')
@@ -24,6 +24,7 @@ export enum Tier {
     // Dragonflight
     DragonflightProfessions = 'dragonflight-professions',
     VaultOfTheIncarnates = 't31',
+    AberrusTheShadowedCrucible = 't33',
 }
 
 export const DEFAULT_TIER = Tier.VaultOfTheIncarnates
@@ -51,6 +52,45 @@ export type TierConfig = Readonly<{
 }>
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
+    [Tier.AberrusTheShadowedCrucible]: {
+        name: 'Aberrus, the Shadowed Crucible',
+        iconPath: '33-aberrus-the-shadowed-crucible.png',
+        boes: [
+            {
+                label: 'Plate',
+                ids: [
+                    204429,
+                    204430,
+                ],
+            },
+            {
+                label: 'Mail',
+                ids: [
+                    204423,
+                    204422,
+                ],
+            },
+            {
+                label: 'Leather',
+                ids: [
+                    204414,
+                    204415,
+                ],
+            },
+            {
+                label: 'Cloth',
+                ids: [
+                    204410,
+                    204411,
+                ],
+            },
+        ],
+        ilvlStep: 13,
+        ilvlRange: {
+            min: 402,
+            max: 402 + (13 * 3) + 9, // Later bosses drop up to base+9
+        },
+    },
     [Tier.VaultOfTheIncarnates]: {
         name: 'Vault of the Incarnates',
         iconPath: '31-vault-of-the-incarnates.png',
