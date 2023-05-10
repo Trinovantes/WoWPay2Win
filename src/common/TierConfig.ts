@@ -151,6 +151,9 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
             {
                 label: 'Blacksmithing',
                 ids: [
+                    205145,
+                    205144,
+
                     194484,
                     194485,
                     194492,
@@ -167,6 +170,8 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
             {
                 label: 'Leatherworking',
                 ids: [
+                    204968,
+
                     193880,
                     193881,
                     193882,
@@ -181,6 +186,7 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
             {
                 label: 'Tailoring',
                 ids: [
+                    205140,
                     194255,
                     194260,
                     194259,
@@ -196,9 +202,23 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
             {
                 label: 'Alchemy',
                 ids: [
+                    204696,
+                    204695,
                     201740,
                     191544,
                     191597,
+                ],
+            },
+            {
+                label: 'Enchanting',
+                ids: [
+                    204975,
+                ],
+            },
+            {
+                label: 'Engineering',
+                ids: [
+                    205036,
                 ],
             },
         ],
