@@ -50,6 +50,7 @@ export function isSocketBonusId(bonusId: number): true | undefined {
         case 7576: // Sanctum of Domination
         case 7580: // Sepulcher of the First Ones
         case 7935: // Vault of the Incarnates
+        case 9413: // Aberrus the Shadowed Crucible
             return true
     }
 
