@@ -141,6 +141,8 @@ export class CacheableRegion extends Cacheable<Region> {
             })
 
             const boeIds = getAllBoeIds()
+            let numCrAuctions = 0
+
             for (const auctionResponse of auctionsResponse?.auctions ?? []) {
                 const itemId = auctionResponse.item.id
                 if (!boeIds.includes(itemId)) {
@@ -158,6 +160,7 @@ export class CacheableRegion extends Cacheable<Region> {
                     continue
                 }
 
+                numCrAuctions += 1
                 regionAuctions.auctions.push({
                     bonuses,
                     crId,
@@ -167,7 +170,7 @@ export class CacheableRegion extends Cacheable<Region> {
                 })
             }
 
-            console.info(`Found ${regionAuctions.auctions.length.toString().padStart(5, ' ')} auctions for ${crStr} (${getProcessMemoryStats()})`)
+            console.info(`Found ${numCrAuctions.toString().padStart(5, ' ')} auctions for ${crStr} (${getProcessMemoryStats()})`)
         })
 
         const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.apiAccessor.regionConfig.slug}.json`)
