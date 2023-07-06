@@ -28,11 +28,6 @@
         "vue-router": "^4.0.15"
     },
     "devDependencies": {
-        "@babel/core": "^7.12.10",
-        "@babel/plugin-transform-runtime": "^7.17.10",
-        "@babel/preset-env": "^7.12.11",
-        "@babel/preset-typescript": "^7.12.7",
-        "@babel/register": "^7.13.14",
         "@types/lodash.throttle": "^4.1.7",
         "@types/node": "^18.15.3",
         "@types/webpack-bundle-analyzer": "^4.4.1",
@@ -40,8 +35,6 @@
         "@typescript-eslint/eslint-plugin": "^5.10.0",
         "@typescript-eslint/parser": "^5.10.0",
         "@vue/compiler-sfc": "^3.0.11",
-        "babel-plugin-root-import": "^6.6.0",
-        "babel-plugin-transform-define": "^2.0.1",
         "concurrently": "^7.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "cross-env": "^7.0.3",
@@ -64,6 +57,7 @@
         "sass": "^1.32.8",
         "sass-loader": "^13.2.0",
         "sharp": "^0.31.3",
+        "ts-node": "^10.9.1",
         "typescript": "^5.0.2",
         "vue-loader": "^17.0.0",
         "vue-tsc": "^1.0.24",
