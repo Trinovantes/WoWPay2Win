@@ -1,4 +1,3 @@
-import axios from 'axios'
 import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
 import { auctionHasSocket } from '../../utils/auctionHasSocket'
@@ -145,8 +144,9 @@ export const useAuctionsStore = defineStore('Auctions', {
             }
 
             const auctionsFile = `/data/auctions-${regionSlug}.json`
-            const response = await axios.get<RegionAuctions>(auctionsFile)
-            this.auctions.set(regionSlug, response.data)
+            const response = await fetch(auctionsFile)
+            const auctions = await response.json() as RegionAuctions
+            this.auctions.set(regionSlug, auctions)
         },
     },
 })

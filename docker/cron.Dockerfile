@@ -7,7 +7,6 @@ WORKDIR /app
 # Install dependencies
 COPY tsconfig.json              ./
 COPY yarn.lock package.json     ./
-COPY patches/                   ./patches/
 RUN yarn install
 
 # Build app
@@ -28,7 +27,6 @@ WORKDIR /app
 
 # Install dependencies
 COPY yarn.lock package.json     ./
-COPY patches/                   ./patches/
 RUN yarn install
 
 # Mount points

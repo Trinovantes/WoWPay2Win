@@ -2,7 +2,6 @@ import { getRuntimeSecret, RuntimeSecret } from '../utils/RuntimeSecret'
 import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
 import type { RegionConfig } from '@/common/RegionConfig'
 import type { BnetOauthResponse } from '../api/BnetResponse'
-import type { AxiosRequestConfig } from 'axios'
 
 export class ApiAccessor {
     readonly regionConfig: RegionConfig
@@ -19,16 +18,16 @@ export class ApiAccessor {
 
         const clientId = getRuntimeSecret(RuntimeSecret.CLIENT_ID)
         const clientSecret = getRuntimeSecret(RuntimeSecret.CLIENT_SECRET)
-        const data = new URLSearchParams({ grant_type: 'client_credentials' }).toString()
-        const response = await tryExponentialBackoff<BnetOauthResponse>({
+        const basicAuth = btoa(`${clientId}:${clientSecret}`)
+        const config: RequestInit = {
             method: 'POST',
-            url: this.regionConfig.oauthEndpoint,
-            data,
-            auth: {
-                username: clientId,
-                password: clientSecret,
+            body: new URLSearchParams({ grant_type: 'client_credentials' }),
+            headers: {
+                Authorization: `Basic ${basicAuth}`,
             },
-        }, (res) => {
+        }
+
+        const response = await tryExponentialBackoff<BnetOauthResponse>(this.regionConfig.oauthEndpoint, config, (res) => {
             if (!res?.access_token) {
                 return 'Missing access_token in response'
             }
@@ -58,15 +57,14 @@ export class ApiAccessor {
         url.searchParams.set('locale', this.regionConfig.locale)
         url.searchParams.set('namespace', `${isDynamic ? 'dynamic' : 'static'}-${this.regionConfig.slug}`)
 
-        const config: AxiosRequestConfig = {
+        const config: RequestInit = {
             method: 'GET',
-            url: url.toString(),
             headers: {
                 Authorization: `Bearer ${this.#accessToken}`,
             },
         }
 
-        const response = await tryExponentialBackoff<T>(config, isValidResponse)
+        const response = await tryExponentialBackoff<T>(url.toString(), config, isValidResponse)
         return response
     }
 }

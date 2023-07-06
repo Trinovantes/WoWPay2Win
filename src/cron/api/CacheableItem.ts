@@ -1,4 +1,4 @@
-import { existsSync, createWriteStream } from 'fs'
+import { existsSync } from 'fs'
 import path from 'path'
 import { fetchFile } from '../utils/fetchFile'
 import type { Item } from '@/common/Cache'
@@ -116,32 +116,6 @@ export class CacheableItem extends Cacheable<Item> {
             return
         }
 
-        const stream = await fetchFile(iconUrl)
-        if (!stream) {
-            console.info(`Failed to obtain stream for ${iconUrl}`)
-            return
-        }
-
-        const fileWriter = createWriteStream(this.iconPath)
-        const fileWriterResult = new Promise<void>((resolve, reject) => {
-            fileWriter.on('finish', () => {
-                console.info(`File writer finished ${this.iconPath}`)
-                resolve()
-            })
-            fileWriter.on('error', (error) => {
-                console.warn(`File writer encountered an error ${this.iconPath}`)
-                reject(error)
-            })
-        })
-
-        try {
-            console.info(`Starting to download ${iconUrl} to ${this.iconPath}`)
-            stream.pipe(fileWriter)
-            await fileWriterResult
-        } catch (err) {
-            console.warn(`Failed to download ${iconUrl} to ${this.iconPath}`, err)
-        } finally {
-            fileWriter.close()
-        }
+        await fetchFile(iconUrl, this.iconPath)
     }
 }

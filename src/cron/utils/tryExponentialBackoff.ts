@@ -1,37 +1,34 @@
-import axios, { AxiosRequestConfig } from 'axios'
 import { API_TIMEOUT, MAX_API_ATTEMPTS } from '@/common/Constants'
 import { sleep } from '@/common/utils/sleep'
 
 export type ResponseValidator<T> = (data: T | null) => string | null
 
-export async function tryExponentialBackoff<T>(request: AxiosRequestConfig, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
+export async function tryExponentialBackoff<T>(url: string, requestConfig: RequestInit, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
     for (let attempt = 0; attempt < MAX_API_ATTEMPTS; attempt++) {
-        const timeout = axios.CancelToken.source()
+        const controller = new AbortController()
         const timeoutId = setTimeout(() => {
-            timeout.cancel(`Request timeout: ${request.url}`)
+            console.warn(`Request timeout: ${url}`)
+            controller.abort()
         }, API_TIMEOUT)
 
         try {
-            console.info(`Attempt:${attempt} Fetching:${request.url}`)
-            const response = await axios({
-                cancelToken: timeout.token,
-                ...request,
+            console.info(`Attempt:${attempt} Fetching:${url}`)
+            const response = await fetch(url, {
+                signal: controller.signal,
+                ...requestConfig,
             })
 
-            const errorMessage = isValidResponse?.(response?.data as T)
+            const data = await response.json() as T
+            const errorMessage = isValidResponse?.(data)
             if (errorMessage) {
                 throw new Error(errorMessage)
             }
 
-            console.info(`Attempt:${attempt} Fetching:${request.url} SUCCEEDED`)
-            return response.data as T
+            console.info(`Attempt:${attempt} Fetching:${url} SUCCEEDED`)
+            return data
         } catch (err) {
             const error = err as Error
             console.warn(error.message)
-
-            if (axios.isAxiosError(err)) {
-                console.warn('Error Response Data:', err.response?.data)
-            }
 
             if (attempt < MAX_API_ATTEMPTS) {
                 const delay = Math.round(Math.exp(attempt) * 1000)

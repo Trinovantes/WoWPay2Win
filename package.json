@@ -10,12 +10,10 @@
         "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
         "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
         "lint": "vue-tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
-        "analyze": "webpack-bundle-analyzer dist/web/stats.json",
-        "postinstall": "patch-package"
+        "analyze": "webpack-bundle-analyzer dist/web/stats.json"
     },
     "dependencies": {
         "dotenv": "^16.0.0",
-        "patch-package": "^7.0.0",
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
@@ -29,7 +27,6 @@
         "@typescript-eslint/eslint-plugin": "^5.10.0",
         "@typescript-eslint/parser": "^5.10.0",
         "@vue/compiler-sfc": "^3.0.11",
-        "axios": "1.1.3",
         "concurrently": "^8.2.0",
         "copy-webpack-plugin": "^11.0.0",
         "cross-env": "^7.0.3",
