@@ -7,7 +7,7 @@ import './client/assets/css/main.scss'
 import { Integrations } from '@sentry/tracing'
 import * as Sentry from '@sentry/vue'
 import { createPinia } from 'pinia'
-import { Quasar } from 'quasar'
+import { Quasar, QuasarUIConfiguration } from 'quasar'
 import { createApp } from 'vue'
 import { SENTRY_DSN } from '@/common/Constants'
 import AppLoader from './client/AppLoader.vue'
@@ -31,7 +31,7 @@ async function main() {
     app.use(Quasar, {
         config: {
             dark: true,
-        },
+        } as unknown as QuasarUIConfiguration, // https://github.com/quasarframework/quasar/issues/16046
     })
 
     if (!DEFINE.IS_DEV) {
