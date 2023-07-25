@@ -4,10 +4,10 @@ import '@/common/utils/setupDayjs'
 // eslint-disable-next-line import/order
 import './client/assets/css/main.scss'
 
-import { Integrations } from '@sentry/tracing'
+import { BrowserTracing } from '@sentry/browser'
 import * as Sentry from '@sentry/vue'
 import { createPinia } from 'pinia'
-import { Quasar, QuasarUIConfiguration } from 'quasar'
+import { Quasar } from 'quasar'
 import { createApp } from 'vue'
 import { SENTRY_DSN } from '@/common/Constants'
 import AppLoader from './client/AppLoader.vue'
@@ -31,7 +31,7 @@ async function main() {
     app.use(Quasar, {
         config: {
             dark: true,
-        } as unknown as QuasarUIConfiguration, // https://github.com/quasarframework/quasar/issues/16046
+        },
     })
 
     if (!DEFINE.IS_DEV) {
@@ -41,7 +41,7 @@ async function main() {
             dsn: SENTRY_DSN,
             release: DEFINE.GIT_HASH,
             integrations: [
-                new Integrations.BrowserTracing({
+                new BrowserTracing({
                     routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 }),
             ],
