@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:20 as builder
+FROM node:20-alpine as builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -7,7 +7,6 @@ WORKDIR /app
 # Install dependencies
 COPY tsconfig.json              ./
 COPY yarn.lock package.json     ./
-COPY node_modules               ./node_modules
 RUN yarn install
 
 # Build app
