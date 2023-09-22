@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:18 as builder
+FROM node:20 as builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -7,26 +7,27 @@ WORKDIR /app
 # Install dependencies
 COPY tsconfig.json              ./
 COPY yarn.lock package.json     ./
+COPY node_modules               ./node_modules
 RUN yarn install
 
 # Build app
 COPY build/                     ./build/
-COPY src/@types/                ./src/@types/
-COPY src/common/                ./src/common/
-COPY src/cron/                  ./src/cron/
+COPY src/                       ./src/
 RUN --mount=type=secret,id=GIT_HASH \
     yarn buildCron
 
 # -----------------------------------------------------------------------------
-FROM node:18-alpine
+FROM node:20-alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
-ENV NODE_ENV 'production'
 WORKDIR /app
+
+ENV NODE_ENV 'production'
 
 # Install dependencies
 COPY yarn.lock package.json     ./
+COPY node_modules               ./node_modules
 RUN yarn install
 
 # Mount points
@@ -35,7 +36,6 @@ RUN mkdir -p                    ./dist/web/data
 
 # Copy app
 COPY --from=builder /app/dist/  ./dist/
-COPY package.json               ./
 
 RUN echo "30 * * * * cd /app && yarn fetchAuctions" >> /etc/crontabs/root
 CMD crond -f

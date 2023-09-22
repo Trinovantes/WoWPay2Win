@@ -1,7 +1,4 @@
 // eslint-disable-next-line import/order
-import '@/common/utils/setupDayjs'
-
-// eslint-disable-next-line import/order
 import './client/assets/css/main.scss'
 
 import { BrowserTracing } from '@sentry/browser'
@@ -15,17 +12,19 @@ import { createAppRouter } from './client/router'
 import { cleanLocalStorage } from './client/store/Hydration'
 
 async function main() {
+    console.info('Release', DEFINE.GIT_HASH)
+
     // Vue
     const app = createApp(AppLoader)
+
+    // Pinia
+    const pinia = createPinia()
+    app.use(pinia)
 
     // Vue Router
     const router = createAppRouter()
     app.use(router)
     await router.isReady()
-
-    // Pinia
-    const pinia = createPinia()
-    app.use(pinia)
 
     // Quasar
     app.use(Quasar, {
@@ -35,29 +34,23 @@ async function main() {
     })
 
     if (!DEFINE.IS_DEV) {
-        // Sentry
         Sentry.init({
             app,
             dsn: SENTRY_DSN,
             release: DEFINE.GIT_HASH,
+            tracesSampleRate: 0.1,
             integrations: [
                 new BrowserTracing({
                     routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 }),
             ],
-            tracesSampleRate: 0,
-            enabled: !DEFINE.IS_DEV,
         })
     }
 
     app.mount('#app')
 }
 
-function onError(err: unknown) {
-    console.warn(err)
+main().catch((err) => {
+    console.error(err)
     cleanLocalStorage()
-}
-
-window.addEventListener('error', onError)
-window.addEventListener('unhandledrejection', onError)
-void main()
+})

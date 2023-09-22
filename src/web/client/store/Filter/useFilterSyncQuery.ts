@@ -32,10 +32,16 @@ export function useFilterSyncQuery() {
     }
 
     // Whenever the url changes, we import the query into the state
-    watch(routeQuery, () => importQuery(), { deep: true })
+    watch(routeQuery, () => {
+        importQuery()
+    }, {
+        deep: true,
+    })
 
     // Whenever the state changes, we export the query into the url
-    filterStore.$subscribe(() => { void exportQuery() })
+    filterStore.$subscribe(() => {
+        void exportQuery()
+    })
 
     // This runs once on page load: load url query (and filtering out invalid params) then save result back to url
     // Use onBeforeMount hook instead of onMounted so that this executes before children components' onMounted hooks (that may modify state)

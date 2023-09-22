@@ -21,18 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Save yarn cache location to env
         run: echo "YARN_CACHE=$(yarn cache dir)" >> $GITHUB_ENV
 
       - name: Cache node_modules
-        uses: actions/cache@v2
-        env:
-          CACHE_NAME: cache-node-modules
+        uses: actions/cache@v3
         with:
           path: ${{ env.YARN_CACHE }}
-          key: ${{ runner.os }}-build-${{ env.CACHE_NAME }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
 
       - name: Install dependencies
         run: yarn install
@@ -44,13 +42,24 @@ jobs:
     needs: test
     name: Build
     runs-on: ubuntu-latest
-    environment: development
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Create .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Save yarn cache location to env
+        run: echo "YARN_CACHE=$(yarn cache dir)" >> $GITHUB_ENV
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.YARN_CACHE }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: yarn install
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -66,14 +75,14 @@ jobs:
 
       - name: Copy dist from image to disk for sentry upload
         run: |
-          mkdir -p ./dist/cron
+          mkdir -p ./dist
+
           TEMP_CONTAINER=$(docker create ${{ env.CRON_IMAGE }})
-          docker cp $TEMP_CONTAINER:/app/dist/cron/. ./dist/cron
+          docker cp $TEMP_CONTAINER:/app/dist/. ./dist
           docker rm $TEMP_CONTAINER
 
-          mkdir -p ./dist/web
           TEMP_CONTAINER=$(docker create ${{ env.WEB_IMAGE }})
-          docker cp $TEMP_CONTAINER:/app/dist/web/. ./dist/web
+          docker cp $TEMP_CONTAINER:/app/dist/. ./dist
           docker rm $TEMP_CONTAINER
 
       - name: Create sentry release
@@ -84,17 +93,15 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
-          sourcemaps: ./dist/web ./dist/cron
-          url_prefix: ~/
+          sourcemaps: ./dist
 
   deploy:
     needs: build
     name: Deploy
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Create .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env

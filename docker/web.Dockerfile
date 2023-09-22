@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:18 as builder
+FROM node:20 as builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -7,31 +7,31 @@ WORKDIR /app
 # Install dependencies
 COPY tsconfig.json              ./
 COPY yarn.lock package.json     ./
+COPY node_modules               ./node_modules
 RUN yarn install
 
 # Build app
 COPY build/                     ./build/
 COPY src/                       ./src/
-
 RUN --mount=type=secret,id=GIT_HASH \
     yarn buildCron
 
+# Fetch static data from API first
 RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
     yarn fetchItems
 
+# Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \
     yarn buildWeb
 
 # -----------------------------------------------------------------------------
-FROM nginx:alpine
+FROM caddy:2-alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
 
-COPY ./docker/web.conf          /etc/nginx/conf.d/default.conf
-COPY ./docker/general.conf      /app/general.conf
-COPY --from=builder /app/dist   /app/dist
-
-RUN nginx -t
+# Copy app
+COPY ./docker/web.Caddyfile     /etc/caddy/Caddyfile
+COPY --from=builder /app/dist   /app/dist/

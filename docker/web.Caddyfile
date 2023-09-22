@@ -1,0 +1,15 @@
+:80 {
+    encode gzip
+
+	root * /app/dist/web
+	try_files {path} /index.html
+	file_server
+
+    # Set CSP (since this site is all static and does not have user-generated content, unsafe values are fine)
+    vars CSP_SCRIPT "script-src 'self' 'unsafe-inline' 'unsafe-eval' static.cloudflareinsights.com wow.zamimg.com"
+    vars CSP_STYLE "style-src 'self' 'unsafe-inline' fonts.googleapis.com wow.zamimg.com"
+    vars CSP_FONT "font-src fonts.gstatic.com"
+    vars CSP_IMG "img-src 'self' data: wow.zamimg.com"
+    vars CSP_CONNECT "connect-src 'self' cloudflareinsights.com *.ingest.sentry.io www.wowhead.com wow.zamimg.com nether.wowhead.com"
+    header Content-Security-Policy "default-src 'self'; object-src 'none'; base-uri 'self'; {vars.CSP_SCRIPT}; {vars.CSP_STYLE}; {vars.CSP_FONT}; {vars.CSP_IMG}; {vars.CSP_CONNECT};"
+}

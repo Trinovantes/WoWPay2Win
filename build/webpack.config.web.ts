@@ -5,7 +5,9 @@ import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import 'webpack-dev-server'
 import { merge } from 'webpack-merge'
-import { commonConfig, isDev, staticDir, srcWebDir, distWebDir } from './webpack.common'
+import { commonConfig } from './webpack.common'
+import { srcWebDir, distWebDir, isDev, staticDir } from './BuildConstants'
+import { isAnalyze } from './BuildSecret'
 
 // ----------------------------------------------------------------------------
 // Web
@@ -71,8 +73,9 @@ export default merge(commonConfig, {
 
     plugins: [
         new BundleAnalyzerPlugin({
-            analyzerMode: 'disabled',
-            generateStatsFile: false,
+            analyzerMode: isAnalyze()
+                ? 'server'
+                : 'disabled',
         }),
         new QuasarUnusedPlugin({
             enableSsr: false,

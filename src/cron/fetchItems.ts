@@ -1,6 +1,3 @@
-// eslint-disable-next-line import/order
-import '@/common/utils/setupDayjs'
-
 import path from 'path'
 import { REGION_CONFIGS } from '@/common/RegionConfig'
 import { getAllBoeIds } from '@/common/utils/getAllBoeIds'

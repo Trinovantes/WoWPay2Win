@@ -1,19 +1,18 @@
 {
     "private": true,
     "scripts": {
-        "fetchItems": "   node -r source-map-support/register -r dotenv/config dist/cron/fetchItems.js    src/web/client/assets/data src/web/client/assets/img",
-        "fetchAuctions": "node -r source-map-support/register -r dotenv/config dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
+        "fetchItems": "   node -r source-map-support/register dist/cron/fetchItems.js    src/web/client/assets/data src/web/client/assets/img",
+        "fetchAuctions": "node -r source-map-support/register dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
         "devCron": "  cross-env NODE_ENV=development webpack --watch --config build/webpack.config.cron.ts",
         "devWeb": "   cross-env NODE_ENV=development webpack serve   --config build/webpack.config.web.ts",
         "buildCron": "cross-env NODE_ENV=production  webpack         --config build/webpack.config.cron.ts",
         "buildWeb": " cross-env NODE_ENV=production  webpack         --config build/webpack.config.web.ts",
         "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
         "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
-        "lint": "vue-tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
-        "analyze": "webpack-bundle-analyzer dist/web/stats.json"
+        "lint": "vue-tsc --noemit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
+        "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.client.ts"
     },
     "dependencies": {
-        "dotenv": "^16.0.0",
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
@@ -31,8 +30,9 @@
         "copy-webpack-plugin": "^11.0.0",
         "cross-env": "^7.0.3",
         "css-loader": "^6.2.0",
-        "dayjs": "^1.9.5",
-        "esbuild-loader": "^3.0.0",
+        "date-fns": "^2.30.0",
+        "dotenv": "^16.3.1",
+        "esbuild-loader": "^4.0.2",
         "eslint": "^8.7.0",
         "eslint-config-standard": "^17.0.0-0",
         "eslint-import-resolver-typescript": "^3.5.3",

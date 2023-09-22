@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
 import { auctionHasSocket } from '../../utils/auctionHasSocket'
 import { getAuctionIlvl } from '../../utils/getAuctionIlvl'
@@ -8,6 +7,7 @@ import { useFilterStore } from '../Filter'
 import type { ItemAuction, RegionAuctions } from '@/common/Cache'
 import type { RegionSlug } from '@/common/RegionConfig'
 import { TIER_CONFIGS } from '@/common/TierConfig'
+import { formatDistance } from 'date-fns'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -56,7 +56,7 @@ export const useAuctionsStore = defineStore('Auctions', {
                 return ''
             }
 
-            return dayjs(lastUpdate).toISOString()
+            return new Date(lastUpdate).toISOString()
         },
 
         lastUpdateFull: (state) => {
@@ -70,7 +70,7 @@ export const useAuctionsStore = defineStore('Auctions', {
                 return ''
             }
 
-            return dayjs(lastUpdate).format('ll LT')
+            return new Date(lastUpdate).toString()
         },
 
         lastUpdateFromNow: (state) => {
@@ -84,7 +84,7 @@ export const useAuctionsStore = defineStore('Auctions', {
                 return ''
             }
 
-            return dayjs(lastUpdate).fromNow()
+            return formatDistance(lastUpdate, new Date(), { addSuffix: true })
         },
 
         filteredAuctions: (state) => {

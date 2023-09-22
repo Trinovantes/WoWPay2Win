@@ -43,7 +43,7 @@ const filteredRealms = ref<Realms>(regionRealms.value)
 const filterFn = (val: string, doneFn: (callbackFn: () => void) => void): void => {
     doneFn(() => {
         const needle = val.toLowerCase()
-        filteredRealms.value = regionRealms.value.filter((realm) => realm.name.toLowerCase().indexOf(needle) > -1)
+        filteredRealms.value = regionRealms.value.filter((realm) => realm.name.toLowerCase().includes(needle))
     })
 }
 </script>
