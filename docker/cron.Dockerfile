@@ -23,6 +23,8 @@ FROM node:20-alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
+RUN apk update && apk add --no-cache curl
+
 WORKDIR /app
 
 ENV NODE_ENV 'production'
@@ -31,10 +33,11 @@ ENV NODE_ENV 'production'
 COPY --from=builder /app/package.json   ./
 COPY --from=builder /app/node_modules   ./node_modules
 COPY --from=builder /app/dist/          ./dist/
+COPY docker/                            ./docker
 
 # Mount points
-RUN mkdir -p                    ./src/web/client/assets/data
-RUN mkdir -p                    ./dist/web/data
+RUN mkdir -p                            ./src/web/client/assets/data
+RUN mkdir -p                            ./dist/web/data
 
-RUN echo "30 * * * * cd /app && yarn fetchAuctions" >> /etc/crontabs/root
+RUN echo "30 * * * * cd /app && sh ./docker/cron.sh" >> /etc/crontabs/root
 CMD crond -f
