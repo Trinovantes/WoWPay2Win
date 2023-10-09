@@ -7,6 +7,10 @@ export GIT_HASH                 := $(shell git rev-parse HEAD)
 export DOCKER_BUILDKIT          := 1
 export COMPOSE_DOCKER_CLI_BUILD := 1
 
+# -----------------------------------------------------------------------------
+# Vars
+# -----------------------------------------------------------------------------
+
 web-dockerfile = ./docker/web.Dockerfile
 web-container = wowpay2win-web
 web-image = ghcr.io/trinovantes/$(web-container)
@@ -14,6 +18,10 @@ web-image = ghcr.io/trinovantes/$(web-container)
 cron-dockerfile = ./docker/cron.Dockerfile
 cron-container = wowpay2win-cron
 cron-image = ghcr.io/trinovantes/$(cron-container)
+
+# -----------------------------------------------------------------------------
+# Commands
+# -----------------------------------------------------------------------------
 
 .PHONY: \
 	build-cron stop-cron run-cron \
