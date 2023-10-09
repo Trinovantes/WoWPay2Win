@@ -10,7 +10,7 @@
         "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
         "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
         "lint": "vue-tsc --noemit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
-        "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.client.ts"
+        "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.ts"
     },
     "dependencies": {
         "source-map-support": "^0.5.19"
