@@ -12,7 +12,7 @@ export enum BuildSecret {
     WEBPACK_ANALYZE = 'WEBPACK_ANALYZE',
 }
 
-export function getBuildSecret(key: string, defaultValue?: string): string {
+export function getBuildSecret(key: BuildSecret, defaultValue?: string): string {
     // Check if it's already defined in process.env
     const envValue = process.env[key]
     if (envValue) {

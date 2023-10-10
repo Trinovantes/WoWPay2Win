@@ -50,7 +50,14 @@ Secret | Description
 `SSH_KEYSCAN`| `ssh-keyscan -t ecdsa SSH_HOST`
 
 ### `ENV_FILE`
-```
-CLIENT_ID       From https://develop.battle.net/access/clients
-CLIENT_SECRET   From https://develop.battle.net/access/clients
+
+```sh
+# From https://develop.battle.net/access/clients
+CLIENT_ID=
+CLIENT_SECRET=
+
+# From Settings > Developer Settings (Auth Tokens)
+SENTRY_ORG=
+SENTRY_PROJECT=
+SENTRY_AUTH_TOKEN=
 ```

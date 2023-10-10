@@ -5,8 +5,8 @@
         "fetchAuctions": "node -r source-map-support/register dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
         "devCron": "  cross-env NODE_ENV=development webpack --watch --config build/webpack.config.cron.ts",
         "devWeb": "   cross-env NODE_ENV=development webpack serve   --config build/webpack.config.web.ts",
-        "buildCron": "cross-env NODE_ENV=production  webpack         --config build/webpack.config.cron.ts",
-        "buildWeb": " cross-env NODE_ENV=production  webpack         --config build/webpack.config.web.ts",
+        "buildCron": "cross-env NODE_ENV=production  webpack         --config build/webpack.config.cron.ts && sentry-cli sourcemaps inject ./dist/cron",
+        "buildWeb": " cross-env NODE_ENV=production  webpack         --config build/webpack.config.web.ts  && sentry-cli sourcemaps inject ./dist/web",
         "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
         "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
         "lint": "vue-tsc --noemit && eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
@@ -16,6 +16,7 @@
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
+        "@sentry/cli": "^2.21.2",
         "@sentry/node": "^7.2.0",
         "@sentry/tracing": "^7.2.0",
         "@sentry/vue": "^7.2.0",
@@ -47,7 +48,7 @@
         "mini-css-extract-plugin": "^2.2.0",
         "pinia": "^2.0.9",
         "quasar": "^2.0.0-beta.12",
-        "quasar-unused-plugin": "^0.2.1",
+        "quasar-unused-plugin": "^0.3.1",
         "responsive-loader": "^3.0.4",
         "sass": "^1.32.8",
         "sass-loader": "^13.2.0",

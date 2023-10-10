@@ -11,10 +11,6 @@ on:
       - .editorconfig
       - .gitignore
 
-env:
-  WEB_IMAGE: ghcr.io/trinovantes/wowpay2win-web
-  CRON_IMAGE: ghcr.io/trinovantes/wowpay2win-cron
-
 jobs:
   test:
     name: Test
@@ -73,27 +69,8 @@ jobs:
       - name: Push images to registry
         run: make push
 
-      - name: Copy dist from image to disk for sentry upload
-        run: |
-          mkdir -p ./dist
-
-          TEMP_CONTAINER=$(docker create ${{ env.CRON_IMAGE }})
-          docker cp $TEMP_CONTAINER:/app/dist/. ./dist
-          docker rm $TEMP_CONTAINER
-
-          TEMP_CONTAINER=$(docker create ${{ env.WEB_IMAGE }})
-          docker cp $TEMP_CONTAINER:/app/dist/. ./dist
-          docker rm $TEMP_CONTAINER
-
-      - name: Create sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          sourcemaps: ./dist
+      - name: Upload sourcemaps to sentry
+        run: make sentry
 
   deploy:
     needs: build

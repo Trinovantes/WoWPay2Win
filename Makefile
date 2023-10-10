@@ -55,6 +55,20 @@ clean:
 	docker container prune -f
 	docker image prune -f
 
+sentry:
+	rm -rf ./dist
+	mkdir -p ./dist
+
+	$(eval TEMP_CONTAINER=$(shell sh -c "docker create ${web-image}"))
+	docker cp $(TEMP_CONTAINER):/app/dist/. ./dist
+	docker rm $(TEMP_CONTAINER)
+
+	$(eval TEMP_CONTAINER=$(shell sh -c "docker create ${cron-image}"))
+	docker cp $(TEMP_CONTAINER):/app/dist/. ./dist
+	docker rm $(TEMP_CONTAINER)
+
+	yarn sentry-cli sourcemaps upload --release=$(GIT_HASH) ./dist
+
 # -----------------------------------------------------------------------------
 # Cron
 # -----------------------------------------------------------------------------
