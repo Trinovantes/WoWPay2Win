@@ -18,6 +18,10 @@ export async function tryExponentialBackoff<T>(url: string, requestConfig: Reque
                 ...requestConfig,
             })
 
+            if (response.status !== 200) {
+                throw new Error(`status:${response.status} data:${await response.text()}`)
+            }
+
             const data = await response.json() as T
             const errorMessage = isValidResponse?.(data)
             if (errorMessage) {
