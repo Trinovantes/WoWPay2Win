@@ -39,6 +39,7 @@ async function main() {
             dsn: SENTRY_DSN,
             release: DEFINE.GIT_HASH,
             tracesSampleRate: 0.1,
+            profilesSampleRate: 0.1,
             integrations: [
                 new BrowserTracing({
                     routingInstrumentation: Sentry.vueRouterInstrumentation(router),
