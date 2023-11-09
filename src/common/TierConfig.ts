@@ -25,9 +25,11 @@ export enum Tier {
     DragonflightProfessions = 'dragonflight-professions',
     VaultOfTheIncarnates = 't31',
     AberrusTheShadowedCrucible = 't33',
+    AmirdrassilTheDreamsHope = 't35',
 }
 
-export const DEFAULT_TIER = Tier.AberrusTheShadowedCrucible
+// IMPORTANT: Update every tier
+export const DEFAULT_TIER = Tier.AmirdrassilTheDreamsHope
 
 export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
 export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering'
@@ -52,6 +54,51 @@ export type TierConfig = Readonly<{
 }>
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
+    [Tier.AmirdrassilTheDreamsHope]: {
+        name: "Amirdrassil, the Dream's Hope",
+        iconPath: '35-amirdrassil-the-dreams-hope.png',
+        boes: [
+            {
+                label: 'Plate',
+                ids: [
+                    208426,
+                    208427,
+                ],
+            },
+            {
+                label: 'Mail',
+                ids: [
+                    208428,
+                    208434,
+                ],
+            },
+            {
+                label: 'Leather',
+                ids: [
+                    208420,
+                    208432,
+                ],
+            },
+            {
+                label: 'Cloth',
+                ids: [
+                    208431,
+                    208430,
+                ],
+            },
+            {
+                label: 'Jewelry',
+                ids: [
+                    208442,
+                ],
+            },
+        ],
+        ilvlStep: 13,
+        ilvlRange: {
+            min: 428,
+            max: 428 + (13 * 3) + 9, // Later bosses drop up to base+9
+        },
+    },
     [Tier.AberrusTheShadowedCrucible]: {
         name: 'Aberrus, the Shadowed Crucible',
         iconPath: '33-aberrus-the-shadowed-crucible.png',

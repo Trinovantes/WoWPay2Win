@@ -2,13 +2,13 @@
 // Banned
 // ----------------------------------------------------------------------------
 
-// In Dragonflight, "Razorwind Talisman" has base ilvl of 398 but drops with these ids that override the ilvl instead of using the 1372-1672 ids
-// Thus we need to ignore items with these ids
 export function isBannedId(bonusId: number): boolean {
     switch (bonusId) {
-        case 9233: // 236
-        case 9156: // 327
-        case 9232: // 340
+        // In Dragonflight, "Razorwind Talisman" has base ilvl of 398 but drops with these ids that override the ilvl instead of using the 1372-1672 ids
+        // Thus we need to ignore items with these ids
+        case 9233: // 236 ilvl
+        case 9156: // 327 ilvl
+        case 9232: // 340 ilvl
             return true
     }
 
@@ -51,6 +51,7 @@ export function isSocketBonusId(bonusId: number): true | undefined {
         case 7580: // Sepulcher of the First Ones
         case 7935: // Vault of the Incarnates
         case 9413: // Aberrus the Shadowed Crucible
+        case 9516: // Amirdrassil, the Dream's Hope
             return true
     }
 
