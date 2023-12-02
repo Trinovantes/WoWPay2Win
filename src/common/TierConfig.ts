@@ -95,8 +95,8 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
         ],
         ilvlStep: 13,
         ilvlRange: {
-            min: 428,
-            max: 428 + (13 * 3) + 9, // Later bosses drop up to base+9
+            min: 441,
+            max: 441 + (13 * 3) + 9, // Later bosses drop up to base+9
         },
     },
     [Tier.AberrusTheShadowedCrucible]: {
