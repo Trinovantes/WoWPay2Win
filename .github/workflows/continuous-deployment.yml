@@ -88,6 +88,11 @@ jobs:
           echo "${{ secrets.SSH_KEYSCAN }}" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
+      - name: Deploy https://wowpay2win.trinovantes.workers.dev
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
       - name: Create and use remote context
         run: |
           docker context create remote --docker "host=ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"

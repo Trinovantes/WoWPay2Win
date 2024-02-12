@@ -3,6 +3,7 @@
     "scripts": {
         "fetchItems": "   node -r source-map-support/register dist/cron/fetchItems.js    src/web/client/assets/data src/web/client/assets/img",
         "fetchAuctions": "node -r source-map-support/register dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
+        "watchProxy": " wrangler dev",
         "devCron": "  cross-env NODE_ENV=development webpack --watch --config build/webpack.config.cron.ts",
         "devWeb": "   cross-env NODE_ENV=development webpack serve   --config build/webpack.config.web.ts",
         "buildCron": "cross-env NODE_ENV=production  webpack         --config build/webpack.config.cron.ts && sentry-cli sourcemaps inject ./dist/cron",
@@ -16,6 +17,7 @@
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
+        "@cloudflare/workers-types": "^4.20240208.0",
         "@sentry/cli": "^2.21.2",
         "@sentry/node": "^7.2.0",
         "@sentry/tracing": "^7.2.0",
@@ -62,6 +64,7 @@
         "webpack": "^5.28.2",
         "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "^5.0.1",
-        "webpack-dev-server": "^4.0.0"
+        "webpack-dev-server": "^4.0.0",
+        "wrangler": "^3.28.1"
     }
 }

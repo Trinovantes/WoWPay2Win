@@ -1,0 +1,8 @@
+compatibility_date = "2024-02-11"
+
+name = "wowpay2win"
+main = "./src/proxy/proxy.ts"
+
+[dev]
+ip = "localhost"
+port = 3000

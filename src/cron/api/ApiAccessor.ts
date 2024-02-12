@@ -2,13 +2,18 @@ import { getRuntimeSecret, RuntimeSecret } from '../utils/RuntimeSecret'
 import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
 import type { RegionConfig } from '@/common/RegionConfig'
 import type { BnetOauthResponse } from '../api/BnetResponse'
+import { PROXY_TARGET_URL_HEADER, PROXY_URL_DEV, PROXY_URL_PROD } from '@/common/Constants'
 
 export class ApiAccessor {
-    readonly regionConfig: RegionConfig
     #accessToken?: string
 
-    constructor(regionConfig: RegionConfig) {
-        this.regionConfig = regionConfig
+    constructor(
+        readonly regionConfig: RegionConfig,
+        readonly proxyUrl = DEFINE.IS_DEV
+            ? PROXY_URL_DEV
+            : PROXY_URL_PROD,
+    ) {
+        // nop
     }
 
     async #fetchAccessToken(): Promise<void> {
@@ -24,10 +29,11 @@ export class ApiAccessor {
             body: new URLSearchParams({ grant_type: 'client_credentials' }),
             headers: {
                 Authorization: `Basic ${basicAuth}`,
+                [PROXY_TARGET_URL_HEADER]: this.regionConfig.oauthEndpoint,
             },
         }
 
-        const response = await tryExponentialBackoff<BnetOauthResponse>(this.regionConfig.oauthEndpoint, config, (res) => {
+        const response = await tryExponentialBackoff<BnetOauthResponse>(this.proxyUrl, this.regionConfig.oauthEndpoint, config, (res) => {
             if (!res?.access_token) {
                 return 'Missing access_token in response'
             }
@@ -52,19 +58,20 @@ export class ApiAccessor {
     async fetch<T>(endpoint: string, isDynamic: boolean, isValidResponse: ResponseValidator<T>): Promise<T | null> {
         await this.#fetchAccessToken()
 
-        const url = new URL(this.regionConfig.apiHost + endpoint)
-        url.searchParams.set('region', this.regionConfig.slug)
-        url.searchParams.set('locale', this.regionConfig.locale)
-        url.searchParams.set('namespace', `${isDynamic ? 'dynamic' : 'static'}-${this.regionConfig.slug}`)
+        const targetUrl = new URL(this.regionConfig.apiHost + endpoint)
+        targetUrl.searchParams.set('region', this.regionConfig.slug)
+        targetUrl.searchParams.set('locale', this.regionConfig.locale)
+        targetUrl.searchParams.set('namespace', `${isDynamic ? 'dynamic' : 'static'}-${this.regionConfig.slug}`)
 
         const config: RequestInit = {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${this.#accessToken}`,
+                [PROXY_TARGET_URL_HEADER]: targetUrl.toString(),
             },
         }
 
-        const response = await tryExponentialBackoff<T>(url.toString(), config, isValidResponse)
+        const response = await tryExponentialBackoff<T>(this.proxyUrl, targetUrl.toString(), config, isValidResponse)
         return response
     }
 }

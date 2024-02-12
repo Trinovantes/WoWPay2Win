@@ -3,17 +3,17 @@ import { sleep } from '@/common/utils/sleep'
 
 export type ResponseValidator<T> = (data: T | null) => string | null
 
-export async function tryExponentialBackoff<T>(url: string, requestConfig: RequestInit, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
+export async function tryExponentialBackoff<T>(proxyUrl: string, targetUrl: string, requestConfig: RequestInit, isValidResponse?: ResponseValidator<T>): Promise<T | null> {
     for (let attempt = 0; attempt < MAX_API_ATTEMPTS; attempt++) {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => {
-            console.warn(`Request timeout: ${url}`)
+            console.warn(`Request timeout: ${proxyUrl}`)
             controller.abort()
         }, API_TIMEOUT)
 
         try {
-            console.info(`Attempt:${attempt} Fetching:${url}`)
-            const response = await fetch(url, {
+            console.info(`Attempt:${attempt} Fetching:${targetUrl}`)
+            const response = await fetch(proxyUrl, {
                 signal: controller.signal,
                 ...requestConfig,
             })
@@ -28,7 +28,7 @@ export async function tryExponentialBackoff<T>(url: string, requestConfig: Reque
                 throw new Error(errorMessage)
             }
 
-            console.info(`Attempt:${attempt} Fetching:${url} SUCCEEDED`)
+            console.info(`Attempt:${attempt} Fetching:${targetUrl} SUCCEEDED`)
             return data
         } catch (err) {
             const error = err as Error
