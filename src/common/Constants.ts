@@ -5,7 +5,6 @@ export const OG_DESC = 'Tired of being bad in World of Warcraft? Just swipe your
 export const CACHE_DURATION = 52 // weeks
 export const API_TIMEOUT = 30 * 1000 // in ms
 export const MAX_API_ATTEMPTS = 5
-export const CONCURRENT_API_REQUESTS = DEFINE.IS_DEV ? 1 : 4
 
 export const GOLD_CAP = 10 * 1000 * 1000
 export const ROWS_PER_PAGE = 50

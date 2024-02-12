@@ -1,5 +1,4 @@
 import path from 'path'
-import { batchRequests } from '../utils/batchRequests'
 import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
 import { hasBannedId } from '@/common/BonusId'
 import type { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'
@@ -78,10 +77,9 @@ export class CacheableRegion extends Cacheable<Region> {
             return
         }
 
-        await batchRequests(regionResponse.connected_realms.length, async(idx) => {
-            const { href } = regionResponse.connected_realms[idx]
+        for (const cr of regionResponse.connected_realms) {
             const re = /\/data\/wow\/connected-realm\/(\d+)/
-            const matches = re.exec(href)
+            const matches = re.exec(cr.href)
             if (!matches) {
                 return
             }
@@ -100,7 +98,7 @@ export class CacheableRegion extends Cacheable<Region> {
                 id: crId,
                 realms: crResponse?.realms ?? [],
             })
-        })
+        }
 
         console.info(`Saving ${this.#connectedRealms.length} realms to ${this.cacheFile}`)
         await this.saveDataToCache()
@@ -125,8 +123,7 @@ export class CacheableRegion extends Cacheable<Region> {
             auctions: [],
         }
 
-        await batchRequests(this.#connectedRealms.length, async(idx) => {
-            const cr = this.#connectedRealms[idx]
+        for (const cr of this.#connectedRealms) {
             const crId = cr.id
             const crStr = `${this.toString()} [ConnectedRealm:${crId.toString().padStart(4, '0')} ${cr.realms.map((realm) => realm.name).join(', ')}]`
 
@@ -171,7 +168,7 @@ export class CacheableRegion extends Cacheable<Region> {
             }
 
             console.info(`Found ${numCrAuctions.toString().padStart(5, ' ')} auctions for ${crStr} (${getProcessMemoryStats()})`)
-        })
+        }
 
         const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.apiAccessor.regionConfig.slug}.json`)
         console.info(`Saving ${regionAuctions.auctions.length} auctions to ${auctionCacheFile}`)

@@ -4,7 +4,6 @@ import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { ApiAccessor } from './api/ApiAccessor'
 import { CacheableItem } from './api/CacheableItem'
 import { CacheableRegion } from './api/CacheableRegion'
-import { batchRequests } from './utils/batchRequests'
 import { mkdirp } from './utils/mkdirp'
 
 async function main() {
@@ -28,11 +27,10 @@ async function main() {
         await region.fetch()
 
         const boeIds = getAllBoeIds()
-        await batchRequests(boeIds.length, async(idx) => {
-            const itemId = boeIds[idx]
+        for (const itemId of boeIds) {
             const item = new CacheableItem(apiAccessor, itemId, dataDir, imgDir)
             await item.fetch()
-        })
+        }
     }
 }
 
