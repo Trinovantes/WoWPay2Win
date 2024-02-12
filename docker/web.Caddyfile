@@ -12,4 +12,8 @@
     vars CSP_IMG "img-src 'self' data: wow.zamimg.com"
     vars CSP_CONNECT "connect-src 'self' cloudflareinsights.com *.ingest.sentry.io www.wowhead.com wow.zamimg.com nether.wowhead.com"
     header Content-Security-Policy "default-src 'self'; object-src 'none'; base-uri 'self'; {vars.CSP_SCRIPT}; {vars.CSP_STYLE}; {vars.CSP_FONT}; {vars.CSP_IMG}; {vars.CSP_CONNECT};"
+
+    header /data/* {
+        Cache-Control "max-age=3600, must-revalidate"
+    }
 }
