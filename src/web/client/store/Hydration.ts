@@ -9,17 +9,26 @@ type HydrationStateMap = {
 }
 
 export function saveStateToLocalStorage<K extends keyof HydrationStateMap>(key: K, state: HydrationStateMap[K]): void {
-    const stateString = JSON.stringify(state, replacer)
-    localStorage.setItem(key, stateString)
+    try {
+        const stateString = JSON.stringify(state, replacer)
+        localStorage.setItem(key, stateString)
+    } catch (err) {
+        // localStorage is disabled e.g. some browsers in privacy/incognito mode
+    }
 }
 
-export function loadStateFromLocalStorage<K extends keyof HydrationStateMap>(key: K): HydrationStateMap[K] | undefined {
-    const state = localStorage.getItem(key)
-    if (!state) {
-        return
-    }
+export function loadStateFromLocalStorage<K extends keyof HydrationStateMap>(key: K): HydrationStateMap[K] | null {
+    try {
+        const state = localStorage.getItem(key)
+        if (!state) {
+            return null
+        }
 
-    return JSON.parse(state, reviver) as HydrationStateMap[K]
+        return JSON.parse(state, reviver) as HydrationStateMap[K]
+    } catch (err) {
+        // localStorage is disabled e.g. some browsers in privacy/incognito mode
+        return null
+    }
 }
 
 export function cleanLocalStorage(): void {
