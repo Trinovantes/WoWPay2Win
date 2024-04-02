@@ -1,5 +1,5 @@
-import { existsSync } from 'fs'
-import path from 'path'
+import { existsSync } from 'node:fs'
+import path from 'node:path'
 import { fetchFile } from '../utils/fetchFile'
 import type { Item } from '@/common/Cache'
 import type { Locale } from '@/common/RegionConfig'

@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from 'fs'
+import { existsSync, mkdirSync } from 'node:fs'
 
 export function mkdirp(path: string): void {
     if (!existsSync(path)) {

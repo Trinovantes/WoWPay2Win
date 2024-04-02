@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { REGION_CONFIGS } from '@/common/RegionConfig'
 import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { ApiAccessor } from './api/ApiAccessor'
@@ -34,7 +34,7 @@ async function main() {
     }
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
     console.warn(err)
     process.exit(1)
 })

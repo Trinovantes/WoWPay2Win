@@ -1,4 +1,4 @@
-import { createWriteStream } from 'fs'
+import { createWriteStream } from 'node:fs'
 
 export async function fetchFile(fileUrl: string, destPath: string): Promise<void> {
     try {

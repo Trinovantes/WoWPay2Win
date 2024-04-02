@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import * as Sentry from '@sentry/node'
 import { SENTRY_DSN } from '@/common/Constants'
 import { REGION_CONFIGS } from '@/common/RegionConfig'
@@ -55,7 +55,7 @@ async function main() {
     transaction.finish()
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
     console.warn(err)
     process.exit(1)
 })

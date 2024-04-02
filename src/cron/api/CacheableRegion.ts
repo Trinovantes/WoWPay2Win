@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
 import { hasBannedId } from '@/common/BonusId'
 import type { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'

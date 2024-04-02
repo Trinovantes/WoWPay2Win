@@ -1,5 +1,5 @@
-import { existsSync } from 'fs'
-import fs from 'fs/promises'
+import { existsSync } from 'node:fs'
+import fs from 'node:fs/promises'
 import { CACHE_DURATION } from '@/common/Constants'
 import type { ApiAccessor } from './ApiAccessor'
 import { isBefore, add } from 'date-fns'

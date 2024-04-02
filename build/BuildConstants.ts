@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { getGitHash } from './BuildSecret'
 
 // Assume we are running webpack from the project root (../)

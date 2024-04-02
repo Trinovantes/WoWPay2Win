@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { VueLoaderPlugin } from 'vue-loader'
 import webpack, { DefinePlugin } from 'webpack'
 import { isDev, srcDir, buildConstants } from './BuildConstants'

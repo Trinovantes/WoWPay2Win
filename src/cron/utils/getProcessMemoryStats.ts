@@ -1,4 +1,4 @@
-import { memoryUsage } from 'process'
+import { memoryUsage } from 'node:process'
 
 export function getProcessMemoryStats(): string {
     const usage = memoryUsage()
