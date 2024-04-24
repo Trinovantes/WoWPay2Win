@@ -12,7 +12,7 @@ export async function tryExponentialBackoff<T>(proxyUrl: string, targetUrl: stri
         }, API_TIMEOUT)
 
         try {
-            console.info(`Attempt:${attempt} Fetching:${targetUrl}`)
+            console.info(`Attempt:${attempt} (proxyUrl:${proxyUrl}) Fetching:${targetUrl}`)
             const response = await fetch(proxyUrl, {
                 signal: controller.signal,
                 ...requestConfig,
@@ -32,7 +32,7 @@ export async function tryExponentialBackoff<T>(proxyUrl: string, targetUrl: stri
             return data
         } catch (err) {
             const error = err as Error
-            console.warn(error.message)
+            console.warn(error)
 
             if (attempt < MAX_API_ATTEMPTS) {
                 const delay = Math.round(Math.exp(attempt) * 1000)
