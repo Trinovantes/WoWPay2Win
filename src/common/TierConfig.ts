@@ -26,10 +26,11 @@ export enum Tier {
     VaultOfTheIncarnates = 't31',
     AberrusTheShadowedCrucible = 't33',
     AmirdrassilTheDreamsHope = 't35',
+    DragonflightAwakened = 'dragonflight-awakened',
 }
 
 // IMPORTANT: Update every tier
-export const DEFAULT_TIER = Tier.AmirdrassilTheDreamsHope
+export const DEFAULT_TIER = Tier.DragonflightAwakened
 
 export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth'| 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
 export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering'
@@ -54,6 +55,68 @@ export type TierConfig = Readonly<{
 }>
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
+    [Tier.DragonflightAwakened]: {
+        name: 'Dragonflight Awakened Raids',
+        iconPath: '0-dragonflight-awakened.jpg',
+        boes: [
+            {
+                label: 'Plate',
+                ids: [
+                    208426,
+                    208427,
+                    204429,
+                    204430,
+                    202006,
+                    202010,
+                ],
+            },
+            {
+                label: 'Mail',
+                ids: [
+                    208428,
+                    208434,
+                    204423,
+                    204422,
+                    202005,
+                    202009,
+                ],
+            },
+            {
+                label: 'Leather',
+                ids: [
+                    208420,
+                    208432,
+                    204414,
+                    204415,
+                    202004,
+                    202008,
+                ],
+            },
+            {
+                label: 'Cloth',
+                ids: [
+                    208431,
+                    208430,
+                    204410,
+                    204411,
+                    202003,
+                    202007,
+                ],
+            },
+            {
+                label: 'Jewelry',
+                ids: [
+                    208442,
+                    201992,
+                ],
+            },
+        ],
+        ilvlStep: 13,
+        ilvlRange: {
+            min: 480,
+            max: 480 + (13 * 3) + 9, // Later bosses drop up to base+9
+        },
+    },
     [Tier.AmirdrassilTheDreamsHope]: {
         name: "Amirdrassil, the Dream's Hope",
         iconPath: '35-amirdrassil-the-dreams-hope.png',
