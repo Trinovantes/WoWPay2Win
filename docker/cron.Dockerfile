@@ -39,5 +39,5 @@ COPY docker/                            ./docker
 RUN mkdir -p                            ./src/web/client/assets/data
 RUN mkdir -p                            ./dist/web/data
 
-RUN echo "30 * * * * cd /app && sh ./docker/cron.sh" >> /etc/crontabs/root
+RUN echo "0,30 * * * * cd /app && sh ./docker/cron.sh" >> /etc/crontabs/root
 CMD crond -f
