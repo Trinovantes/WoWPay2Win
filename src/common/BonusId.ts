@@ -42,20 +42,40 @@ export function isIlvlBonusId(bonusId: number): number | undefined {
 // Socket
 // ----------------------------------------------------------------------------
 
-export function isSocketBonusId(bonusId: number): true | undefined {
-    switch (bonusId) {
-        case 1808:
-        case 6514: // Nyalotha
-        case 6935: // Castle Nathria
-        case 7576: // Sanctum of Domination
-        case 7580: // Sepulcher of the First Ones
-        case 7935: // Vault of the Incarnates
-        case 9413: // Aberrus the Shadowed Crucible
-        case 9516: // Amirdrassil, the Dream's Hope
-            return true
-    }
+// Run `yarn fetchSocketIds` every tier to update
+const socketBonusIds = new Set([
+    523,
+    563,
+    564,
+    565,
+    572,
+    608,
+    1808,
+    3475,
+    3522,
+    4802,
+    6514,
+    6672,
+    6935,
+    7576,
+    7580,
+    7935,
+    8289,
+    8780,
+    8810,
+    9413,
+    9436,
+    9438,
+    9516,
+    10531,
+    10589,
+    10591,
+    10596,
+    10597,
+])
 
-    return undefined
+export function isSocketBonusId(bonusId: number): boolean {
+    return socketBonusIds.has(bonusId)
 }
 
 // ----------------------------------------------------------------------------

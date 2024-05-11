@@ -1,6 +1,7 @@
 {
     "private": true,
     "scripts": {
+        "fetchSocketIds": "bun ./src/scripts/fetchSocketIds.ts",
         "fetchItems": "   node -r source-map-support/register dist/cron/fetchItems.js    src/web/client/assets/data src/web/client/assets/img",
         "fetchAuctions": "node -r source-map-support/register dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
         "watchProxy": " wrangler dev",
