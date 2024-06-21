@@ -1,7 +1,4 @@
-// eslint-disable-next-line import/order
 import './client/assets/css/main.scss'
-
-import { BrowserTracing } from '@sentry/browser'
 import * as Sentry from '@sentry/vue'
 import { createPinia } from 'pinia'
 import { Quasar } from 'quasar'
@@ -41,7 +38,7 @@ async function main() {
             tracesSampleRate: 0.1,
             profilesSampleRate: 0.1,
             integrations: [
-                new BrowserTracing({
+                new Sentry.BrowserTracing({
                     routingInstrumentation: Sentry.vueRouterInstrumentation(router),
                 }),
             ],

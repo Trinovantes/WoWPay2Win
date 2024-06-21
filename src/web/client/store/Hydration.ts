@@ -14,6 +14,7 @@ export function saveStateToLocalStorage<K extends keyof HydrationStateMap>(key: 
         localStorage.setItem(key, stateString)
     } catch (err) {
         // localStorage is disabled e.g. some browsers in privacy/incognito mode
+        console.warn(err)
     }
 }
 
@@ -27,6 +28,7 @@ export function loadStateFromLocalStorage<K extends keyof HydrationStateMap>(key
         return JSON.parse(state, reviver) as HydrationStateMap[K]
     } catch (err) {
         // localStorage is disabled e.g. some browsers in privacy/incognito mode
+        console.warn(err)
         return null
     }
 }

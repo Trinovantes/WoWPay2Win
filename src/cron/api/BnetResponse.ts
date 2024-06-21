@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 export type BnetOauthResponse = {
     access_token: string
 }

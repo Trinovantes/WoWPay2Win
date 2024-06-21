@@ -201,7 +201,7 @@ function clamp(val: number, min: number, max: number): number {
 }
 
 function exportSet(set: Set<number>): string {
-    return [...set].sort().join(DELIMITER)
+    return [...set].sort((a, b) => a - b).join(DELIMITER)
 }
 
 function importArray(setString: string): Array<number> {

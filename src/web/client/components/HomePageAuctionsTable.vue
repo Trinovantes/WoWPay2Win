@@ -7,9 +7,8 @@ import { getItemIcon } from '../utils/ImageLoader'
 import { auctionHasSocket } from '../utils/auctionHasSocket'
 import { getAuctionIlvl } from '../utils/getAuctionIlvl'
 import { getAuctionTertiary } from '../utils/getAuctionTertiary'
-import { getItemNameById } from '../utils/getItemNameById'
-import { getItemSecondaryAffix } from '../utils/getItemSecondaryAffix'
-import { getRegion } from '../utils/getRegion'
+import { getItemName } from '../utils/getItemName'
+import { getConnectedRealmName } from '../utils/getConnectedRealmName'
 import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
 import { Tertiary } from '@/common/BonusId'
 import type { ItemAuction } from '@/common/Cache'
@@ -29,7 +28,7 @@ const columns: QTable['columns'] = [
         label: 'Item',
         align: 'left',
         sortable: true,
-        field: (auction: ItemAuction) => getItemName(auction),
+        field: (auction: ItemAuction) => getItemName(filteredRegion.value, auction),
         classes: 'md-col',
         headerClasses: 'md-col',
     },
@@ -72,7 +71,7 @@ const columns: QTable['columns'] = [
         name: 'connectedRealm',
         label: 'Connected Realms',
         align: 'left',
-        field: (auction: ItemAuction) => getConnectedRealmName(auction.crId),
+        field: (auction: ItemAuction) => getConnectedRealmName(filteredRegion.value, auction.crId),
     },
 ]
 
@@ -82,8 +81,8 @@ const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: 
             let comp = 0
             switch (key) {
                 case 'itemId': {
-                    const x = getItemName(a)
-                    const y = getItemName(b)
+                    const x = getItemName(filteredRegion.value, a)
+                    const y = getItemName(filteredRegion.value, b)
                     comp = x.localeCompare(y)
                     break
                 }
@@ -140,25 +139,6 @@ const pagination = ref<Pagination>({
     sortBy: 'buyout',
 })
 
-const getConnectedRealmName = (crId: number): string => {
-    if (filteredRegion.value === null) {
-        return ''
-    }
-
-    const region = getRegion(filteredRegion.value)
-    if (!region) {
-        return ''
-    }
-
-    for (const connectedRealm of region.connectedRealms) {
-        if (connectedRealm.id === crId) {
-            return connectedRealm.realms.map((realm) => realm.name).join(', ')
-        }
-    }
-
-    return ''
-}
-
 const getWowheadLink = (auction: ItemAuction) => {
     if (filteredRegion.value === null) {
         return ''
@@ -166,21 +146,6 @@ const getWowheadLink = (auction: ItemAuction) => {
 
     const itemLink = getWowheadItemLinkById(auction.itemId, filteredRegion.value)
     return `${itemLink}&bonus=${auction.bonuses.join(':')}`
-}
-
-const getItemName = (auction: ItemAuction) => {
-    if (filteredRegion.value === null) {
-        return ''
-    }
-
-    const itemName = getItemNameById(auction.itemId, filteredRegion.value)
-    const affix = getItemSecondaryAffix(auction.bonuses)
-
-    if (affix) {
-        return `${itemName} (${affix})`
-    } else {
-        return itemName
-    }
 }
 
 const numFormatter = new Intl.NumberFormat(undefined, {
@@ -244,9 +209,14 @@ const getBuyoutTooltip = (val: number): string => {
                         rounded
                         size="20px"
                     >
-                        <img :src="getItemIcon(props.row.itemId)" :alt="getItemName(props.row)" width="20" height="20">
+                        <img
+                            :src="getItemIcon(props.row.itemId)"
+                            :alt="getItemName(filteredRegion, props.row)"
+                            width="20"
+                            height="20"
+                        >
                     </q-avatar>
-                    {{ getItemName(props.row) }}
+                    {{ getItemName(filteredRegion, props.row) }}
                 </a>
             </q-td>
         </template>

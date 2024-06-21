@@ -35,7 +35,9 @@ onMounted(() => {
         <p class="flavor-text" v-text="flavorText" />
 
         <p class="links">
-            <a href="https://github.com/Trinovantes/WoWPay2Win">GitHub</a>
+            <a href="https://github.com/Trinovantes/WoWPay2Win">
+                GitHub
+            </a>
         </p>
     </footer>
 </template>
