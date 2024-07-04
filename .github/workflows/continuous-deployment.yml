@@ -11,6 +11,13 @@ on:
       - .editorconfig
       - .gitignore
 
+permissions:
+  packages: write # Allow workflow to create docker package
+
+concurrency:
+  group: continuous-deployment
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test
