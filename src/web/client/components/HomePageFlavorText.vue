@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 
 const DAYS_OF_WEEK = 7
 const daysSinceTues = (DAYS_OF_WEEK + (new Date().getDay() - 2)) % DAYS_OF_WEEK
-const nonClassicExpansions = ['Cataclysm', 'MoP', 'WoD', 'Legion', 'BfA', 'Shadowlands']
+const nonClassicExpansions = ['Cataclysm', 'MoP', 'WoD', 'Legion', 'BfA', 'Shadowlands', 'Dragonflight']
 const memes = [
     ...nonClassicExpansions.map((expac) => `${expac} Classic waiting room`),
     'We are trying to reach you about your mount\'s extended warranty.',
@@ -22,6 +22,8 @@ const memes = [
     'A twiumphant woaw echoes fwom atop the Seat of the Aspects as Nyasz\'uwu, the Unbound Wegacy is fowmed >:3',
     'Remember: exploit early, exploit often',
     'Huffs Copium',
+    'Shikanoko nokonoko koshitantan',
+    'Beware of danger noodles',
 ]
 
 const flavorText = ref<string | undefined>('')
