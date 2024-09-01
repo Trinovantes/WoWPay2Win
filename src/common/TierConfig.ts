@@ -121,6 +121,17 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
                     228708,
                 ],
             },
+            {
+                label: 'Inscription',
+                ids: [
+                    225475,
+                    225476,
+                    225477,
+                    225480,
+                    225481,
+                    225484,
+                ],
+            },
         ],
     },
 
