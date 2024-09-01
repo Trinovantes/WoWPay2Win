@@ -1,8 +1,9 @@
 /*
 Use this script to quickly extract item ids from wowhead item search
-https://www.wowhead.com/items/quality:4?filter=3:82;1:2;0:100100
+https://www.wowhead.com/items/quality:4?filter=3:82:161:128;1:2:1:4;0:110002:0:0 (for raid boe)
+https://www.wowhead.com/items/name:Design/quality:3:4?filter=99:166:92;11:11:2;0:0:0#0-14+19 (for profession)
 
-$('#tab-items table').find('a.q4').each((idx, el) => {
+$('table.listview-mode-default').find('td:nth-child(3)').find('a.q4, a.q3').each((idx, el) => {
     const href = $(el).attr('href')
     const id = /(\d+)/.exec(href)[0]
     console.info(id, href)
@@ -27,10 +28,13 @@ export enum Tier {
     AberrusTheShadowedCrucible = 't33',
     AmirdrassilTheDreamsHope = 't35',
     DragonflightAwakened = 'dragonflight-awakened',
+
+    // War Within
+    WarWithinProfessions = 'war-within-professions',
 }
 
 // IMPORTANT: Update every tier
-export const DEFAULT_TIER = Tier.DragonflightAwakened
+export const DEFAULT_TIER = Tier.WarWithinProfessions
 
 export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth' | 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
 export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering'
@@ -55,6 +59,71 @@ export type TierConfig = Readonly<{
 }>
 
 export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
+    [Tier.WarWithinProfessions]: {
+        name: 'War Within Profession Recipes',
+        iconPath: '0-war-within.png',
+        boes: [
+            {
+                label: 'Jewelcrafting',
+                ids: [
+                    228320,
+                ],
+            },
+            {
+                label: 'Blacksmithing',
+                ids: [
+                    223040,
+                    223043,
+                    223048,
+                    226643,
+                ],
+            },
+            {
+                label: 'Leatherworking',
+                ids: [
+                    223095,
+                    223097,
+                    223098,
+                    223099,
+                    223102,
+                ],
+            },
+            {
+                label: 'Tailoring',
+                ids: [
+                    224424,
+                    224426,
+                    224434,
+                    224435,
+                    224436,
+                    224437,
+                ],
+            },
+            {
+                label: 'Enchanting',
+                ids: [
+                    223115,
+                    223116,
+                    223117,
+                    223118,
+                    223119,
+                    223120,
+                    223126,
+                    223134,
+                    223135,
+                    223138,
+                    223139,
+                    223140,
+                    223141,
+                    223142,
+                    223143,
+                    223144,
+                    228708,
+                ],
+            },
+        ],
+    },
+
     [Tier.DragonflightAwakened]: {
         name: 'Dragonflight Awakened Raids',
         iconPath: '0-dragonflight-awakened.jpg',
