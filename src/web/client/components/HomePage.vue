@@ -82,7 +82,9 @@ const lastUpdateFromNow = computed(() => auctionsStore.lastUpdateFromNow)
             </aside>
 
             <article>
-                <HomePageAuctionsTable />
+                <div class="table-wrapper">
+                    <HomePageAuctionsTable />
+                </div>
             </article>
         </main>
     </div>
@@ -138,7 +140,8 @@ aside{
     }
 }
 
-article{
+.table-wrapper{
     position: sticky;
+    top: 0;
 }
 </style>
