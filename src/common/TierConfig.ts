@@ -37,7 +37,7 @@ export enum Tier {
 export const DEFAULT_TIER = Tier.WarWithinProfessions
 
 export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth' | 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
-export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering'
+export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering' | 'Cooking'
 export type BoeLabel = BoeGearLabel | BoeProfessionLabel
 
 export type BoeCategory = {
@@ -130,6 +130,13 @@ export const TIER_CONFIGS: Readonly<Record<Tier, TierConfig>> = {
                     225480,
                     225481,
                     225484,
+                ],
+            },
+            {
+                label: 'Cooking',
+                ids: [
+                    227281,
+                    227283,
                 ],
             },
         ],
