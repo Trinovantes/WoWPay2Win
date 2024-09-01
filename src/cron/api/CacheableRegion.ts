@@ -123,7 +123,9 @@ export class CacheableRegion extends Cacheable<Region> {
             auctions: [],
         }
 
-        for (const cr of this.#connectedRealms) {
+        const idxPad = Math.ceil(Math.log10(this.#connectedRealms.length))
+
+        for (const [idx, cr] of this.#connectedRealms.entries()) {
             const crId = cr.id
             const crStr = `${this.toString()} [ConnectedRealm:${crId.toString().padStart(4, '0')} ${cr.realms.map((realm) => realm.name).join(', ')}]`
 
@@ -167,7 +169,7 @@ export class CacheableRegion extends Cacheable<Region> {
                 })
             }
 
-            console.info(`Found ${numCrAuctions.toString().padStart(5, ' ')} auctions for ${crStr} (${getProcessMemoryStats()})`)
+            console.info(`[${(idx + 1).toString().padStart(idxPad, '0')}/${this.#connectedRealms.length}] ${crStr} Found ${numCrAuctions} auctions (${getProcessMemoryStats()})`)
         }
 
         const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.apiAccessor.regionConfig.slug}.json`)
