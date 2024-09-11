@@ -67,11 +67,15 @@ const socketBonusIds = new Set([
     9436,
     9438,
     9516,
+    10397,
     10531,
     10589,
     10591,
     10596,
     10597,
+    10835,
+    10878,
+    11307,
 ])
 
 export function isSocketBonusId(bonusId: number): boolean {
