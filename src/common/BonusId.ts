@@ -30,9 +30,22 @@ export function hasBannedId(bonusIds: Array<number>): boolean {
 // ----------------------------------------------------------------------------
 
 export function isIlvlBonusId(bonusId: number): number | undefined {
+    // Modifies -100 to +100 ilvls
     if (bonusId >= 1372 && bonusId <= 1672) {
         const ZERO_ILVL = 1472
         return bonusId - ZERO_ILVL
+    }
+
+    // Subtracts 101-400 ilvls
+    if (bonusId >= 2829 && bonusId <= 3129) {
+        const BASE_ILVL = 2829
+        return -400 + (bonusId - BASE_ILVL)
+    }
+
+    // Adds 201-400 ilvls
+    if (bonusId >= 3130 && bonusId <= 3329) {
+        const BASE_ILVL = 3130
+        return 201 + (bonusId - BASE_ILVL)
     }
 
     return undefined
