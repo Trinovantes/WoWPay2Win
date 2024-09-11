@@ -44,7 +44,7 @@ export default handler
 export function copyRequest(origRequest: CfRequest, targetUrl: string): Request {
     const proxyReq = new Request(targetUrl, {
         method: origRequest.method,
-        body: origRequest.body as BodyInit,
+        body: origRequest.body as unknown as BodyInit,
     })
 
     for (const headerKey of PROXY_REQUEST_HEADERS) {
