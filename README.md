@@ -40,6 +40,15 @@ make build # Creates Docker images
 make run   # Starts Docker images
 ```
 
+## Add New Tier
+
+1. Update `Tier` enum `TierConfig.ts`
+
+2. Update `DEFAULT_TIER` variable in `TierConfig.ts`
+
+3. Run `yarn fetchSocketIds` to update `BonusIds.ts`
+
+
 ## Setting up GitHub Actions
 
 Secret | Description
