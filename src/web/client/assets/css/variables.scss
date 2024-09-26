@@ -12,8 +12,8 @@ $dark-page  : #333;
 
 $text       : #aaa;
 $header     : $dark;
-$bg-side    : lighten($dark, 5);
-$bg-main    : lighten($dark, 10);
+$bg-side    : color.adjust($dark, $lightness: 5%);
+$bg-main    : color.adjust($dark, $lightness: 10%);
 
 $line-height: 1.618;
 $padding: 12px;
