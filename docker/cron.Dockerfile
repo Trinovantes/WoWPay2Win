@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:20-alpine as builder
+FROM node:22-alpine as builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -19,7 +19,7 @@ RUN --mount=type=secret,id=GIT_HASH \
 RUN yarn install --production
 
 # -----------------------------------------------------------------------------
-FROM node:20-alpine
+FROM node:22-alpine
 LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 

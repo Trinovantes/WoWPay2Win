@@ -17,4 +17,8 @@ export default merge(commonConfig, {
     output: {
         path: distCronDir,
     },
+
+    externals: {
+        '@sentry/node': 'commonjs @sentry/node',
+    },
 })

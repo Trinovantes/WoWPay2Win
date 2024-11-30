@@ -33,15 +33,13 @@ async function main() {
     if (!DEFINE.IS_DEV) {
         Sentry.init({
             app,
-            dsn: SENTRY_DSN,
             release: DEFINE.GIT_HASH,
-            tracesSampleRate: 0.1,
-            profilesSampleRate: 0.1,
+            dsn: SENTRY_DSN,
             integrations: [
-                new Sentry.BrowserTracing({
-                    routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-                }),
+                Sentry.browserTracingIntegration({ router }),
             ],
+            tracesSampleRate: 0,
+            profilesSampleRate: 0,
         })
     }
 

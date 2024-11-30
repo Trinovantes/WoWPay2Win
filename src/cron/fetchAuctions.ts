@@ -10,7 +10,7 @@ Sentry.init({
     dsn: SENTRY_DSN,
     release: DEFINE.GIT_HASH,
     tracesSampleRate: 0.1,
-    profilesSampleRate: 0.1,
+    profilesSampleRate: 0.0,
     enabled: !DEFINE.IS_DEV,
 })
 
@@ -40,19 +40,17 @@ async function main() {
     mkdirp(dataDir)
     mkdirp(auctionsDir)
 
-    const transaction = Sentry.startTransaction({
+    await Sentry.startSpan({
         op: 'fetchAuctions',
         name: 'Fetch Auctions Cron Job',
+    }, async() => {
+        try {
+            await fetchAuctions(dataDir, auctionsDir)
+        } catch (err) {
+            console.error(err)
+            Sentry.captureException(err)
+        }
     })
-
-    try {
-        await fetchAuctions(dataDir, auctionsDir)
-    } catch (err) {
-        console.error(err)
-        Sentry.captureException(err)
-    }
-
-    transaction.finish()
 }
 
 main().catch((err: unknown) => {
