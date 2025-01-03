@@ -1,10 +1,10 @@
 import path from 'node:path'
-import { REGION_CONFIGS } from '@/common/RegionConfig'
-import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
+import { regionConfigs } from '@/common/RegionConfig'
 import { ApiAccessor } from './api/ApiAccessor'
 import { CacheableItem } from './api/CacheableItem'
 import { CacheableRegion } from './api/CacheableRegion'
 import { mkdirp } from './utils/mkdirp'
+import { getAllBoeIds } from '@/common/Boe'
 
 async function main() {
     if (process.argv.length !== 4) {
@@ -21,7 +21,7 @@ async function main() {
     mkdirp(dataDir)
     mkdirp(imgDir)
 
-    for (const regionConfig of REGION_CONFIGS) {
+    for (const regionConfig of regionConfigs) {
         const apiAccessor = new ApiAccessor(regionConfig)
         const region = new CacheableRegion(apiAccessor, dataDir, '/dev/null')
         await region.fetch()

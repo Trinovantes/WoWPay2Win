@@ -19,7 +19,7 @@ export type RegionConfig = Readonly<{
     oauthEndpoint: string
 }>
 
-export const REGION_CONFIGS: ReadonlyArray<RegionConfig> = [
+export const regionConfigs: ReadonlyArray<RegionConfig> = [
     {
         slug: RegionSlug.US,
         locale: Locale.EN_US,

@@ -1,7 +1,7 @@
 import path from 'node:path'
 import * as Sentry from '@sentry/node'
 import { SENTRY_DSN } from '@/common/Constants'
-import { REGION_CONFIGS } from '@/common/RegionConfig'
+import { regionConfigs } from '@/common/RegionConfig'
 import { ApiAccessor } from './api/ApiAccessor'
 import { CacheableRegion } from './api/CacheableRegion'
 import { mkdirp } from './utils/mkdirp'
@@ -15,7 +15,7 @@ Sentry.init({
 })
 
 async function fetchAuctions(dataDir: string, auctionsDir: string) {
-    for (const regionConfig of REGION_CONFIGS) {
+    for (const regionConfig of regionConfigs) {
         const apiAccessor = new ApiAccessor(regionConfig)
         const region = new CacheableRegion(apiAccessor, dataDir, auctionsDir)
 

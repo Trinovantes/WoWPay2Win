@@ -6,7 +6,6 @@ import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds'
 import { useFilterStore } from '../Filter'
 import type { ItemAuction, RegionAuctions } from '@/common/Cache'
 import type { RegionSlug } from '@/common/RegionConfig'
-import { TIER_CONFIGS } from '@/common/TierConfig'
 import { formatDistance } from 'date-fns'
 
 // ----------------------------------------------------------------------------
@@ -93,7 +92,7 @@ export const useAuctionsStore = defineStore('Auctions', {
                 return []
             }
 
-            const isBoeGear = TIER_CONFIGS[filterStore.tier].ilvlRange !== undefined
+            const isBoeGear = filterStore.currentTierIlvlRange !== undefined
 
             // If the user filtered by realms, we need to find their corresponding parent crIds
             const connectedRealms = getConnectedRealmIds(filterStore.region, filterStore.realms)

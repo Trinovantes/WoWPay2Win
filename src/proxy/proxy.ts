@@ -1,10 +1,10 @@
 import { PROXY_REQUEST_HEADERS, PROXY_RESPONSE_HEADERS, PROXY_TARGET_URL_HEADER } from '@/common/Constants'
-import { REGION_CONFIGS } from '@/common/RegionConfig'
+import { regionConfigs } from '@/common/RegionConfig'
 import type { ExportedHandler, Request as CfRequest, Response as CfResponse } from '@cloudflare/workers-types'
 
 const allowedOrigins = new Set([
-    ...REGION_CONFIGS.map((region) => new URL(region.apiHost).origin),
-    ...REGION_CONFIGS.map((region) => new URL(region.oauthEndpoint).origin),
+    ...regionConfigs.map((region) => new URL(region.apiHost).origin),
+    ...regionConfigs.map((region) => new URL(region.oauthEndpoint).origin),
 ])
 
 const allowedMethods = new Set([

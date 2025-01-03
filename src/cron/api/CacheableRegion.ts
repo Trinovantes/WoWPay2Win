@@ -3,10 +3,10 @@ import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
 import { hasBannedId } from '@/common/BonusId'
 import type { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'
 import { convertCopperToGold } from '@/common/utils/convertCopperToGold'
-import { getAllBoeIds } from '@/common/utils/getAllBoeIds'
 import { Cacheable } from './Cacheable'
 import type { ApiAccessor } from '../api/ApiAccessor'
 import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse } from '../api/BnetResponse'
+import { getAllBoeIds } from '@/common/Boe'
 
 // ----------------------------------------------------------------------------
 // Region (us, eu, tw, kr)

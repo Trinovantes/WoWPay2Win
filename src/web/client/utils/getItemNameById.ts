@@ -1,4 +1,4 @@
-import { RegionSlug, REGION_CONFIGS } from '@/common/RegionConfig'
+import { RegionSlug, regionConfigs } from '@/common/RegionConfig'
 import { itemFiles } from './GameData'
 
 export function getItemNameById(itemId: number, regionSlug: RegionSlug): string {
@@ -12,7 +12,7 @@ export function getItemNameById(itemId: number, regionSlug: RegionSlug): string 
         return ''
     }
 
-    const locale = REGION_CONFIGS.find((region) => region.slug === regionSlug)?.locale
+    const locale = regionConfigs.find((region) => region.slug === regionSlug)?.locale
     if (locale === undefined) {
         return ''
     }

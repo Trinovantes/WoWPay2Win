@@ -1,4 +1,4 @@
-import { Tier, TIER_CONFIGS } from '@/common/TierConfig'
+import { Tier, tierConfigs } from '@/common/Boe'
 
 // ----------------------------------------------------------------------------
 // Load Data
@@ -38,7 +38,7 @@ const itemIcons = getItemIcons()
 // ----------------------------------------------------------------------------
 
 export function getTierIcon(tier: Tier): string | undefined {
-    const iconFile = TIER_CONFIGS[tier].iconPath
+    const iconFile = tierConfigs.get(tier)?.iconName ?? ''
     if (!tierIcons.has(iconFile)) {
         console.warn('Image file not found during compilation', iconFile)
         return undefined

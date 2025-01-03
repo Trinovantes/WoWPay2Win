@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
 import { getTierIcon } from '../../utils/ImageLoader'
-import { Tier, TIER_CONFIGS } from '@/common/TierConfig'
+import { getTierName, Tier, tierConfigs } from '@/common/Boe'
 
 const filterStore = useFilterStore()
 const selectedTier = computed<Tier>({
@@ -14,10 +14,7 @@ const selectedTier = computed<Tier>({
     },
 })
 
-const allTiers = Object.keys(TIER_CONFIGS).map((key) => key as Tier)
-const getTierName = (tier: Tier): string => {
-    return TIER_CONFIGS[tier].name
-}
+const allTiers = [...tierConfigs.keys()]
 </script>
 
 <template>

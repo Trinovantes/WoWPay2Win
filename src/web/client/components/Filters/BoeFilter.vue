@@ -4,10 +4,8 @@ import { useFilterStore } from '../../store/Filter'
 import { getItemIcon } from '../../utils/ImageLoader'
 import { getItemNameById } from '../../utils/getItemNameById'
 import { getWowheadItemLinkById } from '../../utils/getWowheadItemLinkById'
-import { TIER_CONFIGS } from '@/common/TierConfig'
 
 const filterStore = useFilterStore()
-const boeCategories = computed(() => TIER_CONFIGS[filterStore.tier].boes)
 const selectedBoes = computed<Array<number>>({
     get() {
         return [...filterStore.boes]
@@ -68,15 +66,13 @@ const getItemName = (itemId: number) => {
 
     return getItemNameById(itemId, region.value)
 }
-
-const tierName = computed(() => TIER_CONFIGS[filterStore.tier].name)
 </script>
 
 <template>
     <q-banner
-        v-if="boeCategories.length === 0"
+        v-if="filterStore.currentTierBoes.length === 0"
     >
-        No BoEs available for {{ tierName }}
+        No BoEs available for {{ filterStore.currentTierName }}
     </q-banner>
 
     <div
@@ -84,7 +80,7 @@ const tierName = computed(() => TIER_CONFIGS[filterStore.tier].name)
         class="group"
     >
         <div
-            v-for="category of boeCategories"
+            v-for="category of filterStore.currentTierBoes"
             :key="category.label"
         >
             <h2>

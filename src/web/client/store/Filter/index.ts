@@ -3,9 +3,7 @@ import { getRegionRealmIds } from '../../utils/getRegionRealmIds'
 import { Tertiary } from '@/common/BonusId'
 import { GOLD_CAP } from '@/common/Constants'
 import { RegionSlug } from '@/common/RegionConfig'
-import { DEFAULT_TIER, IlvlRange, Tier } from '@/common/TierConfig'
-import { getIlvlRange } from '@/common/utils/getIlvlRange'
-import { getTierBoeIds } from '@/common/utils/getTierBoeIds'
+import { BoeIlvlRange, Tier, defaultTier, getIlvlRange, getTierBoeIds, tierConfigs } from '@/common/Boe'
 
 // ----------------------------------------------------------------------------
 // State
@@ -21,7 +19,10 @@ export type FilterState = {
     region: RegionFilter
     realms: RealmFilter
     boes: BoeFilter
-    ilvlRange: IlvlRange
+    ilvlRange: {
+        min: number
+        max: number
+    }
     maxBuyout: number
     mustHaveSocket: boolean
     tertiaries: TertiaryFilter
@@ -29,7 +30,7 @@ export type FilterState = {
 
 export function createDefaultFilterState(): FilterState {
     const defaultState: FilterState = {
-        tier: DEFAULT_TIER,
+        tier: defaultTier,
         region: null,
         realms: new Set(),
 
@@ -43,7 +44,7 @@ export function createDefaultFilterState(): FilterState {
          * Therefore we will keep things simple and reset the tier-related item states whenever we change tiers
          */
         boes: new Set(),
-        ilvlRange: getIlvlRange(DEFAULT_TIER),
+        ilvlRange: getIlvlRange(defaultTier),
         maxBuyout: GOLD_CAP,
         mustHaveSocket: false,
         tertiaries: new Set(),
@@ -74,6 +75,24 @@ type QueryFilters = Partial<Record<QueryFiltersField, string>>
 
 export const useFilterStore = defineStore('Filter', {
     state: createDefaultFilterState,
+
+    getters: {
+        currentTierName: (state) => {
+            return tierConfigs.get(state.tier)?.name ?? `[INVALID TIER "${state.tier}"]`
+        },
+
+        currentTierBoes: (state) => {
+            return tierConfigs.get(state.tier)?.boes ?? []
+        },
+
+        currentTierIlvlStep: (state) => {
+            return tierConfigs.get(state.tier)?.ilvlStep
+        },
+
+        currentTierIlvlRange: (state) => {
+            return tierConfigs.get(state.tier)?.ilvlRange
+        },
+    },
 
     actions: {
         changeTier(tier: Tier) {
@@ -141,7 +160,7 @@ export const useFilterStore = defineStore('Filter', {
             }
 
             if (queryFilters.tier) {
-                const validTiers = Object.values(Tier)
+                const validTiers = [...tierConfigs.keys()]
                 const tier = queryFilters.tier as Tier
                 if (validTiers.includes(tier)) {
                     this.changeTier(tier)
@@ -190,7 +209,7 @@ export const useFilterStore = defineStore('Filter', {
 // Helpers
 // ----------------------------------------------------------------------------
 
-function isIlvlRangeEqual(a: IlvlRange, b: IlvlRange): boolean {
+function isIlvlRangeEqual(a: BoeIlvlRange, b: BoeIlvlRange): boolean {
     return a.max === b.max && a.min === b.min
 }
 
