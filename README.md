@@ -42,12 +42,9 @@ make run   # Starts Docker images
 
 ## Add New Tier
 
-1. Update `Tier` enum `TierConfig.ts`
+1. Create new file in `src/comon/tiers/` directory that default exports a `TierConfig` object. This config will be dynamically loaded via Webpack. The file should be of the form `XX-YY-descriptive-name` where `XX` is the expansion number (e.g. 07 for BfA) and `YY` is simply a number used to order the config (the last file in the filesystem will be considered the default/latest tier).
 
-2. Update `DEFAULT_TIER` variable in `TierConfig.ts`
-
-3. Run `yarn fetchSocketIds` to update `BonusIds.ts`
-
+2. Run yarn fetchSocketIds to update BonusIds.ts
 
 ## Setting up GitHub Actions
 
