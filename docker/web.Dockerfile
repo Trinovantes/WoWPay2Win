@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:22-alpine as builder
+FROM node:22-alpine AS builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -26,7 +26,7 @@ RUN --mount=type=secret,id=GIT_HASH \
 
 # -----------------------------------------------------------------------------
 FROM caddy:2-alpine
-LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
+LABEL org.opencontainers.image.source=https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
 WORKDIR /app

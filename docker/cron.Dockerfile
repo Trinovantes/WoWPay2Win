@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-FROM node:22-alpine as builder
+FROM node:22-alpine AS builder
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
@@ -20,14 +20,14 @@ RUN yarn install --production
 
 # -----------------------------------------------------------------------------
 FROM node:22-alpine
-LABEL org.opencontainers.image.source https://github.com/Trinovantes/WoWPay2Win
+LABEL org.opencontainers.image.source=https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
 RUN apk update && apk add --no-cache curl
 
 WORKDIR /app
 
-ENV NODE_ENV 'production'
+ENV NODE_ENV='production'
 
 # Copy app
 COPY --from=builder /app/package.json   ./
@@ -40,4 +40,4 @@ RUN mkdir -p                            ./src/web/client/assets/data
 RUN mkdir -p                            ./dist/web/data
 
 RUN echo "0,30 * * * * cd /app && sh ./docker/cron.sh" >> /etc/crontabs/root
-CMD crond -f
+CMD ["crond", "-f"]
