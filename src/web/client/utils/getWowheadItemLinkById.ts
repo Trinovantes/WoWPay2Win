@@ -3,9 +3,10 @@ import { RegionSlug } from '@/common/RegionConfig'
 export function getWowheadItemLinkById(itemId: number, region: RegionSlug): string {
     let domain: string
     switch (region) {
-        case RegionSlug.KR:
+        case 'kr':
             domain = 'ko'
             break
+
         default:
             domain = 'www'
     }

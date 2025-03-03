@@ -1,12 +1,10 @@
 import type { FilterState } from './Filter'
 
-export enum HydrationKey {
-    FILTER = '__INITIAL_FILTER_STATE__',
+type HydrationStateMap = {
+    ['__INITIAL_FILTER_STATE__']: FilterState
 }
 
-type HydrationStateMap = {
-    [HydrationKey.FILTER]: FilterState
-}
+type HydrationKey = keyof HydrationStateMap
 
 export function saveStateToLocalStorage<K extends keyof HydrationStateMap>(key: K, state: HydrationStateMap[K]): void {
     try {
@@ -34,7 +32,9 @@ export function loadStateFromLocalStorage<K extends keyof HydrationStateMap>(key
 }
 
 export function cleanLocalStorage(): void {
-    const hydrationKeys = Object.values(HydrationKey)
+    const hydrationKeys: Array<HydrationKey> = [
+        '__INITIAL_FILTER_STATE__',
+    ]
 
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i)

@@ -1,12 +1,12 @@
-import { isSecondaryBonusId } from '@/common/BonusId'
+import { getSecondaryAffix } from '@/common/BonusId'
 
-export function getItemSecondaryAffix(bonusIds: Array<number>): string {
+export function getItemSecondaryAffix(bonusIds: Array<number>): string | undefined {
     for (const id of bonusIds) {
-        const secondary = isSecondaryBonusId(id)
+        const secondary = getSecondaryAffix(id)
         if (secondary !== undefined) {
             return secondary
         }
     }
 
-    return ''
+    return undefined
 }

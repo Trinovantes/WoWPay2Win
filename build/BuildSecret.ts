@@ -7,10 +7,13 @@ import { config } from 'dotenv'
 const envFile = process.env.ENV_FILE ?? '.env'
 config({ path: envFile })
 
-export enum BuildSecret {
-    GIT_HASH = 'GIT_HASH',
-    WEBPACK_ANALYZE = 'WEBPACK_ANALYZE',
-}
+export type BuildSecret =
+    'GIT_HASH' |
+    'WEBPACK_ANALYZE' |
+    'WEB_URL' |
+    'WEB_PORT' |
+    'API_URL' |
+    'API_PORT'
 
 export function getBuildSecret(key: BuildSecret, defaultValue?: string): string {
     // Check if it's already defined in process.env
@@ -40,9 +43,9 @@ export function getGitHash(rootDir: string): string {
         return execSync('git rev-parse HEAD').toString().trim()
     }
 
-    return getBuildSecret(BuildSecret.GIT_HASH)
+    return getBuildSecret('GIT_HASH')
 }
 
 export function isAnalyze(): boolean {
-    return getBuildSecret(BuildSecret.WEBPACK_ANALYZE, 'false') === 'true'
+    return getBuildSecret('WEBPACK_ANALYZE', 'false') === 'true'
 }

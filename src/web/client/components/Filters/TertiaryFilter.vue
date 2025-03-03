@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
-import { Tertiary } from '@/common/BonusId'
+import { ALL_TERTIARIES, Tertiary } from '@/common/BonusId'
 import { useIsTierCategoryGear } from './useIsTierCategoryGear'
 
 type SelectedTertiaries = Array<Tertiary>
@@ -15,19 +15,6 @@ const selectedTeriary = computed<SelectedTertiaries>({
         filterStore.tertiaries = new Set(tertiaries)
     },
 })
-
-const allTertiaries: Array<{ label: string; bonusId: number }> = []
-for (const [label, tertiaryId] of Object.entries(Tertiary)) {
-    const bonusId = Number(tertiaryId)
-    if (isNaN(bonusId)) {
-        continue
-    }
-
-    allTertiaries.push({
-        label,
-        bonusId,
-    })
-}
 
 const { isTierCategoryGear } = useIsTierCategoryGear()
 </script>
@@ -43,7 +30,7 @@ const { isTierCategoryGear } = useIsTierCategoryGear()
 
         <q-list dense>
             <q-item
-                v-for="tertiary of allTertiaries"
+                v-for="tertiary of ALL_TERTIARIES"
                 :key="tertiary.bonusId"
                 v-ripple
                 tag="label"

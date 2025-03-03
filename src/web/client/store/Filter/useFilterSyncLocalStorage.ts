@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router'
-import { HydrationKey, loadStateFromLocalStorage, saveStateToLocalStorage } from '../Hydration'
+import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../Hydration'
 import { useFilterStore } from '.'
 
 export function useFilterSyncLocalStorage() {
@@ -7,7 +7,7 @@ export function useFilterSyncLocalStorage() {
     const filterStore = useFilterStore()
 
     // Load state from localStorage if there's no init query
-    const savedState = loadStateFromLocalStorage(HydrationKey.FILTER)
+    const savedState = loadStateFromLocalStorage('__INITIAL_FILTER_STATE__')
     const hasNoInitQuery = Object.keys(router.currentRoute.value.query).length === 0
     if (savedState && hasNoInitQuery) {
         filterStore.$patch(savedState)
@@ -15,6 +15,6 @@ export function useFilterSyncLocalStorage() {
 
     // Write changes to localStorage
     filterStore.$subscribe((mutation, state) => {
-        saveStateToLocalStorage(HydrationKey.FILTER, state)
+        saveStateToLocalStorage('__INITIAL_FILTER_STATE__', state)
     })
 }

@@ -37,7 +37,12 @@ const allTiers = [...tierConfigs.keys()]
                         rounded
                         size="40px"
                     >
-                        <img :src="getTierIcon(scope.opt)" :alt="getTierName(scope.opt)" width="40" height="40">
+                        <img
+                            :src="getTierIcon(scope.opt)"
+                            :alt="getTierName(scope.opt)"
+                            width="40"
+                            height="40"
+                        >
                     </q-avatar>
                 </q-item-section>
                 <q-item-section>

@@ -1,4 +1,4 @@
-import type { Locale } from './RegionConfig'
+import type { RegionLocale } from './RegionConfig'
 
 // ----------------------------------------------------------------------------
 // Region
@@ -23,7 +23,7 @@ export type Region = {
 // ----------------------------------------------------------------------------
 
 export type Item = {
-    localizedName: Partial<Record<Locale, string>>
+    localizedName: Partial<Record<RegionLocale, string>>
     baseLevel: number
 }
 

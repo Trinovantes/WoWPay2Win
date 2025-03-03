@@ -10,7 +10,7 @@ import { getAuctionTertiary } from '../utils/getAuctionTertiary'
 import { getItemName } from '../utils/getItemName'
 import { getConnectedRealmName } from '../utils/getConnectedRealmName'
 import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
-import { Tertiary } from '@/common/BonusId'
+import { ALL_TERTIARIES, Tertiary } from '@/common/BonusId'
 import type { ItemAuction } from '@/common/Cache'
 import { ROWS_PER_PAGE } from '@/common/Constants'
 import { currencyFormatters, tokenPrices } from '@/common/RegionConfig'
@@ -63,7 +63,7 @@ const columns: QTable['columns'] = [
         sortable: true,
         align: 'left',
         field: (auction: ItemAuction) => getAuctionTertiary(auction),
-        format: (val?: Tertiary) => (val !== undefined) ? Tertiary[val] : '',
+        format: (val?: Tertiary) => ALL_TERTIARIES.find((t) => t.bonusId === val)?.label,
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },

@@ -99,89 +99,96 @@ export function isSocketBonusId(bonusId: number): boolean {
 // Tertiary
 // ----------------------------------------------------------------------------
 
+export const ALL_TERTIARIES = [
+    {
+        label: 'Avoidance',
+        bonusId: 40,
+    },
+    {
+        label: 'Leech',
+        bonusId: 41,
+    },
+    {
+        label: 'Speed',
+        bonusId: 42,
+    },
+    {
+        label: 'Indestructible',
+        bonusId: 43,
+    },
+] as const
+
 // These values don't need to match the actual bonuses since it's checked by calling checkIsTertiary()
 // We store enums with their actual bonus ids instead of starting from 0 for simplicity and to avoid confusion (since the enum values are used in url params too)
-export enum Tertiary {
-    Avoidance = 40,
-    Leech = 41,
-    Speed = 42,
-    Indestructible = 43,
-}
+export type Tertiary = typeof ALL_TERTIARIES[number]['bonusId']
 
-export function isTertiaryBonusId(bonusId: number): Tertiary | undefined {
+export function isTertiaryBonusId(bonusId: number): bonusId is Tertiary {
     switch (bonusId) {
         case 40:
-            return Tertiary.Avoidance
-
         case 41:
-            return Tertiary.Leech
-
         case 42:
-            return Tertiary.Speed
-
         case 43:
-            return Tertiary.Indestructible
+            return true
     }
 
-    return undefined
+    return false
 }
 
 // ----------------------------------------------------------------------------
 // Secondary
 // ----------------------------------------------------------------------------
 
-export enum Secondary {
-    Crit = 'Crit',
-    Haste = 'Haste',
-    Mastery = 'Mastery',
-    Versatility = 'Versatility',
-    CritHaste = 'Crit / Haste',
-    CritMastery = 'Crit / Mastery',
-    CritVersatility = 'Crit / Versatility',
-    HasteMastery = 'Haste / Mastery',
-    HasteVersatility = 'Haste / Versatility',
-    MasteryVersatility = 'Mastery / Versatility',
-}
+export type Secondary =
+    'Crit' |
+    'Haste' |
+    'Mastery' |
+    'Versatility' |
+    'Crit / Haste' |
+    'Crit / Mastery' |
+    'Crit / Versatility' |
+    'Haste / Mastery' |
+    'Haste / Versatility' |
+    'Mastery / Versatility'
 
-export function isSecondaryBonusId(bonusId: number): Secondary | undefined {
+export function getSecondaryAffix(bonusId: number): Secondary | undefined {
     if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002) || bonusId === 8180 || bonusId === 8181) {
-        return Secondary.CritVersatility
+        return 'Crit / Versatility'
     }
 
     if ((bonusId >= 1683 && bonusId <= 1689) || (bonusId >= 8003 && bonusId <= 8020) || bonusId === 8178 || bonusId === 8179) {
-        return Secondary.CritMastery
+        return 'Crit / Mastery'
     }
 
     if ((bonusId >= 1690 && bonusId <= 1696) || (bonusId >= 8021 && bonusId <= 8038) || bonusId === 8176 || bonusId === 8177) {
-        return Secondary.CritHaste
+        return 'Crit / Haste'
     }
 
     if ((bonusId >= 1697 && bonusId <= 1703) || (bonusId >= 8039 && bonusId <= 8056) || bonusId === 8182 || bonusId === 8183) {
-        return Secondary.HasteMastery
+        return 'Haste / Mastery'
     }
 
     if ((bonusId >= 1704 && bonusId <= 1710) || (bonusId >= 8057 && bonusId <= 8074) || bonusId === 8184 || bonusId === 8185) {
-        return Secondary.HasteVersatility
+        return 'Haste / Versatility'
     }
 
     if ((bonusId >= 1711 && bonusId <= 1717) || (bonusId >= 8075 && bonusId <= 8092) || bonusId === 8186 || bonusId === 8187) {
-        return Secondary.MasteryVersatility
+        return 'Mastery / Versatility'
     }
 
     if (bonusId === 1718) {
-        return Secondary.Crit
+        return 'Crit'
     }
 
     if (bonusId === 1719) {
-        return Secondary.Versatility
+        return 'Versatility'
     }
 
     if (bonusId === 1720) {
-        return Secondary.Haste
+        return 'Haste'
     }
 
     if (bonusId === 1721) {
-        return Secondary.Mastery
+        return 'Mastery'
     }
 
     return undefined

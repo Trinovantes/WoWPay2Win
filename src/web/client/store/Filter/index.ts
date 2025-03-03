@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { getRegionRealmIds } from '../../utils/getRegionRealmIds'
-import { Tertiary } from '@/common/BonusId'
+import { ALL_TERTIARIES, Tertiary } from '@/common/BonusId'
 import { GOLD_CAP } from '@/common/Constants'
 import { RegionSlug } from '@/common/RegionConfig'
 import { BoeIlvlRange, Tier, defaultTier, getIlvlRange, getTierBoeIds, tierConfigs } from '@/common/Boe'
@@ -56,16 +56,15 @@ export function createDefaultFilterState(): FilterState {
 const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','
 
-enum QueryFiltersField {
-    tier = 'tier',
-    region = 'region',
-    realms = 'realms',
-    boes = 'boes',
-    ilvlRange = 'ilvlRange',
-    maxBuyout = 'maxBuyout',
-    mustHaveSocket = 'mustHaveSocket',
-    tertiaries = 'tertiaries',
-}
+type QueryFiltersField =
+    'tier' |
+    'region' |
+    'realms' |
+    'boes' |
+    'ilvlRange' |
+    'maxBuyout' |
+    'mustHaveSocket' |
+    'tertiaries'
 
 type QueryFilters = Partial<Record<QueryFiltersField, string>>
 
@@ -118,11 +117,11 @@ export const useFilterStore = defineStore('Filter', {
             }
 
             if (this.realms.size > 0) {
-                queryFilters.realms = exportSet(this.realms)
+                queryFilters.realms = exportNumSet(this.realms)
             }
 
             if (this.boes.size > 0) {
-                queryFilters.boes = exportSet(this.boes)
+                queryFilters.boes = exportNumSet(this.boes)
             }
 
             if (!isIlvlRangeEqual(this.ilvlRange, getIlvlRange(this.tier))) {
@@ -138,7 +137,7 @@ export const useFilterStore = defineStore('Filter', {
             }
 
             if (this.tertiaries.size > 0) {
-                queryFilters.tertiaries = exportSet(this.tertiaries)
+                queryFilters.tertiaries = exportNumSet(this.tertiaries)
             }
 
             return queryFilters
@@ -146,7 +145,7 @@ export const useFilterStore = defineStore('Filter', {
 
         importFromQuery(queryFilters: QueryFilters) {
             if (queryFilters.region) {
-                const validRegions = Object.values(RegionSlug)
+                const validRegions: Array<RegionSlug> = ['us', 'eu', 'tw', 'kr']
                 const region = queryFilters.region as RegionSlug
                 if (validRegions.includes(region)) {
                     this.changeRegion(region)
@@ -155,7 +154,7 @@ export const useFilterStore = defineStore('Filter', {
 
             if (queryFilters.realms) {
                 const validRealmIds = getRegionRealmIds(this.region)
-                const realms = importArray(queryFilters.realms).filter((realm) => validRealmIds.includes(realm))
+                const realms = importNumArray(queryFilters.realms, validRealmIds)
                 this.realms = new Set(realms)
             }
 
@@ -169,7 +168,7 @@ export const useFilterStore = defineStore('Filter', {
 
             if (queryFilters.boes) {
                 const validBoeIds = getTierBoeIds(this.tier)
-                const boeIds = importArray(queryFilters.boes).filter((boeId) => validBoeIds.includes(boeId))
+                const boeIds = importNumArray(queryFilters.boes, validBoeIds)
                 this.boes = new Set(boeIds)
             }
 
@@ -197,8 +196,8 @@ export const useFilterStore = defineStore('Filter', {
             }
 
             if (queryFilters.tertiaries) {
-                const validTertiaries = Object.values(Tertiary)
-                const tertiaries = importArray(queryFilters.tertiaries).filter((tertiary) => validTertiaries.includes(tertiary))
+                const validTertiaries = ALL_TERTIARIES.map((tertiary) => tertiary.bonusId)
+                const tertiaries = importNumArray<Tertiary>(queryFilters.tertiaries, validTertiaries)
                 this.tertiaries = new Set(tertiaries)
             }
         },
@@ -219,15 +218,16 @@ function clamp(val: number, min: number, max: number): number {
     return val
 }
 
-function exportSet(set: Set<number>): string {
+function exportNumSet(set: Set<number>): string {
     return [...set].sort((a, b) => a - b).join(DELIMITER)
 }
 
-function importArray(setString: string): Array<number> {
-    const idStrings = setString.split(',')
-    const ids = idStrings
-        .map((idString) => parseInt(idString))
-        .filter((id) => !isNaN(id))
+function importNumArray<T extends number = number>(setString: string, validValues: Array<number>): Array<T> {
+    const numStrings = setString.split(',')
+    const nums = numStrings
+        .map((s) => parseInt(s))
+        .filter((num) => !isNaN(num))
+        .filter((num) => validValues.includes(num))
 
-    return ids
+    return nums as Array<T>
 }

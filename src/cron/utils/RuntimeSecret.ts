@@ -4,10 +4,9 @@ import { config } from 'dotenv'
 // Loads .env into process.env
 config()
 
-export enum RuntimeSecret {
-    CLIENT_ID = 'CLIENT_ID',
-    CLIENT_SECRET = 'CLIENT_SECRET',
-}
+export type RuntimeSecret =
+    'CLIENT_ID' |
+    'CLIENT_SECRET'
 
 const secretsCache = new Map<RuntimeSecret, string>()
 

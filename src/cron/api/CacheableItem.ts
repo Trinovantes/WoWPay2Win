@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fetchFile } from '../utils/fetchFile'
 import type { Item } from '@/common/Cache'
-import type { Locale } from '@/common/RegionConfig'
+import type { RegionLocale } from '@/common/RegionConfig'
 import { Cacheable } from './Cacheable'
 import type { ApiAccessor } from '../api/ApiAccessor'
 import type { BnetItemMediaResponse, BnetItemResponse } from '../api/BnetResponse'
@@ -14,7 +14,7 @@ import type { BnetItemMediaResponse, BnetItemResponse } from '../api/BnetRespons
 export class CacheableItem extends Cacheable<Item> {
     readonly id: number
     readonly iconPath: string
-    #localizedName: Partial<Record<Locale, string>>
+    #localizedName: Partial<Record<RegionLocale, string>>
     #baseLevel: number
 
     constructor(apiAccessor: ApiAccessor, id: number, dataDir: string, imgDir: string) {

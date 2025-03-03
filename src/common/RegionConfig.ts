@@ -1,62 +1,50 @@
-export enum RegionSlug {
-    US = 'us',
-    EU = 'eu',
-    TW = 'tw',
-    KR = 'kr',
-}
-
-export enum Locale {
-    EN_US = 'en_US',
-    EN_GB = 'en_GB',
-    ZH_TW = 'zh_TW',
-    KO_KR = 'ko_KR',
-}
+export type RegionSlug = 'us' | 'eu' | 'tw' | 'kr'
+export type RegionLocale = 'en_US' | 'en_GB' | 'zh_TW' | 'ko_KR'
 
 export type RegionConfig = Readonly<{
     slug: RegionSlug
-    locale: Locale
+    locale: RegionLocale
     apiHost: string
     oauthEndpoint: string
 }>
 
 export const regionConfigs: ReadonlyArray<RegionConfig> = [
     {
-        slug: RegionSlug.US,
-        locale: Locale.EN_US,
+        slug: 'us',
+        locale: 'en_US',
         apiHost: 'https://us.api.blizzard.com',
         oauthEndpoint: 'https://oauth.battle.net/token',
     },
     {
-        slug: RegionSlug.EU,
-        locale: Locale.EN_GB,
+        slug: 'eu',
+        locale: 'en_GB',
         apiHost: 'https://eu.api.blizzard.com',
         oauthEndpoint: 'https://oauth.battle.net/token',
     },
     {
-        slug: RegionSlug.TW,
-        locale: Locale.ZH_TW,
+        slug: 'tw',
+        locale: 'zh_TW',
         apiHost: 'https://tw.api.blizzard.com',
         oauthEndpoint: 'https://oauth.battle.net/token',
     },
     {
-        slug: RegionSlug.KR,
-        locale: Locale.KO_KR,
+        slug: 'kr',
+        locale: 'ko_KR',
         apiHost: 'https://kr.api.blizzard.com',
         oauthEndpoint: 'https://oauth.battle.net/token',
     },
 ]
 
-type LocalCurrencyAmount = number
-export const tokenPrices = new Map<RegionSlug, LocalCurrencyAmount>([
-    [RegionSlug.US, 20],
-    [RegionSlug.EU, 20],
-    [RegionSlug.KR, 22000],
-    [RegionSlug.TW, 500],
+export const tokenPrices = new Map<RegionSlug, number>([
+    ['us', 20],
+    ['eu', 20],
+    ['kr', 22000],
+    ['tw', 500],
 ])
 
 export const currencyFormatters = new Map<RegionSlug, Intl.NumberFormat>([
-    [RegionSlug.US, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' })],
-    [RegionSlug.EU, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' })],
-    [RegionSlug.KR, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'KRW' })],
-    [RegionSlug.TW, new Intl.NumberFormat(undefined, { style: 'currency', currency: 'TWD' })],
+    ['us', new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' })],
+    ['eu', new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' })],
+    ['kr', new Intl.NumberFormat(undefined, { style: 'currency', currency: 'KRW' })],
+    ['tw', new Intl.NumberFormat(undefined, { style: 'currency', currency: 'TWD' })],
 ])

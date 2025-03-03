@@ -1,19 +1,22 @@
-import { getRuntimeSecret, RuntimeSecret } from '../utils/RuntimeSecret'
+import { getRuntimeSecret } from '../utils/RuntimeSecret'
 import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
 import type { RegionConfig } from '@/common/RegionConfig'
 import type { BnetOauthResponse } from '../api/BnetResponse'
 import { PROXY_TARGET_URL_HEADER, PROXY_URL_DEV, PROXY_URL_PROD } from '@/common/Constants'
 
 export class ApiAccessor {
+    readonly regionConfig: RegionConfig
+    readonly proxyUrl: string
     #accessToken?: string
 
     constructor(
-        readonly regionConfig: RegionConfig,
-        readonly proxyUrl = DEFINE.IS_DEV
+        regionConfig: RegionConfig,
+        proxyUrl = DEFINE.IS_DEV
             ? PROXY_URL_DEV
             : PROXY_URL_PROD,
     ) {
-        // nop
+        this.regionConfig = regionConfig
+        this.proxyUrl = proxyUrl
     }
 
     async #fetchAccessToken(): Promise<void> {
@@ -21,8 +24,8 @@ export class ApiAccessor {
             return
         }
 
-        const clientId = getRuntimeSecret(RuntimeSecret.CLIENT_ID)
-        const clientSecret = getRuntimeSecret(RuntimeSecret.CLIENT_SECRET)
+        const clientId = getRuntimeSecret('CLIENT_ID')
+        const clientSecret = getRuntimeSecret('CLIENT_SECRET')
         const basicAuth = btoa(`${clientId}:${clientSecret}`)
         const config: RequestInit = {
             method: 'POST',
