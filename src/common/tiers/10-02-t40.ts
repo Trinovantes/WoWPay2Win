@@ -52,7 +52,7 @@ const config: TierConfig = {
     ilvlStep: 13,
     ilvlRange: {
         min: 584,
-        max: 584 + (13 * 3) + 9, // Later bosses drop up to base+9
+        max: 584 + (13 * 2),
     },
 }
 
