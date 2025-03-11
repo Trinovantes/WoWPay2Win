@@ -2,21 +2,15 @@ import { getRuntimeSecret } from '../utils/RuntimeSecret'
 import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
 import type { RegionConfig } from '@/common/RegionConfig'
 import type { BnetOauthResponse } from '../api/BnetResponse'
-import { PROXY_TARGET_URL_HEADER, PROXY_URL_DEV, PROXY_URL_PROD } from '@/common/Constants'
 
 export class ApiAccessor {
     readonly regionConfig: RegionConfig
-    readonly proxyUrl: string
     #accessToken?: string
 
     constructor(
         regionConfig: RegionConfig,
-        proxyUrl = DEFINE.IS_DEV
-            ? PROXY_URL_DEV
-            : PROXY_URL_PROD,
     ) {
         this.regionConfig = regionConfig
-        this.proxyUrl = proxyUrl
     }
 
     async #fetchAccessToken(): Promise<void> {
@@ -32,11 +26,10 @@ export class ApiAccessor {
             body: new URLSearchParams({ grant_type: 'client_credentials' }),
             headers: {
                 Authorization: `Basic ${basicAuth}`,
-                [PROXY_TARGET_URL_HEADER]: this.regionConfig.oauthEndpoint,
             },
         }
 
-        const response = await tryExponentialBackoff<BnetOauthResponse>(this.proxyUrl, this.regionConfig.oauthEndpoint, config, (res) => {
+        const response = await tryExponentialBackoff<BnetOauthResponse>(this.regionConfig.oauthEndpoint, config, (res) => {
             if (!res?.access_token) {
                 return 'Missing access_token in response'
             }
@@ -70,11 +63,10 @@ export class ApiAccessor {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${this.#accessToken}`,
-                [PROXY_TARGET_URL_HEADER]: targetUrl.toString(),
             },
         }
 
-        const response = await tryExponentialBackoff<T>(this.proxyUrl, targetUrl.toString(), config, isValidResponse)
+        const response = await tryExponentialBackoff<T>(targetUrl.toString(), config, isValidResponse)
         return response
     }
 }
