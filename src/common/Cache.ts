@@ -1,4 +1,4 @@
-import type { RegionLocale } from './RegionConfig'
+import { RegionLocale } from './RegionConfig'
 
 // ----------------------------------------------------------------------------
 // Region

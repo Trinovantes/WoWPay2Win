@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useFilterStore } from '../../store/Filter'
 import { getRegion } from '../../utils/getRegion'
-import type { Realm } from '@/common/Cache'
+import { Realm } from '@/common/Cache'
 
 type SelectedRealms = Array<number>
 type Realms = Array<Realm>

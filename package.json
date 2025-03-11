@@ -1,22 +1,18 @@
 {
     "private": true,
     "scripts": {
-        "fetchSocketIds": "bun ./src/scripts/fetchSocketIds.ts",
-        "fetchItems": "   node -r source-map-support/register dist/cron/fetchItems.js    src/web/client/assets/data src/web/client/assets/img",
-        "fetchAuctions": "node -r source-map-support/register dist/cron/fetchAuctions.js src/web/client/assets/data dist/web/data",
-        "devCron": "  NODE_ENV=development webpack --watch --config build/webpack.config.cron.ts",
-        "devWeb": "   NODE_ENV=development webpack serve   --config build/webpack.config.web.ts",
-        "buildCron": "NODE_ENV=production  webpack         --config build/webpack.config.cron.ts && sentry-cli sourcemaps inject ./dist/cron",
-        "buildWeb": " NODE_ENV=production  webpack         --config build/webpack.config.web.ts  && sentry-cli sourcemaps inject ./dist/web",
-        "dev": "  concurrently 'yarn devCron'   'yarn devWeb'",
-        "build": "concurrently 'yarn buildCron' 'yarn buildWeb'",
+        "fetchAuctions": " bun run --define DEFINE.IS_DEV=true --define DEFINE.GIT_HASH=\"'$(git rev-parse HEAD)'\" ./src/scripts/fetchAuctions.ts",
+        "fetchItems": "    bun run --define DEFINE.IS_DEV=true                                                      ./src/scripts/fetchItems.ts",
+        "fetchSocketIds": "bun run --define DEFINE.IS_DEV=true                                                      ./src/scripts/fetchSocketIds.ts",
+        "dev": "         NODE_ENV=development webpack serve --config build/webpack.config.web.ts",
+        "buildWeb": "    NODE_ENV=production  webpack       --config build/webpack.config.web.ts && sentry-cli sourcemaps inject ./dist/web",
+        "buildScripts": "NODE_ENV=production  bun run build/bun.config.scripts.ts",
         "lint": "vue-tsc --noemit && eslint",
         "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.ts",
         "prepare": "patch-package"
     },
     "dependencies": {
-        "@sentry/node": "^8.41.0",
-        "source-map-support": "^0.5.19"
+        "@sentry/node": "^8.41.0"
     },
     "devDependencies": {
         "@eslint/compat": "^1.1.0",
@@ -24,16 +20,16 @@
         "@sentry/cli": "^2.21.2",
         "@sentry/vue": "^8.41.0",
         "@stylistic/eslint-plugin": "^4.1.0",
+        "@types/bun": "^1.2.5",
         "@types/lodash.throttle": "^4.1.7",
         "@types/node": "^22.10.0",
         "@types/webpack-bundle-analyzer": "^4.4.1",
         "@types/webpack-env": "^1.15.3",
         "@vue/compiler-sfc": "^3.0.11",
-        "concurrently": "^9.0.1",
         "copy-webpack-plugin": "^13.0.0",
         "css-loader": "^7.1.1",
         "date-fns": "^4.1.0",
-        "dotenv": "^16.3.1",
+        "dotenv": "^16.4.7",
         "esbuild-loader": "^4.0.2",
         "eslint": "^9.4.0",
         "eslint-plugin-n": "^17.7.0",

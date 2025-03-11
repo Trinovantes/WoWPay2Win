@@ -1,13 +1,14 @@
+import 'webpack-dev-server'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import 'webpack-dev-server'
 import { merge } from 'webpack-merge'
-import { commonConfig } from './webpack.common'
 import { srcWebDir, distWebDir, isDev, staticDir } from './BuildConstants'
 import { isAnalyze } from './BuildSecret'
+import { AUCTIONS_DATA_DIR } from '../src/common/Constants'
+import { commonConfig } from './webpack.common'
 
 // ----------------------------------------------------------------------------
 // Web
@@ -32,10 +33,7 @@ export default merge(commonConfig, {
         historyApiFallback: true,
         static: [
             {
-                directory: distWebDir,
-            },
-            {
-                directory: '/var/www/wowpay2win/auctions',
+                directory: AUCTIONS_DATA_DIR,
                 publicPath: '/data',
             },
         ],

@@ -11,8 +11,8 @@ This app consists of two parts:
 1. **Website:** (`src/web`)
     - This is a SPA built using Vue.js
 
-2. **Cron script:** (`src/cron`)
-    - This is a Node script responsible for fetching auction house data from Blizzard's API
+2. **Cron Script:** (`src/scripts`)
+    - This is a cronjob responsible for fetching auction house data from Blizzard's API
 
 These two parts are completely independent from each other where their only communication channel is through the generated `json` data files.
 
@@ -22,9 +22,9 @@ These two parts are completely independent from each other where their only comm
 # Runs linter
 yarn lint
 
-# Note that the website requires game data from the API (localized item names and icon files) before it can be properly built
-yarn buildCron
+# Download game data from the API (localized item names and icon files) before building
 yarn fetchItems
+yarn fetchSocketIds
 
 # Starts webpack-dev-server on localhost:8080
 yarn devWeb
@@ -42,9 +42,23 @@ make run   # Starts Docker images
 
 ## Add New Tier
 
-1. Create new file in `src/comon/tiers/` directory that default exports a `TierConfig` object. This config will be dynamically loaded via Webpack. The file should be of the form `XX-YY-descriptive-name` where `XX` is the expansion number (e.g. 07 for BfA) and `YY` is simply a number used to order the config (the last file in the filesystem will be considered the default/latest tier).
+1. Create new file in `data/tiers/config` directory that default exports a `TierConfig` object. This config will be dynamically loaded via Webpack. The file should be of the form `XX-YY-descriptive-name` where `XX` is the expansion number (e.g. 07 for BfA) and `YY` is simply a number used to order the config (the last file in the filesystem will be considered the default/latest tier).
 
-2. Run yarn fetchSocketIds to update BonusIds.ts
+2. Run `yarn fetchItems` and `yarn fetchSocketIds` to regenerate data files
+
+### Tip
+
+Run this script in your browser dev console to quickly extract item ids from Wowhead's item search
+
+```js
+// https://www.wowhead.com/items/quality:4?filter=3:82:161:128;1:2:1:4;0:110002:0:0 (for raid boe)
+// https://www.wowhead.com/items/name:Design/quality:3:4?filter=99:166:92;11:11:2;0:0:0#0-14+19 (for profession)
+$('table.listview-mode-default').find('td:nth-child(3)').find('a.q4, a.q3').each((idx, el) => {
+    const href = $(el).attr('href')
+    const id = /(\d+)/.exec(href)[0]
+    console.info(`${id}, // ${href}`)
+})
+```
 
 ## Setting up GitHub Actions
 

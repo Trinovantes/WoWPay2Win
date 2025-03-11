@@ -1,12 +1,12 @@
-import type { Region } from '@/common/Cache'
-import type { RegionSlug } from '@/common/RegionConfig'
-import { regionFiles } from './GameData'
+import { Region } from '@/common/Cache'
+import { RegionSlug } from '@/common/RegionConfig'
+import { regionDataFiles } from './GameData'
 
 export function getRegion(region: RegionSlug): Region | undefined {
-    if (!regionFiles.has(region)) {
-        console.warn('Region data file not found during compilation', region, regionFiles)
+    if (!regionDataFiles.has(region)) {
+        console.warn('Region data file not found during compilation', region, regionDataFiles)
         return undefined
     }
 
-    return regionFiles.get(region)
+    return regionDataFiles.get(region)
 }

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { getTierName, Tier } from '@/common/Boe'
 import { useFilterStore } from '../../store/Filter'
 import { getTierIcon } from '../../utils/ImageLoader'
-import { getTierName, Tier, tierConfigs } from '@/common/Boe'
+import { tierConfigMap } from '../../utils/GameData'
 
 const filterStore = useFilterStore()
 const selectedTier = computed<Tier>({
@@ -14,7 +15,7 @@ const selectedTier = computed<Tier>({
     },
 })
 
-const allTiers = [...tierConfigs.keys()]
+const allTiers = [...tierConfigMap.keys()]
 </script>
 
 <template>
@@ -28,7 +29,7 @@ const allTiers = [...tierConfigs.keys()]
         label-color="white"
     >
         <template #selected-item="scope">
-            {{ getTierName(scope.opt) }}
+            {{ getTierName(tierConfigMap, scope.opt) }}
         </template>
         <template #option="scope">
             <q-item v-bind="scope.itemProps">
@@ -38,15 +39,15 @@ const allTiers = [...tierConfigs.keys()]
                         size="40px"
                     >
                         <img
-                            :src="getTierIcon(scope.opt)"
-                            :alt="getTierName(scope.opt)"
+                            :src="getTierIcon(tierConfigMap, scope.opt)"
+                            :alt="getTierName(tierConfigMap, scope.opt)"
                             width="40"
                             height="40"
                         >
                     </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                    {{ getTierName(scope.opt) }}
+                    {{ getTierName(tierConfigMap, scope.opt) }}
                 </q-item-section>
             </q-item>
         </template>

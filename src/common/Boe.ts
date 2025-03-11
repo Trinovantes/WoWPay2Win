@@ -14,7 +14,7 @@ export type BoeIlvlRange = Readonly<{
     max: number
 }>
 
-export type Tier = Brand<string, 'Brand'>
+export type Tier = Brand<string, 'Tier'>
 
 export type TierConfig = Readonly<{
     name: string
@@ -25,49 +25,21 @@ export type TierConfig = Readonly<{
     ilvlRange?: BoeIlvlRange
 }>
 
-// ----------------------------------------------------------------------------
-// Tier Data
-// ----------------------------------------------------------------------------
-
-/*
-Use this script to quickly extract item ids from wowhead item search
-https://www.wowhead.com/items/quality:4?filter=3:82:161:128;1:2:1:4;0:110002:0:0 (for raid boe)
-https://www.wowhead.com/items/name:Design/quality:3:4?filter=99:166:92;11:11:2;0:0:0#0-14+19 (for profession)
-
-$('table.listview-mode-default').find('td:nth-child(3)').find('a.q4, a.q3').each((idx, el) => {
-    const href = $(el).attr('href')
-    const id = /(\d+)/.exec(href)[0]
-    console.info(`${id}, // ${href}`)
-})
-*/
-
-export const { tierConfigs, defaultTier } = (() => {
-    const tierConfigsImportCtx = require.context('./tiers', true, /\d{2}-\d{2}-[\w-]+\.ts$/) // Webpack specific function
-    const tierConfigsArr = new Array<TierConfig>()
-    for (const fileName of tierConfigsImportCtx.keys()) {
-        const configFile = tierConfigsImportCtx(fileName) as { default: TierConfig }
-        tierConfigsArr.push(configFile.default)
-    }
-
-    const tierConfigs: ReadonlyMap<Tier, TierConfig> = new Map(tierConfigsArr.toReversed().map((config) => [config.slug, config]))
-    const defaultTier = tierConfigsArr[tierConfigsArr.length - 1].slug
-
-    return {
-        tierConfigs,
-        defaultTier,
-    }
-})()
+// Tier data is stored in from ./data/tiers/config and must be dynamically constructed into this Map
+// For frontend, webpack can use require.context to generate this Map
+// For backend, bunjs can use Glob to generate this Map
+export type TierConfigMap = ReadonlyMap<Tier, TierConfig>
 
 // ----------------------------------------------------------------------------
 // Helpers
 // ----------------------------------------------------------------------------
 
-export function getAllBoeIds(): Array<number> {
-    return [...tierConfigs.keys()].flatMap((tier) => getTierBoeIds(tier))
+export function getAllBoeIds(tierConfigMap: TierConfigMap): Array<number> {
+    return [...tierConfigMap.keys()].flatMap((tier) => getTierBoeIds(tierConfigMap, tier))
 }
 
-export function getTierBoeIds(tier: Tier): Array<number> {
-    const tierConfig = tierConfigs.get(tier)
+export function getTierBoeIds(tierConfigMap: TierConfigMap, tier: Tier): Array<number> {
+    const tierConfig = tierConfigMap.get(tier)
     const boeIds = new Array<number>()
 
     for (const category of tierConfig?.boes ?? []) {
@@ -79,13 +51,13 @@ export function getTierBoeIds(tier: Tier): Array<number> {
     return boeIds
 }
 
-export function getTierName(tier: Tier): string | undefined {
-    return tierConfigs.get(tier)?.name
+export function getTierName(tierConfigMap: TierConfigMap, tier: Tier): string | undefined {
+    return tierConfigMap.get(tier)?.name
 }
 
-export function getIlvlRange(tier: Tier): BoeIlvlRange {
+export function getIlvlRange(tierConfigMap: TierConfigMap, tier: Tier): BoeIlvlRange {
     return {
-        max: tierConfigs.get(tier)?.ilvlRange?.max ?? 0,
-        min: tierConfigs.get(tier)?.ilvlRange?.min ?? 0,
+        max: tierConfigMap.get(tier)?.ilvlRange?.max ?? 0,
+        min: tierConfigMap.get(tier)?.ilvlRange?.min ?? 0,
     }
 }

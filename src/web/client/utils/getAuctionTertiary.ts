@@ -1,5 +1,5 @@
 import { isTertiaryBonusId, Tertiary } from '@/common/BonusId'
-import type { ItemAuction } from '@/common/Cache'
+import { ItemAuction } from '@/common/Cache'
 
 export function getAuctionTertiary(auction: ItemAuction): Tertiary | undefined {
     for (const bonusId of auction.bonuses) {

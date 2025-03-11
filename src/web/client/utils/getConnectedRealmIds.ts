@@ -1,12 +1,12 @@
-import type { RegionSlug } from '@/common/RegionConfig'
-import { regionFiles } from './GameData'
+import { RegionSlug } from '@/common/RegionConfig'
+import { regionDataFiles } from './GameData'
 
 type ReamToConnectedRealmMap = Record<number, number>
 
 const regionRealmMaps: Map<RegionSlug, ReamToConnectedRealmMap> = (() => {
     const maps = new Map<RegionSlug, ReamToConnectedRealmMap>()
 
-    for (const [regionSlug, regionCache] of regionFiles.entries()) {
+    for (const [regionSlug, regionCache] of regionDataFiles.entries()) {
         const map: Record<number, number> = {}
 
         for (const connectedRealm of regionCache.connectedRealms) {

@@ -4,8 +4,8 @@ import { getAuctionIlvl } from '../../utils/getAuctionIlvl'
 import { getAuctionTertiary } from '../../utils/getAuctionTertiary'
 import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds'
 import { useFilterStore } from '../Filter'
-import type { ItemAuction, RegionAuctions } from '@/common/Cache'
-import type { RegionSlug } from '@/common/RegionConfig'
+import { ItemAuction, RegionAuctions } from '@/common/Cache'
+import { RegionSlug } from '@/common/RegionConfig'
 import { formatDistance } from 'date-fns'
 
 // ----------------------------------------------------------------------------

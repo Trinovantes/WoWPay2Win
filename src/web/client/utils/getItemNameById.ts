@@ -1,13 +1,13 @@
 import { RegionSlug, regionConfigs } from '@/common/RegionConfig'
-import { itemFiles } from './GameData'
+import { itemDataFiles } from './GameData'
 
 export function getItemNameById(itemId: number, regionSlug: RegionSlug): string {
-    if (!itemFiles.has(itemId)) {
-        console.warn('Item data file not found during compilation', itemId, itemFiles)
+    if (!itemDataFiles.has(itemId)) {
+        console.warn('Item data file not found during compilation', itemId, itemDataFiles)
         return `Item ${itemId}`
     }
 
-    const itemCache = itemFiles.get(itemId)
+    const itemCache = itemDataFiles.get(itemId)
     if (!itemCache) {
         return ''
     }

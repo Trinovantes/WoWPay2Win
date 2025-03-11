@@ -1,8 +1,9 @@
-import type { Item, Region } from '@/common/Cache'
-import type { RegionSlug } from '@/common/RegionConfig'
+import { Tier, TierConfig, TierConfigMap } from '@/common/Boe'
+import { Item, Region } from '@/common/Cache'
+import { RegionSlug } from '@/common/RegionConfig'
 
-function getRegionFiles(): Map<RegionSlug, Region> {
-    const req = require.context('@/web/client/assets/data', false, /region-(\w+)\.json$/)
+export const regionDataFiles: Map<RegionSlug, Region> = (() => {
+    const req = require.context(DEFINE.REGIONS_DATA_DIR, false, /region-(\w+)\.json$/) // Webpack specific function
     const files = new Map<RegionSlug, Region>()
 
     for (const fileName of req.keys()) {
@@ -16,10 +17,10 @@ function getRegionFiles(): Map<RegionSlug, Region> {
     }
 
     return files
-}
+})()
 
-function getItemFiles(): Map<number, Item> {
-    const req = require.context('@/web/client/assets/data', false, /item-(\d+)\.json$/)
+export const itemDataFiles: Map<number, Item> = (() => {
+    const req = require.context(DEFINE.ITEMS_DATA_DIR, false, /item-(\d+)\.json$/) // Webpack specific function
     const files = new Map<number, Item>()
 
     for (const fileName of req.keys()) {
@@ -37,7 +38,22 @@ function getItemFiles(): Map<number, Item> {
     }
 
     return files
-}
+})()
 
-export const regionFiles = getRegionFiles()
-export const itemFiles = getItemFiles()
+export const { tierConfigMap, defaultTier } = (() => {
+    const tierConfigsImportCtx = require.context(DEFINE.TIERS_CONFIG_DIR, true, /\d{2}-\d{2}-[\w-]+\.ts$/) // Webpack specific function
+    const tierConfigs = new Array<TierConfig>()
+
+    for (const fileName of tierConfigsImportCtx.keys()) {
+        const configFile = tierConfigsImportCtx(fileName) as { default: TierConfig }
+        tierConfigs.push(configFile.default)
+    }
+
+    const tierConfigMap: TierConfigMap = new Map(tierConfigs.toReversed().map((config) => [config.slug, config]))
+    const defaultTier: Tier = tierConfigs[tierConfigs.length - 1].slug
+
+    return {
+        tierConfigMap,
+        defaultTier,
+    }
+})()

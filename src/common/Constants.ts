@@ -10,3 +10,12 @@ export const GOLD_CAP = 10 * 1000 * 1000
 export const ROWS_PER_PAGE = 20
 
 export const SENTRY_DSN = 'https://ba1fbe840db046beb61f9ae59e888924@o504161.ingest.sentry.io/5590531'
+
+export const REGIONS_DATA_DIR = 'data/regions/generated'
+export const ITEMS_DATA_DIR = 'data/items/generated'
+export const ITEMS_ICON_DIR = 'data/items/icons'
+export const TIERS_CONFIG_DIR = 'data/tiers/config'
+export const TIERS_ICON_DIR = 'data/tiers/icons'
+export const AUCTIONS_DATA_DIR = 'dist/web/data'
+
+export const SOCKET_BONUS_ID_DATA_FILE = 'data/items/generated/bonusIds-sockets.json'

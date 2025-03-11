@@ -1,10 +1,10 @@
 import { isIlvlBonusId } from '@/common/BonusId'
-import type { ItemAuction } from '@/common/Cache'
-import { itemFiles } from './GameData'
+import { ItemAuction } from '@/common/Cache'
+import { itemDataFiles } from './GameData'
 
 export function getAuctionIlvl(auction: ItemAuction): number {
-    if (!itemFiles.has(auction.itemId)) {
-        console.warn('Item data file not found during compilation', auction.itemId, itemFiles)
+    if (!itemDataFiles.has(auction.itemId)) {
+        console.warn('Item data file not found during compilation', auction.itemId, itemDataFiles)
         return NaN
     }
 
@@ -16,6 +16,6 @@ export function getAuctionIlvl(auction: ItemAuction): number {
         }
     }
 
-    const itemCache = itemFiles.get(auction.itemId)
+    const itemCache = itemDataFiles.get(auction.itemId)
     return (itemCache?.baseLevel ?? 0) + (bonusIlvl ?? 0)
 }

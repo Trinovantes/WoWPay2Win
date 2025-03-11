@@ -1,11 +1,11 @@
-import { Tier, tierConfigs } from '@/common/Boe'
+import { Tier, TierConfigMap } from '@/common/Boe'
 
 // ----------------------------------------------------------------------------
 // Load Data
 // ----------------------------------------------------------------------------
 
-function getTierIcons() {
-    const imgReq = require.context('@/web/client/assets/img/tiers', false, /\.(jpe?g|png|gif|svg)$/i)
+const tierIcons: Map<string, string> = (() => {
+    const imgReq = require.context(DEFINE.TIERS_ICON_DIR, false, /\.(jpe?g|png|gif|svg)$/i) // Webpack specific function
     const images = new Map<string, string>()
 
     for (const imageName of imgReq.keys()) {
@@ -15,10 +15,10 @@ function getTierIcons() {
     }
 
     return images
-}
+})()
 
-function getItemIcons() {
-    const imgReq = require.context('@/web/client/assets/img/items', false, /\.(jpe?g|png|gif|svg)$/i)
+const itemIcons: Map<string, string> = (() => {
+    const imgReq = require.context(DEFINE.ITEMS_ICON_DIR, false, /\.(jpe?g|png|gif|svg)$/i) // Webpack specific function
     const images = new Map<string, string>()
 
     for (const imageName of imgReq.keys()) {
@@ -28,17 +28,14 @@ function getItemIcons() {
     }
 
     return images
-}
-
-const tierIcons = getTierIcons()
-const itemIcons = getItemIcons()
+})()
 
 // ----------------------------------------------------------------------------
 // Exports
 // ----------------------------------------------------------------------------
 
-export function getTierIcon(tier: Tier): string | undefined {
-    const iconFile = tierConfigs.get(tier)?.iconName ?? ''
+export function getTierIcon(tierConfigMap: TierConfigMap, tier: Tier): string | undefined {
+    const iconFile = tierConfigMap.get(tier)?.iconName ?? ''
     if (!tierIcons.has(iconFile)) {
         console.warn('Image file not found during compilation', iconFile)
         return undefined

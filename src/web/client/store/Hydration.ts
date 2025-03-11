@@ -1,4 +1,4 @@
-import type { FilterState } from './Filter'
+import { FilterState } from './Filter'
 
 type HydrationStateMap = {
     ['__INITIAL_FILTER_STATE__']: FilterState

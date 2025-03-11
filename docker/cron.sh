@@ -7,6 +7,6 @@ set -u # Error when undefined variable
 
 # curl "${SENTRY_CRONS}?status=in_progress"
 
-yarn fetchAuctions
+bun run ./dist/scripts/fetchAuctions.js
 
 # curl "${SENTRY_CRONS}?status=ok"

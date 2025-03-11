@@ -11,7 +11,7 @@ import { getItemName } from '../utils/getItemName'
 import { getConnectedRealmName } from '../utils/getConnectedRealmName'
 import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
 import { ALL_TERTIARIES, Tertiary } from '@/common/BonusId'
-import type { ItemAuction } from '@/common/Cache'
+import { ItemAuction } from '@/common/Cache'
 import { ROWS_PER_PAGE } from '@/common/Constants'
 import { currencyFormatters, tokenPrices } from '@/common/RegionConfig'
 
