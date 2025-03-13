@@ -13,7 +13,6 @@ const buildResult = await Bun.build({
 
     packages: 'bundle',
     external: [
-        'bun',
         'node:*',
         '@sentry/node',
     ],
