@@ -80,6 +80,8 @@ build-cron:
 		--file $(cron-dockerfile) \
 		--tag $(cron-image) \
 		--progress=plain \
+		--secret id=CLIENT_ID \
+		--secret id=CLIENT_SECRET \
 		--secret id=GIT_HASH \
 		.
 

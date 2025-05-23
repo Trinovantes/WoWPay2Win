@@ -22,12 +22,16 @@ COPY data/                      ./data/
 # Fetch static data first
 RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
+    --mount=type=secret,id=GIT_HASH \
     yarn fetchItems && \
     yarn fetchSocketIds
 
 # Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \
-    yarn buildWeb
+    yarn build
+
+# Remove dev dependencies
+RUN yarn install --production
 
 # -----------------------------------------------------------------------------
 FROM caddy:2-alpine
@@ -35,11 +39,10 @@ LABEL org.opencontainers.image.source=https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
-ENV NODE_ENV='production'
 
 # Copy app
-COPY --from=builder /app/dist/  /app/dist/
 COPY ./docker/web.Caddyfile     /etc/caddy/Caddyfile
+COPY --from=builder /app/dist/  /app/dist/
 
 RUN caddy validate --config /etc/caddy/Caddyfile \
     && caddy fmt --overwrite /etc/caddy/Caddyfile

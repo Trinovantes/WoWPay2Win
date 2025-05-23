@@ -19,9 +19,16 @@ COPY build/                     ./build/
 COPY src/                       ./src/
 COPY data/                      ./data/
 
-# We build scripts in production instead of running as-is like in development because we want to embed BuildConstants
+# Fetch static data first
+RUN --mount=type=secret,id=CLIENT_ID \
+    --mount=type=secret,id=CLIENT_SECRET \
+    --mount=type=secret,id=GIT_HASH \
+    yarn fetchItems && \
+    yarn fetchSocketIds
+
+# Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \
-    yarn buildScripts
+    yarn build
 
 # Remove dev dependencies
 RUN yarn install --production
@@ -32,19 +39,21 @@ LABEL org.opencontainers.image.source=https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
 WORKDIR /app
+
 ENV NODE_ENV='production'
 
-# Install curl (for pinging sentry)
-RUN apk update && apk add --no-cache curl
+# Install dependencies
+RUN apk update && apk add --no-cache curl git
 
 # Copy app
 COPY --from=builder /app/tsconfig.json  ./
 COPY --from=builder /app/package.json   ./
 COPY --from=builder /app/node_modules/  ./node_modules/
-COPY --from=builder /app/dist/          ./dist/
+COPY --from=builder /app/build/         ./build/
 COPY --from=builder /app/src/           ./src/
 COPY --from=builder /app/data/          ./data/
 COPY docker/                            ./docker/
+COPY .git/                              ./.git/
 
 # Mount points
 RUN mkdir -p                            ./data/regions/generated

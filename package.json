@@ -1,18 +1,19 @@
 {
     "private": true,
     "scripts": {
-        "fetchAuctions": " bun run --define DEFINE.IS_DEV=true --define DEFINE.GIT_HASH=\"'$(git rev-parse HEAD)'\" ./src/scripts/fetchAuctions.ts",
-        "fetchItems": "    bun run --define DEFINE.IS_DEV=true                                                      ./src/scripts/fetchItems.ts",
-        "fetchSocketIds": "bun run --define DEFINE.IS_DEV=true                                                      ./src/scripts/fetchSocketIds.ts",
-        "dev": "         NODE_ENV=development webpack serve --config build/webpack.config.web.ts",
-        "buildWeb": "    NODE_ENV=production  webpack       --config build/webpack.config.web.ts && sentry-cli sourcemaps inject ./dist/web",
-        "buildScripts": "NODE_ENV=production  bun run build/bun.config.scripts.ts",
+        "fetchAuctions": " bun --preload=./build/bun.preload.ts run ./src/scripts/fetchAuctions.ts",
+        "fetchItems": "    bun --preload=./build/bun.preload.ts run ./src/scripts/fetchItems.ts",
+        "fetchSocketIds": "bun --preload=./build/bun.preload.ts run ./src/scripts/fetchSocketIds.ts",
+        "dev": "  NODE_ENV=development webpack serve --config build/webpack.config.web.ts",
+        "build": "NODE_ENV=production  webpack       --config build/webpack.config.web.ts && sentry-cli sourcemaps inject ./dist/web",
         "lint": "vue-tsc --noemit && eslint",
         "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.ts",
         "prepare": "patch-package"
     },
     "dependencies": {
-        "@sentry/node": "^8.41.0"
+        "@sentry/node": "^8.41.0",
+        "date-fns": "^4.1.0",
+        "dotenv": "^16.4.7"
     },
     "devDependencies": {
         "@eslint/compat": "^1.1.0",
@@ -28,8 +29,6 @@
         "@vue/compiler-sfc": "^3.0.11",
         "copy-webpack-plugin": "^13.0.0",
         "css-loader": "^7.1.1",
-        "date-fns": "^4.1.0",
-        "dotenv": "^16.4.7",
         "esbuild-loader": "^4.0.2",
         "eslint": "^9.4.0",
         "eslint-plugin-n": "^17.7.0",
