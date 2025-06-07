@@ -58,14 +58,14 @@ const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','
 
 type QueryFiltersField =
-    'tier' |
-    'region' |
-    'realms' |
-    'boes' |
-    'ilvlRange' |
-    'maxBuyout' |
-    'mustHaveSocket' |
-    'tertiaries'
+    | 'tier'
+    | 'region'
+    | 'realms'
+    | 'boes'
+    | 'ilvlRange'
+    | 'maxBuyout'
+    | 'mustHaveSocket'
+    | 'tertiaries'
 
 type QueryFilters = Partial<Record<QueryFiltersField, string>>
 
