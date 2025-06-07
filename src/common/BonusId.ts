@@ -95,16 +95,16 @@ export function isTertiaryBonusId(bonusId: number): bonusId is Tertiary {
 // ----------------------------------------------------------------------------
 
 export type Secondary =
-    'Crit' |
-    'Haste' |
-    'Mastery' |
-    'Versatility' |
-    'Crit / Haste' |
-    'Crit / Mastery' |
-    'Crit / Versatility' |
-    'Haste / Mastery' |
-    'Haste / Versatility' |
-    'Mastery / Versatility'
+    | 'Crit'
+    | 'Haste'
+    | 'Mastery'
+    | 'Versatility'
+    | 'Crit / Haste'
+    | 'Crit / Mastery'
+    | 'Crit / Versatility'
+    | 'Haste / Mastery'
+    | 'Haste / Versatility'
+    | 'Mastery / Versatility'
 
 export function getSecondaryAffix(bonusId: number): Secondary | undefined {
     if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002) || bonusId === 8180 || bonusId === 8181) {

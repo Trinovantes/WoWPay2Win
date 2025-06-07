@@ -5,15 +5,15 @@ import { config } from 'dotenv'
 
 // Loads .env into process.env
 const envFile = process.env.ENV_FILE ?? '.env'
-config({ path: envFile })
+config({ path: envFile, quiet: true })
 
 export type BuildSecret =
-    'GIT_HASH' |
-    'WEBPACK_ANALYZE' |
-    'WEB_URL' |
-    'WEB_PORT' |
-    'API_URL' |
-    'API_PORT'
+    | 'GIT_HASH'
+    | 'WEBPACK_ANALYZE'
+    | 'WEB_URL'
+    | 'WEB_PORT'
+    | 'API_URL'
+    | 'API_PORT'
 
 export function getBuildSecret(key: BuildSecret, defaultValue?: string): string {
     // Check if it's already defined in process.env

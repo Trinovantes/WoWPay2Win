@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 
 export type RuntimeSecret =
-    'CLIENT_ID' |
-    'CLIENT_SECRET'
+    | 'CLIENT_ID'
+    | 'CLIENT_SECRET'
 
 const secretsCache = new Map<RuntimeSecret, string>()
 
