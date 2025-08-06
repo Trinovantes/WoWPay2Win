@@ -130,3 +130,14 @@ run-web: stop-web
 		--detach \
 		--name $(web-container) \
 		$(web-image)
+
+# -----------------------------------------------------------------------------
+# Helpers
+# -----------------------------------------------------------------------------
+
+convert-icons:
+	for input_file in ./data/tiers/icons/*; do \
+		file_name=$${input_file%.*}; \
+		output_file="$${file_name}.webp"; \
+		convert "$$input_file" -resize "40x40^" -gravity center -crop "40x40+0+0" +repage "$$output_file"; \
+	done

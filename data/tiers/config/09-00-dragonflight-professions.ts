@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Dragonflight Profession Recipes',
     slug: 'dragonflight-professions' as Tier,
-    iconName: '0-dragonflight.png',
+    iconName: '0-dragonflight.webp',
     boes: [
         {
             label: 'Jewelcrafting',

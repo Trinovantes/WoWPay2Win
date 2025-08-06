@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'War Within Profession Recipes',
     slug: 'war-within-professions' as Tier,
-    iconName: '0-war-within.png',
+    iconName: '0-war-within.webp',
     boes: [
         {
             label: 'Jewelcrafting',

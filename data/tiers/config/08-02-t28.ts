@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Sanctum of Domination',
     slug: 't28' as Tier,
-    iconName: '28-sanctum-of-domination.png',
+    iconName: '28-sanctum-of-domination.webp',
     boes: [
         {
             label: 'Cloth',

@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Nerub-ar Palace',
     slug: 't38' as Tier,
-    iconName: '38-nerub-ar-palace.png',
+    iconName: '38-nerub-ar-palace.webp',
     boes: [
         {
             label: 'Plate',

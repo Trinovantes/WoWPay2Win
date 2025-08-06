@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Vault of the Incarnates',
     slug: 't31' as Tier,
-    iconName: '31-vault-of-the-incarnates.png',
+    iconName: '31-vault-of-the-incarnates.webp',
     boes: [
         {
             label: 'Plate',

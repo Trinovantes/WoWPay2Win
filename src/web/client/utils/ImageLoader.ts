@@ -5,7 +5,7 @@ import { Tier, TierConfigMap } from '@/common/Boe'
 // ----------------------------------------------------------------------------
 
 const tierIcons: Map<string, string> = (() => {
-    const imgReq = require.context(DEFINE.TIERS_ICON_DIR, false, /\.(jpe?g|png|gif|svg)$/i) // Webpack specific function
+    const imgReq = require.context(DEFINE.TIERS_ICON_DIR, false, /\.(jpe?g|png|gif|svg|webp)$/i) // Webpack specific function
     const images = new Map<string, string>()
 
     for (const imageName of imgReq.keys()) {
@@ -18,7 +18,7 @@ const tierIcons: Map<string, string> = (() => {
 })()
 
 const itemIcons: Map<string, string> = (() => {
-    const imgReq = require.context(DEFINE.ITEMS_ICON_DIR, false, /\.(jpe?g|png|gif|svg)$/i) // Webpack specific function
+    const imgReq = require.context(DEFINE.ITEMS_ICON_DIR, false, /\.(jpe?g|png|gif|svg|webp)$/i) // Webpack specific function
     const images = new Map<string, string>()
 
     for (const imageName of imgReq.keys()) {

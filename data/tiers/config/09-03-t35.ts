@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: "Amirdrassil, the Dream's Hope",
     slug: 't35' as Tier,
-    iconName: '35-amirdrassil-the-dreams-hope.png',
+    iconName: '35-amirdrassil-the-dreams-hope.webp',
     boes: [
         {
             label: 'Plate',

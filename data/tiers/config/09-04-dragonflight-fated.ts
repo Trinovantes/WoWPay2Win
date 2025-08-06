@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Dragonflight Awakened Raids',
     slug: 'dragonflight-awakened' as Tier,
-    iconName: '0-dragonflight-awakened.jpg',
+    iconName: '0-dragonflight-awakened.webp',
     boes: [
         {
             label: 'Plate',

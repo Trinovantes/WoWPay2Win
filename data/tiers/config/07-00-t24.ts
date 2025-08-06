@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: "Ny'alotha, the Waking City",
     slug: 't24' as Tier,
-    iconName: '24-nyalotha.png',
+    iconName: '24-nyalotha.webp',
     boes: [
         {
             label: 'Raid BoEs',

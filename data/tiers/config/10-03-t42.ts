@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Liberation of Undermine',
     slug: 't42' as Tier,
-    iconName: '42-liberation-of-undermine.png',
+    iconName: '42-liberation-of-undermine.webp',
     boes: [
         {
             label: 'Plate',

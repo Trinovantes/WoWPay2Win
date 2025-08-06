@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Sepulcher of the First Ones',
     slug: 't29' as Tier,
-    iconName: '29-sepulcher-of-the-first-ones.png',
+    iconName: '29-sepulcher-of-the-first-ones.webp',
     boes: [
         {
             label: 'Cloth',

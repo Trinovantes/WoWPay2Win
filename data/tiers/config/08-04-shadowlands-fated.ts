@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Shadowlands Fated Raids',
     slug: 'shadowlands-fated' as Tier,
-    iconName: '0-shadowlands-fated.jpg',
+    iconName: '0-shadowlands-fated.webp',
     boes: [
         {
             label: 'Cloth',

@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Castle Nathria',
     slug: 't26' as Tier,
-    iconName: '26-castle-nathria.png',
+    iconName: '26-castle-nathria.webp',
     boes: [
         {
             label: 'Cloth',

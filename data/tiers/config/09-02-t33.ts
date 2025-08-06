@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Aberrus, the Shadowed Crucible',
     slug: 't33' as Tier,
-    iconName: '33-aberrus-the-shadowed-crucible.png',
+    iconName: '33-aberrus-the-shadowed-crucible.webp',
     boes: [
         {
             label: 'Plate',

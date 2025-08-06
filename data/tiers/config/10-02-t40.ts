@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Blackrock Depths (20th Anniversary)',
     slug: 't40' as Tier,
-    iconName: '40-blackrock-depths.png',
+    iconName: '40-blackrock-depths.webp',
     boes: [
         {
             label: 'Plate',

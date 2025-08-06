@@ -3,7 +3,7 @@ import type { Tier, TierConfig } from '@/common/Boe'
 const config: TierConfig = {
     name: 'Shadowlands World Drops',
     slug: 'shadowlands-world-drops' as Tier,
-    iconName: '0-shadowlands.png',
+    iconName: '0-shadowlands.webp',
     boes: [
         {
             label: 'Trinket',
