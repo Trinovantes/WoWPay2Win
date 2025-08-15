@@ -10,7 +10,7 @@ import { getAuctionTertiary } from '../utils/getAuctionTertiary'
 import { getItemName } from '../utils/getItemName'
 import { getConnectedRealmName } from '../utils/getConnectedRealmName'
 import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
-import { ALL_TERTIARIES, Tertiary } from '@/common/BonusId'
+import { ALL_TERTIARIES, Tertiary } from '@/common/ItemBonusId'
 import { ItemAuction } from '@/common/Cache'
 import { ROWS_PER_PAGE } from '@/common/Constants'
 import { currencyFormatters, tokenPrices } from '@/common/RegionConfig'
@@ -145,7 +145,8 @@ const getWowheadLink = (auction: ItemAuction) => {
     }
 
     const itemLink = getWowheadItemLinkById(auction.itemId, filteredRegion.value)
-    return `${itemLink}&bonus=${auction.bonuses.join(':')}`
+    const bonusIds = auction.bonusIds ?? []
+    return `${itemLink}&bonus=${bonusIds.join(':')}`
 }
 
 const numFormatter = new Intl.NumberFormat(undefined, {

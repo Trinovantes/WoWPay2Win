@@ -2,29 +2,23 @@ import { SOCKET_BONUS_ID_DATA_FILE } from '@/common/Constants'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-type RaidbotsBonusIdResponse = Record<string, {
-    id: number
-    socket?: number
-}>
+export type CachedSocketIdsFile = Array<number>
 
 async function main() {
-    const socketIds = new Set<number>()
-    const bonusJson = await (await fetch('https://www.raidbots.com/static/data/live/bonuses.json')).json() as RaidbotsBonusIdResponse
+    const bonusJson = await (await fetch('https://www.raidbots.com/static/data/live/bonus-sockets.json')).json() as Record<string, number>
+    const cache: CachedSocketIdsFile = []
 
-    for (const [, data] of Object.entries(bonusJson)) {
-        if (data.socket !== 1) {
-            continue
-        }
-
-        socketIds.add(data.id)
+    for (const id of Object.keys(bonusJson)) {
+        const bonusId = parseInt(id)
+        cache.push(bonusId)
     }
 
     const filePath = path.resolve(SOCKET_BONUS_ID_DATA_FILE)
     const fileContents = DEFINE.IS_DEV
-        ? JSON.stringify([...socketIds], null, 4)
-        : JSON.stringify([...socketIds])
+        ? JSON.stringify(cache, null, 4)
+        : JSON.stringify(cache)
 
-    console.info(`Saving ${socketIds.size} socketIds to ${filePath}`)
+    console.info(`Saving ${cache.length} socket bonusIds to ${filePath}`)
     await fs.writeFile(filePath, fileContents, 'utf-8')
 }
 

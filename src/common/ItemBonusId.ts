@@ -15,8 +15,8 @@ export function isBannedId(bonusId: number): boolean {
     return false
 }
 
-export function hasBannedId(bonusIds: Array<number>): boolean {
-    for (const id of bonusIds) {
+export function hasBannedId(bonusIds?: Array<number>): boolean {
+    for (const id of bonusIds ?? []) {
         if (isBannedId(id)) {
             return true
         }
@@ -74,8 +74,8 @@ export const ALL_TERTIARIES = [
     },
 ] as const
 
-// These values don't need to match the actual bonuses since it's checked by calling checkIsTertiary()
-// We store enums with their actual bonus ids instead of starting from 0 for simplicity and to avoid confusion (since the enum values are used in url params too)
+// These values don't actually need to match the bonusIds since they're checked by calling isTertiaryBonusId()
+// However we still use their actual bonusIds instead of starting from 0 for simplicity and to avoid confusion (since the enum values are used in url params too)
 export type Tertiary = typeof ALL_TERTIARIES[number]['bonusId']
 
 export function isTertiaryBonusId(bonusId: number): bonusId is Tertiary {
@@ -94,61 +94,34 @@ export function isTertiaryBonusId(bonusId: number): bonusId is Tertiary {
 // Secondary
 // ----------------------------------------------------------------------------
 
-export type Secondary =
-    | 'Crit'
-    | 'Haste'
-    | 'Mastery'
-    | 'Versatility'
-    | 'Crit / Haste'
-    | 'Crit / Mastery'
-    | 'Crit / Versatility'
-    | 'Haste / Mastery'
-    | 'Haste / Versatility'
-    | 'Mastery / Versatility'
+// These key values are simply for sorting purposes and do not correspond to anything in-game
+export const ALL_SECONDARIES = [
+    {
+        label: 'Crit',
+        key: 0,
+    },
+    {
+        label: 'Haste',
+        key: 1,
+    },
+    {
+        label: 'Mastery',
+        key: 2,
+    },
+    {
+        label: 'Versatility',
+        key: 3,
+    },
+] as const
 
-export function getSecondaryAffix(bonusId: number): Secondary | undefined {
-    if ((bonusId >= 1676 && bonusId <= 1682) || (bonusId >= 7985 && bonusId <= 8002) || bonusId === 8180 || bonusId === 8181) {
-        return 'Crit / Versatility'
-    }
+export const SECONDARY = {
+    CRIT: ALL_SECONDARIES[0].key,
+    HASTE: ALL_SECONDARIES[1].key,
+    MASTERY: ALL_SECONDARIES[2].key,
+    VERS: ALL_SECONDARIES[3].key,
+} as const
 
-    if ((bonusId >= 1683 && bonusId <= 1689) || (bonusId >= 8003 && bonusId <= 8020) || bonusId === 8178 || bonusId === 8179) {
-        return 'Crit / Mastery'
-    }
-
-    if ((bonusId >= 1690 && bonusId <= 1696) || (bonusId >= 8021 && bonusId <= 8038) || bonusId === 8176 || bonusId === 8177) {
-        return 'Crit / Haste'
-    }
-
-    if ((bonusId >= 1697 && bonusId <= 1703) || (bonusId >= 8039 && bonusId <= 8056) || bonusId === 8182 || bonusId === 8183) {
-        return 'Haste / Mastery'
-    }
-
-    if ((bonusId >= 1704 && bonusId <= 1710) || (bonusId >= 8057 && bonusId <= 8074) || bonusId === 8184 || bonusId === 8185) {
-        return 'Haste / Versatility'
-    }
-
-    if ((bonusId >= 1711 && bonusId <= 1717) || (bonusId >= 8075 && bonusId <= 8092) || bonusId === 8186 || bonusId === 8187) {
-        return 'Mastery / Versatility'
-    }
-
-    if (bonusId === 1718) {
-        return 'Crit'
-    }
-
-    if (bonusId === 1719) {
-        return 'Versatility'
-    }
-
-    if (bonusId === 1720) {
-        return 'Haste'
-    }
-
-    if (bonusId === 1721) {
-        return 'Mastery'
-    }
-
-    return undefined
-}
+export type Secondary = typeof ALL_SECONDARIES[number]['key']
 
 // ----------------------------------------------------------------------------
 // Shadowlands Fated

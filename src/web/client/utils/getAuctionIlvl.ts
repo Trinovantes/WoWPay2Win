@@ -1,4 +1,4 @@
-import { isIlvlBonusId } from '@/common/BonusId'
+import { isIlvlBonusId } from '@/common/ItemBonusId'
 import { ItemAuction } from '@/common/Cache'
 import { itemDataFiles } from './GameData'
 
@@ -9,7 +9,7 @@ export function getAuctionIlvl(auction: ItemAuction): number {
     }
 
     let bonusIlvl: number | undefined = 0
-    for (const bonusId of auction.bonuses) {
+    for (const bonusId of auction.bonusIds ?? []) {
         bonusIlvl = isIlvlBonusId(bonusId)
         if (bonusIlvl !== undefined) {
             break

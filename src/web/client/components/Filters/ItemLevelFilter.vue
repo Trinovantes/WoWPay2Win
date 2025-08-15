@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { useFilterStore } from '../../store/Filter'
-import { useIsTierCategoryGear } from './useIsTierCategoryGear'
 
 const filterStore = useFilterStore()
-const { isTierCategoryGear } = useIsTierCategoryGear()
 </script>
 
 <template>
     <div
-        v-if="isTierCategoryGear && filterStore.currentTierIlvlStep && filterStore.currentTierIlvlRange"
+        v-if="filterStore.enableIlvlFilter"
         class="group padded"
     >
         <h2>
@@ -17,8 +15,8 @@ const { isTierCategoryGear } = useIsTierCategoryGear()
 
         <q-range
             v-model="filterStore.ilvlRange"
-            :min="filterStore.currentTierIlvlRange.min"
-            :max="filterStore.currentTierIlvlRange.max"
+            :min="filterStore.currentTierIlvlRange?.min"
+            :max="filterStore.currentTierIlvlRange?.max"
             :step="filterStore.currentTierIlvlStep"
             snap
             label

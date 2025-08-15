@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
-import { useIsTierCategoryGear } from './useIsTierCategoryGear'
 
 const filterStore = useFilterStore()
 const mustHaveSocket = computed<boolean>({
@@ -12,13 +11,11 @@ const mustHaveSocket = computed<boolean>({
         filterStore.mustHaveSocket = mustHaveSocket
     },
 })
-
-const { isTierCategoryGear } = useIsTierCategoryGear()
 </script>
 
 <template>
     <div
-        v-if="isTierCategoryGear"
+        v-if="filterStore.enableSocketFilter"
         class="group vpad"
     >
         <q-list>

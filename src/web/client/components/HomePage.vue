@@ -16,6 +16,7 @@ import TertiaryFilter from './Filters/TertiaryFilter.vue'
 import TierFilter from './Filters/TierFilter.vue'
 import HomePageAuctionsTable from './HomePageAuctionsTable.vue'
 import HomePageFlavorText from './HomePageFlavorText.vue'
+import SecondaryFilter from './Filters/SecondaryFilter.vue'
 
 useFilterSyncLocalStorage()
 useFilterSyncQuery()
@@ -68,6 +69,7 @@ const lastUpdateFromNow = computed(() => auctionsStore.lastUpdateFromNow)
                     <ItemLevelFilter />
                     <MaxBuyoutFilter />
                     <SocketFilter />
+                    <SecondaryFilter />
                     <TertiaryFilter />
                 </template>
                 <template v-else>

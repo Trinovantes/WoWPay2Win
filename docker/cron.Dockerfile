@@ -24,7 +24,8 @@ RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
     --mount=type=secret,id=GIT_HASH \
     yarn fetchItems && \
-    yarn fetchSocketIds
+    yarn fetchSocketIds && \
+    yarn fetchSecondaryIds
 
 # Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \

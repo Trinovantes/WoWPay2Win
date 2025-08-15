@@ -19,3 +19,4 @@ export const TIERS_ICON_DIR = 'data/tiers/icons'
 export const AUCTIONS_DATA_DIR = 'dist/web/data'
 
 export const SOCKET_BONUS_ID_DATA_FILE = 'data/items/generated/bonusIds-sockets.json'
+export const SECONDARY_BONUS_ID_DATA_FILE = 'data/items/generated/bonusIds-secondaries.json'

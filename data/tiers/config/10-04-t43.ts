@@ -45,6 +45,9 @@ const config: TierConfig = {
         min: 671,
         max: 671 + (13 * 4),
     },
+    features: {
+        enableSecondaryFilter: true,
+    },
 }
 
 export default config

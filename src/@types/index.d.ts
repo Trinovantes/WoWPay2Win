@@ -9,4 +9,5 @@ declare const DEFINE: Readonly<{
     TIERS_ICON_DIR: string
     AUCTIONS_DATA_DIR: string
     SOCKET_BONUS_ID_DATA_FILE: string
+    SECONDARY_BONUS_ID_DATA_FILE: string
 }>

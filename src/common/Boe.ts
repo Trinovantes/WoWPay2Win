@@ -23,6 +23,9 @@ export type TierConfig = Readonly<{
     boes: ReadonlyArray<BoeCategory>
     ilvlStep?: number
     ilvlRange?: BoeIlvlRange
+    features?: Partial<{
+        enableSecondaryFilter: boolean
+    }>
 }>
 
 // Tier data is stored in from ./data/tiers/config and must be dynamically constructed into this Map

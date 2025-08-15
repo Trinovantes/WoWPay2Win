@@ -1,11 +1,12 @@
 import path from 'node:path'
 import { getProcessMemoryStats } from '../utils/getProcessMemoryStats'
-import { hasBannedId } from '@/common/BonusId'
+import { hasBannedId } from '@/common/ItemBonusId'
 import { ConnectedRealm, Region, RegionAuctions } from '@/common/Cache'
 import { convertCopperToGold } from '@/common/utils/convertCopperToGold'
 import { Cacheable } from './Cacheable'
 import { ApiAccessor } from './ApiAccessor'
 import { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse } from './BnetResponse'
+import { filterItemModifiers } from '@/common/utils/filterItemModifiers'
 
 // ----------------------------------------------------------------------------
 // Region (us, eu, tw, kr)
@@ -147,15 +148,18 @@ export class CacheableRegion extends Cacheable<Region> {
                     continue
                 }
 
-                const id = auctionResponse.id
-                const bonuses = auctionResponse.item.bonus_lists ?? []
-                if (hasBannedId(bonuses)) {
+                const bonusIds = auctionResponse.item.bonus_lists
+                if (hasBannedId(bonusIds)) {
                     continue
                 }
 
+                const id = auctionResponse.id
+                const modifiers = filterItemModifiers(auctionResponse.item.modifiers)
+
                 numCrAuctions += 1
                 regionAuctions.auctions.push({
-                    bonuses,
+                    bonusIds,
+                    modifiers,
                     crId,
                     buyout,
                     id,

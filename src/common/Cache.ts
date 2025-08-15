@@ -1,3 +1,4 @@
+import { ItemModifier } from './ItemModifier'
 import { RegionLocale } from './RegionConfig'
 
 // ----------------------------------------------------------------------------
@@ -36,7 +37,8 @@ export type ItemAuction = {
     crId: number
     itemId: number
     buyout: number
-    bonuses: Array<number>
+    bonusIds?: Array<number>
+    modifiers?: Array<ItemModifier>
 }
 
 export type RegionAuctions = {

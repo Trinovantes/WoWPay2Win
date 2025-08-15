@@ -1,7 +1,4 @@
 import { defineStore } from 'pinia'
-import { auctionHasSocket } from '../../utils/auctionHasSocket'
-import { getAuctionIlvl } from '../../utils/getAuctionIlvl'
-import { getAuctionTertiary } from '../../utils/getAuctionTertiary'
 import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds'
 import { useFilterStore } from '../Filter'
 import { ItemAuction, RegionAuctions } from '@/common/Cache'
@@ -92,39 +89,15 @@ export const useAuctionsStore = defineStore('Auctions', {
                 return []
             }
 
-            const isBoeGear = filterStore.currentTierIlvlRange !== undefined
-
             // If the user filtered by realms, we need to find their corresponding parent crIds
             const connectedRealms = getConnectedRealmIds(filterStore.region, filterStore.realms)
 
             // Get and filter auctions
             const auctions = state.auctions.get(filterStore.region)?.auctions ?? []
             return auctions.filter((auction) => {
-                if (!filterStore.boes.has(auction.itemId)) {
+                if (!filterStore.showAuction(auction)) {
                     return false
                 }
-
-                if (auction.buyout > filterStore.maxBuyout) {
-                    return false
-                }
-
-                if (isBoeGear) {
-                    const auctionIlvl = getAuctionIlvl(auction)
-                    if (auctionIlvl < filterStore.ilvlRange.min || auctionIlvl > filterStore.ilvlRange.max) {
-                        return false
-                    }
-
-                    const hasSocket = !auctionHasSocket(auction)
-                    if (filterStore.mustHaveSocket && hasSocket) {
-                        return false
-                    }
-
-                    const tertiary = getAuctionTertiary(auction)
-                    if (filterStore.tertiaries.size > 0 && (tertiary === undefined || !filterStore.tertiaries.has(tertiary))) {
-                        return false
-                    }
-                }
-
                 if (connectedRealms.size > 0 && !connectedRealms.has(auction.crId)) {
                     return false
                 }

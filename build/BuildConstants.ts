@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { getGitHash } from './BuildSecret'
-import { REGIONS_DATA_DIR, ITEMS_DATA_DIR, ITEMS_ICON_DIR, TIERS_CONFIG_DIR, TIERS_ICON_DIR, AUCTIONS_DATA_DIR, SOCKET_BONUS_ID_DATA_FILE } from '../src/common/Constants'
+import { REGIONS_DATA_DIR, ITEMS_DATA_DIR, ITEMS_ICON_DIR, TIERS_CONFIG_DIR, TIERS_ICON_DIR, AUCTIONS_DATA_DIR, SOCKET_BONUS_ID_DATA_FILE, SECONDARY_BONUS_ID_DATA_FILE } from '../src/common/Constants'
 
 // Assume we are running webpack from the project root (../)
 const rootDir = path.resolve()
@@ -32,4 +32,5 @@ export const buildConstants = {
     'DEFINE.TIERS_ICON_DIR': JSON.stringify(path.resolve(TIERS_ICON_DIR)),
     'DEFINE.AUCTIONS_DATA_DIR': JSON.stringify(path.resolve(AUCTIONS_DATA_DIR)),
     'DEFINE.SOCKET_BONUS_ID_DATA_FILE': JSON.stringify(path.resolve(SOCKET_BONUS_ID_DATA_FILE)),
+    'DEFINE.SECONDARY_BONUS_ID_DATA_FILE': JSON.stringify(path.resolve(SECONDARY_BONUS_ID_DATA_FILE)),
 }

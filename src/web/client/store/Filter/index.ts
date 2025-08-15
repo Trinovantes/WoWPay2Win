@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia'
 import { getRegionRealmIds } from '../../utils/getRegionRealmIds'
-import { ALL_TERTIARIES, Tertiary } from '@/common/BonusId'
+import { ALL_SECONDARIES, ALL_TERTIARIES, Secondary, Tertiary } from '@/common/ItemBonusId'
 import { GOLD_CAP } from '@/common/Constants'
 import { RegionSlug } from '@/common/RegionConfig'
 import { BoeIlvlRange, Tier, getIlvlRange, getTierBoeIds } from '@/common/Boe'
 import { defaultTier, tierConfigMap } from '../../utils/GameData'
+import { ItemAuction } from '@/common/Cache'
+import { getAuctionIlvl } from '../../utils/getAuctionIlvl'
+import { auctionHasSocket } from '../../utils/auctionHasSocket'
+import { getAuctionTertiary } from '../../utils/getAuctionTertiary'
+import { getAuctionSecondary } from '../../utils/getAuctionSecondary'
 
 // ----------------------------------------------------------------------------
 // State
@@ -14,6 +19,7 @@ export type RegionFilter = RegionSlug | null
 export type RealmFilter = Set<number>
 export type BoeFilter = Set<number>
 export type TertiaryFilter = Set<Tertiary>
+export type SecondaryFilter = Set<Secondary>
 
 export type FilterState = {
     tier: Tier
@@ -27,6 +33,7 @@ export type FilterState = {
     maxBuyout: number
     mustHaveSocket: boolean
     tertiaries: TertiaryFilter
+    secondaries: SecondaryFilter
 }
 
 export function createDefaultFilterState(): FilterState {
@@ -49,6 +56,7 @@ export function createDefaultFilterState(): FilterState {
         maxBuyout: GOLD_CAP,
         mustHaveSocket: false,
         tertiaries: new Set(),
+        secondaries: new Set(),
     }
 
     return defaultState
@@ -66,6 +74,7 @@ type QueryFiltersField =
     | 'maxBuyout'
     | 'mustHaveSocket'
     | 'tertiaries'
+    | 'secondaries'
 
 type QueryFilters = Partial<Record<QueryFiltersField, string>>
 
@@ -92,6 +101,32 @@ export const useFilterStore = defineStore('Filter', {
         currentTierIlvlRange: (state) => {
             return tierConfigMap.get(state.tier)?.ilvlRange
         },
+
+        enableIlvlFilter(): boolean {
+            const ilvlStep = this.currentTierIlvlStep
+            if (ilvlStep === undefined) {
+                return false
+            }
+
+            const ilvlRange = this.currentTierIlvlRange
+            if (ilvlRange === undefined) {
+                return false
+            }
+
+            return ilvlStep > 0 && ilvlRange.min !== ilvlRange.max
+        },
+
+        enableSocketFilter(): boolean {
+            return this.enableIlvlFilter
+        },
+
+        enableTertiaryFilter(): boolean {
+            return this.enableIlvlFilter
+        },
+
+        enableSecondaryFilter(): boolean {
+            return Boolean(tierConfigMap.get(this.tier)?.features?.enableSecondaryFilter)
+        },
     },
 
     actions: {
@@ -104,6 +139,40 @@ export const useFilterStore = defineStore('Filter', {
         changeRegion(region: RegionFilter) {
             this.region = region
             this.realms = new Set()
+        },
+
+        showAuction(auction: ItemAuction): boolean {
+            if (!this.boes.has(auction.itemId)) {
+                return false
+            }
+            if (auction.buyout > this.maxBuyout) {
+                return false
+            }
+
+            const isBoeGear = this.currentTierIlvlRange !== undefined
+            if (isBoeGear) {
+                const itemIlvl = getAuctionIlvl(auction)
+                if (itemIlvl < this.ilvlRange.min || itemIlvl > this.ilvlRange.max) {
+                    return false
+                }
+
+                const itemHasSocket = auctionHasSocket(auction)
+                if (this.mustHaveSocket && !itemHasSocket) {
+                    return false
+                }
+
+                const itemTertiary = getAuctionTertiary(auction)
+                if (this.tertiaries.size > 0 && (itemTertiary === undefined || !this.tertiaries.has(itemTertiary))) {
+                    return false
+                }
+
+                const itemSecondary = getAuctionSecondary(auction)
+                if (this.secondaries.size > 0 && !includesAll(itemSecondary, this.secondaries)) {
+                    return false
+                }
+            }
+
+            return true
         },
 
         exportToQuery(): QueryFilters {
@@ -139,6 +208,10 @@ export const useFilterStore = defineStore('Filter', {
 
             if (this.tertiaries.size > 0) {
                 queryFilters.tertiaries = exportNumSet(this.tertiaries)
+            }
+
+            if (this.secondaries.size > 0) {
+                queryFilters.secondaries = exportNumSet(this.secondaries)
             }
 
             return queryFilters
@@ -201,6 +274,12 @@ export const useFilterStore = defineStore('Filter', {
                 const tertiaries = importNumArray<Tertiary>(queryFilters.tertiaries, validTertiaries)
                 this.tertiaries = new Set(tertiaries)
             }
+
+            if (queryFilters.secondaries) {
+                const validSecondaries = ALL_SECONDARIES.map((secondary) => secondary.key)
+                const secondaries = importNumArray<Secondary>(queryFilters.secondaries, validSecondaries)
+                this.secondaries = new Set(secondaries)
+            }
         },
     },
 })
@@ -223,12 +302,22 @@ function exportNumSet(set: Set<number>): string {
     return [...set].sort((a, b) => a - b).join(DELIMITER)
 }
 
-function importNumArray<T extends number = number>(setString: string, validValues: Array<number>): Array<T> {
-    const numStrings = setString.split(',')
-    const nums = numStrings
-        .map((s) => parseInt(s))
-        .filter((num) => !isNaN(num))
-        .filter((num) => validValues.includes(num))
+function importNumArray<T extends number = number>(setString: string, validValues: ReadonlyArray<number>): Array<T> {
+    const valueStrings = setString.split(',')
+    const values = valueStrings
+        .map((value) => parseInt(value))
+        .filter((value) => !isNaN(value))
+        .filter((value) => validValues.includes(value))
 
-    return nums as Array<T>
+    return values as Array<T>
+}
+
+function includesAll<T>(container: Array<T>, itemsToContain: Set<T> | Array<T>): boolean {
+    for (const item of itemsToContain) {
+        if (!container.includes(item)) {
+            return false
+        }
+    }
+
+    return true
 }

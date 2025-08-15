@@ -1,3 +1,5 @@
+import { ItemModifier } from '@/common/ItemModifier'
+
 export type BnetOauthResponse = {
     access_token: string
 }
@@ -36,6 +38,7 @@ export type BnetAuctionsResponse = {
         item: {
             id: number
             bonus_lists?: Array<number>
+            modifiers?: Array<ItemModifier>
         }
         buyout?: number
     }>

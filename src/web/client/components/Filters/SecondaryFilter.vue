@@ -1,46 +1,46 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter'
-import { ALL_TERTIARIES, Tertiary } from '@/common/ItemBonusId'
+import { ALL_SECONDARIES, Secondary } from '@/common/ItemBonusId'
 
-type SelectedTertiaries = Array<Tertiary>
+type SelectedSecondaries = Array<Secondary>
 
 const filterStore = useFilterStore()
-const selectedTeriary = computed<SelectedTertiaries>({
+const selectedTeriary = computed<SelectedSecondaries>({
     get() {
-        return [...filterStore.tertiaries]
+        return [...filterStore.secondaries]
     },
-    set(tertiaries) {
-        filterStore.tertiaries = new Set(tertiaries)
+    set(secondaries) {
+        filterStore.secondaries = new Set(secondaries)
     },
 })
 </script>
 
 <template>
     <div
-        v-if="filterStore.enableTertiaryFilter"
+        v-if="filterStore.enableSecondaryFilter"
         class="group vpad"
     >
         <h2>
-            Tertiaries
+            Secondaries
         </h2>
 
         <q-list dense>
             <q-item
-                v-for="tertiary of ALL_TERTIARIES"
-                :key="tertiary.bonusId"
+                v-for="secondary of ALL_SECONDARIES"
+                :key="secondary.key"
                 v-ripple
                 tag="label"
             >
                 <q-item-section avatar>
                     <q-checkbox
                         v-model="selectedTeriary"
-                        :val="tertiary.bonusId"
+                        :val="secondary.key"
                     />
                 </q-item-section>
                 <q-item-section>
                     <q-item-label>
-                        {{ tertiary.label }}
+                        {{ secondary.label }}
                     </q-item-label>
                 </q-item-section>
             </q-item>

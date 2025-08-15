@@ -1,9 +1,10 @@
 {
     "private": true,
     "scripts": {
-        "fetchAuctions": " bun --preload=./build/bun.preload.ts run ./src/scripts/fetchAuctions.ts",
-        "fetchItems": "    bun --preload=./build/bun.preload.ts run ./src/scripts/fetchItems.ts",
-        "fetchSocketIds": "bun --preload=./build/bun.preload.ts run ./src/scripts/fetchSocketIds.ts",
+        "fetchAuctions": "    bun --preload=./build/bun.preload.ts run ./src/scripts/fetchAuctions.ts",
+        "fetchItems": "       bun --preload=./build/bun.preload.ts run ./src/scripts/fetchItems.ts",
+        "fetchSocketIds": "   bun --preload=./build/bun.preload.ts run ./src/scripts/fetchSocketIds.ts",
+        "fetchSecondaryIds": "bun --preload=./build/bun.preload.ts run ./src/scripts/fetchSecondaryIds.ts",
         "dev": "  NODE_ENV=development webpack serve --config build/webpack.config.web.ts",
         "build": "NODE_ENV=production  webpack       --config build/webpack.config.web.ts && sentry-cli sourcemaps inject ./dist/web",
         "lint": "vue-tsc --noemit && eslint",
@@ -20,6 +21,7 @@
         "@eslint/js": "^9.4.0",
         "@sentry/cli": "^2.21.2",
         "@sentry/vue": "^9.27.0",
+        "@sinclair/typebox": "^0.34.39",
         "@stylistic/eslint-plugin": "^5.1.0",
         "@types/bun": "^1.2.5",
         "@types/lodash.throttle": "^4.1.7",
