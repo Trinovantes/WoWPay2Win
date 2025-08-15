@@ -124,30 +124,6 @@ export const SECONDARY = {
 export type Secondary = typeof ALL_SECONDARIES[number]['key']
 
 // ----------------------------------------------------------------------------
-// Shadowlands Fated
-// ----------------------------------------------------------------------------
-
-export function isShadowlandsFatedBonusId(bonusId: number): true | undefined {
-    switch (bonusId) {
-        case 7926: // Fated
-        case 8756: // Fated Raid Finder
-        case 8757: // Fated
-        case 8758: // Fated Heroic
-        case 8759: // Fated Mythic
-        case 8761: // Fated
-        case 8762: // Fated Mythic
-        case 8763: // Fated Raid Finder
-        case 8764: // Fated Heroic
-        case 8938: // Fated
-        case 8939: // Fated Heroic
-        case 8940: // Fated Mythic
-            return true
-    }
-
-    return undefined
-}
-
-// ----------------------------------------------------------------------------
 // BfA Corruptions
 // ----------------------------------------------------------------------------
 
