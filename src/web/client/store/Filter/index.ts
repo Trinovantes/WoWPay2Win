@@ -167,7 +167,7 @@ export const useFilterStore = defineStore('Filter', {
                 }
 
                 const itemSecondary = getAuctionSecondary(auction)
-                if (this.secondaries.size > 0 && !includesAll(itemSecondary, this.secondaries)) {
+                if (this.secondaries.size > 0 && !equal(this.secondaries, itemSecondary)) {
                     return false
                 }
             }
@@ -312,9 +312,13 @@ function importNumArray<T extends number = number>(setString: string, validValue
     return values as Array<T>
 }
 
-function includesAll<T>(container: Array<T>, itemsToContain: Set<T> | Array<T>): boolean {
-    for (const item of itemsToContain) {
-        if (!container.includes(item)) {
+function equal<T>(a: Set<T>, b: Array<T>): boolean {
+    if (a.size !== b.length) {
+        return false
+    }
+
+    for (const bItem of b) {
+        if (!a.has(bItem)) {
             return false
         }
     }
