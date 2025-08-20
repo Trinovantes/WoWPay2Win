@@ -49,7 +49,7 @@ export function useFilterSyncQuery() {
         const hasInitQuery = Object.keys(routeQuery.value).length > 0
         if (hasInitQuery) {
             isProcessing = true
-            filterStore.$reset()
+            filterStore.reset()
             isProcessing = false
         }
 

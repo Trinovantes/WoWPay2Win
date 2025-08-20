@@ -4,6 +4,7 @@ import { useFilterStore } from '../Filter'
 import { ItemAuction, RegionAuctions } from '@/common/Cache'
 import { RegionSlug } from '@/common/RegionConfig'
 import { formatDistance } from 'date-fns'
+import { computed, ref } from 'vue'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -11,114 +12,101 @@ import { formatDistance } from 'date-fns'
 
 export type Auctions = Array<ItemAuction>
 
-export type AuctionsState = {
-    auctions: Map<RegionSlug, RegionAuctions>
-}
+export const useAuctionsStore = defineStore('Auctions', () => {
+    const filterStore = useFilterStore()
 
-export function createDefaultAuctionsState(): AuctionsState {
-    const defaultState: AuctionsState = {
-        auctions: new Map(),
+    const auctions = ref(new Map<RegionSlug, RegionAuctions>())
+    const loadAuctions = async(regionSlug: RegionSlug): Promise<void> => {
+        const regionAuctions = auctions.value.get(regionSlug)
+        const regionExpired = (Date.now() - (regionAuctions?.lastUpdate ?? 0)) > (3600 * 1000) // Expire after 1 hour
+        if (!regionExpired) {
+            return
+        }
+
+        const auctionsFile = `/data/auctions-${regionSlug}.json`
+        const response = await fetch(auctionsFile)
+        const loadedAuctions = await response.json() as RegionAuctions
+        auctions.value.set(regionSlug, loadedAuctions)
     }
 
-    return defaultState
-}
+    const filteredAuctions = computed<Auctions>(() => {
+        if (filterStore.region === null) {
+            return []
+        }
 
-export const useAuctionsStore = defineStore('Auctions', {
-    state: createDefaultAuctionsState,
+        // If the user filtered by realms, we need to find their corresponding parent crIds
+        const connectedRealms = getConnectedRealmIds(filterStore.region, filterStore.realms)
 
-    getters: {
-        tokenPrice: (state): number | undefined => {
-            const filterStore = useFilterStore()
-            if (filterStore.region === null) {
-                return
+        // Get and filter auctions
+        const regionAuctions = auctions.value.get(filterStore.region)?.auctions ?? []
+        return regionAuctions.filter((auction) => {
+            if (!filterStore.shouldShowAuction(auction)) {
+                return false
+            }
+            if (connectedRealms.size > 0 && !connectedRealms.has(auction.crId)) {
+                return false
             }
 
-            const tokenPrice = state.auctions.get(filterStore.region)?.tokenPrice
-            if (tokenPrice === undefined) {
-                return
-            }
+            return true
+        })
+    })
+    const tokenPrice = computed<number | undefined>(() => {
+        if (filterStore.region === null) {
+            return
+        }
 
-            return tokenPrice
-        },
+        const tokenPrice = auctions.value.get(filterStore.region)?.tokenPrice
+        if (tokenPrice === undefined) {
+            return
+        }
 
-        lastUpdateIso: (state) => {
-            const filterStore = useFilterStore()
-            if (filterStore.region === null) {
-                return ''
-            }
+        return tokenPrice
+    })
 
-            const lastUpdate = state.auctions.get(filterStore.region)?.lastUpdate
-            if (lastUpdate === undefined) {
-                return ''
-            }
+    const lastUpdateIso = computed<string>(() => {
+        if (filterStore.region === null) {
+            return ''
+        }
 
-            return new Date(lastUpdate).toISOString()
-        },
+        const lastUpdate = auctions.value.get(filterStore.region)?.lastUpdate
+        if (lastUpdate === undefined) {
+            return ''
+        }
 
-        lastUpdateFull: (state) => {
-            const filterStore = useFilterStore()
-            if (filterStore.region === null) {
-                return ''
-            }
+        return new Date(lastUpdate).toISOString()
+    })
+    const lastUpdateFull = computed<string>(() => {
+        if (filterStore.region === null) {
+            return ''
+        }
 
-            const lastUpdate = state.auctions.get(filterStore.region)?.lastUpdate
-            if (lastUpdate === undefined) {
-                return ''
-            }
+        const lastUpdate = auctions.value.get(filterStore.region)?.lastUpdate
+        if (lastUpdate === undefined) {
+            return ''
+        }
 
-            return new Date(lastUpdate).toString()
-        },
+        return new Date(lastUpdate).toString()
+    })
+    const lastUpdateFromNow = computed<string>(() => {
+        if (filterStore.region === null) {
+            return ''
+        }
 
-        lastUpdateFromNow: (state) => {
-            const filterStore = useFilterStore()
-            if (filterStore.region === null) {
-                return ''
-            }
+        const lastUpdate = auctions.value.get(filterStore.region)?.lastUpdate
+        if (lastUpdate === undefined) {
+            return ''
+        }
 
-            const lastUpdate = state.auctions.get(filterStore.region)?.lastUpdate
-            if (lastUpdate === undefined) {
-                return ''
-            }
+        return formatDistance(lastUpdate, new Date(), { addSuffix: true })
+    })
 
-            return formatDistance(lastUpdate, new Date(), { addSuffix: true })
-        },
+    return {
+        loadAuctions,
+        filteredAuctions,
+        tokenPrice,
 
-        filteredAuctions: (state) => {
-            const filterStore = useFilterStore()
-            if (filterStore.region === null) {
-                return []
-            }
-
-            // If the user filtered by realms, we need to find their corresponding parent crIds
-            const connectedRealms = getConnectedRealmIds(filterStore.region, filterStore.realms)
-
-            // Get and filter auctions
-            const auctions = state.auctions.get(filterStore.region)?.auctions ?? []
-            return auctions.filter((auction) => {
-                if (!filterStore.showAuction(auction)) {
-                    return false
-                }
-                if (connectedRealms.size > 0 && !connectedRealms.has(auction.crId)) {
-                    return false
-                }
-
-                return true
-            })
-        },
-    },
-
-    actions: {
-        async loadAuctions(regionSlug: RegionSlug): Promise<void> {
-            const regionAuctions = this.auctions.get(regionSlug)
-            const regionExpired = (Date.now() - (regionAuctions?.lastUpdate ?? 0)) > (3600 * 1000) // Expire after 1 hour
-            if (!regionExpired) {
-                return
-            }
-
-            const auctionsFile = `/data/auctions-${regionSlug}.json`
-            const response = await fetch(auctionsFile)
-            const auctions = await response.json() as RegionAuctions
-            this.auctions.set(regionSlug, auctions)
-        },
-    },
+        lastUpdateIso,
+        lastUpdateFull,
+        lastUpdateFromNow,
+    }
 })

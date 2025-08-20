@@ -10,6 +10,7 @@ import { getAuctionIlvl } from '../../utils/getAuctionIlvl'
 import { auctionHasSocket } from '../../utils/auctionHasSocket'
 import { getAuctionTertiary } from '../../utils/getAuctionTertiary'
 import { getAuctionSecondary } from '../../utils/getAuctionSecondary'
+import { computed, ref } from 'vue'
 
 // ----------------------------------------------------------------------------
 // State
@@ -20,47 +21,6 @@ export type RealmFilter = Set<number>
 export type BoeFilter = Set<number>
 export type TertiaryFilter = Set<Tertiary>
 export type SecondaryFilter = Set<Secondary>
-
-export type FilterState = {
-    tier: Tier
-    region: RegionFilter
-    realms: RealmFilter
-    boes: BoeFilter
-    ilvlRange: {
-        min: number
-        max: number
-    }
-    maxBuyout: number
-    mustHaveSocket: boolean
-    tertiaries: TertiaryFilter
-    secondaries: SecondaryFilter
-}
-
-export function createDefaultFilterState(): FilterState {
-    const defaultState: FilterState = {
-        tier: defaultTier,
-        region: null,
-        realms: new Set(),
-
-        /**
-         * We could alteratively save these item filters in a new obj and index them by tier i.e. { [key in Tier]: {...} }
-         * However:
-         * - It is impractical to save the entire store as an URL query
-         * - There's probably a bigger use case for sharing URLs than people trying to compare items between multiple tiers
-         * - Unlikely to have sellers/buyers for non-current tier items so it's also pointless to compare
-         *
-         * Therefore we will keep things simple and reset the tier-related item states whenever we change tiers
-         */
-        boes: new Set(),
-        ilvlRange: getIlvlRange(tierConfigMap, defaultTier),
-        maxBuyout: GOLD_CAP,
-        mustHaveSocket: false,
-        tertiaries: new Set(),
-        secondaries: new Set(),
-    }
-
-    return defaultState
-}
 
 const MUST_HAVE_SOCKET_VALUE = '1'
 const DELIMITER = ','
@@ -82,206 +42,242 @@ type QueryFilters = Partial<Record<QueryFiltersField, string>>
 // Store
 // ----------------------------------------------------------------------------
 
-export const useFilterStore = defineStore('Filter', {
-    state: createDefaultFilterState,
+export const useFilterStore = defineStore('Filter', () => {
+    const tier = ref(defaultTier)
+    const region = ref<RegionFilter>(null)
+    const realms = ref<RealmFilter>(new Set())
 
-    getters: {
-        currentTierName: (state) => {
-            return tierConfigMap.get(state.tier)?.name ?? `[INVALID TIER "${state.tier}"]`
-        },
+    /**
+     * We could alteratively save these item filters in a new obj and index them by tier i.e. { [key in Tier]: {...} }
+     * However:
+     * - It is impractical to save the entire store as an URL query
+     * - There's probably a bigger use case for sharing URLs than people trying to compare items between multiple tiers
+     * - Unlikely to have sellers/buyers for non-current tier items so it's also pointless to compare
+     *
+     * Therefore we will keep things simple and reset the tier-related item states whenever we change tiers
+     */
+    const boes = ref<BoeFilter>(new Set())
+    const ilvlRange = ref<{ min: number; max: number }>(getIlvlRange(tierConfigMap, defaultTier))
+    const maxBuyout = ref(GOLD_CAP)
+    const mustHaveSocket = ref(false)
+    const tertiaries = ref<TertiaryFilter>(new Set())
+    const secondaries = ref<SecondaryFilter>(new Set())
 
-        currentTierBoes: (state) => {
-            return tierConfigMap.get(state.tier)?.boes ?? []
-        },
+    const reset = () => {
+        tier.value = defaultTier
+        region.value = null
+        realms.value = new Set()
 
-        currentTierIlvlStep: (state) => {
-            return tierConfigMap.get(state.tier)?.ilvlStep
-        },
+        boes.value = new Set()
+        ilvlRange.value = getIlvlRange(tierConfigMap, defaultTier)
+        maxBuyout.value = GOLD_CAP
+        mustHaveSocket.value = false
+        tertiaries.value = new Set()
+        secondaries.value = new Set()
+    }
 
-        currentTierIlvlRange: (state) => {
-            return tierConfigMap.get(state.tier)?.ilvlRange
-        },
+    const currentTierName = computed(() => tierConfigMap.get(tier.value)?.name ?? `[INVALID TIER "${tier.value}"]`)
+    const currentTierBoes = computed(() => tierConfigMap.get(tier.value)?.boes ?? [])
+    const currentTierIlvlStep = computed(() => tierConfigMap.get(tier.value)?.ilvlStep)
+    const currentTierIlvlRange = computed(() => tierConfigMap.get(tier.value)?.ilvlRange)
 
-        enableIlvlFilter(): boolean {
-            const ilvlStep = this.currentTierIlvlStep
-            if (ilvlStep === undefined) {
+    const enableIlvlFilter = computed(() => {
+        if (currentTierIlvlStep.value === undefined) {
+            return false
+        }
+
+        if (currentTierIlvlRange.value === undefined) {
+            return false
+        }
+
+        return currentTierIlvlStep.value > 0 && currentTierIlvlRange.value.min !== currentTierIlvlRange.value.max
+    })
+    const enableSocketFilter = computed(() => enableIlvlFilter.value)
+    const enableTertiaryFilter = computed(() => enableIlvlFilter.value)
+    const enableSecondaryFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableSecondaryFilter))
+
+    const changeTier = (newTier: Tier): void => {
+        tier.value = newTier
+        boes.value = new Set()
+        ilvlRange.value = getIlvlRange(tierConfigMap, newTier)
+    }
+
+    const changeRegion = (newRegion: RegionFilter): void => {
+        region.value = newRegion
+        realms.value = new Set()
+    }
+
+    const shouldShowAuction = (auction: ItemAuction): boolean => {
+        if (!boes.value.has(auction.itemId)) {
+            return false
+        }
+        if (auction.buyout > maxBuyout.value) {
+            return false
+        }
+
+        const isBoeGear = currentTierIlvlRange.value !== undefined
+        if (isBoeGear) {
+            const itemIlvl = getAuctionIlvl(auction)
+            if (itemIlvl < ilvlRange.value.min || itemIlvl > ilvlRange.value.max) {
                 return false
             }
 
-            const ilvlRange = this.currentTierIlvlRange
-            if (ilvlRange === undefined) {
+            const itemHasSocket = auctionHasSocket(auction)
+            if (mustHaveSocket.value && !itemHasSocket) {
                 return false
             }
 
-            return ilvlStep > 0 && ilvlRange.min !== ilvlRange.max
-        },
-
-        enableSocketFilter(): boolean {
-            return this.enableIlvlFilter
-        },
-
-        enableTertiaryFilter(): boolean {
-            return this.enableIlvlFilter
-        },
-
-        enableSecondaryFilter(): boolean {
-            return Boolean(tierConfigMap.get(this.tier)?.features?.enableSecondaryFilter)
-        },
-    },
-
-    actions: {
-        changeTier(tier: Tier) {
-            this.tier = tier
-            this.boes = new Set()
-            this.ilvlRange = getIlvlRange(tierConfigMap, tier)
-        },
-
-        changeRegion(region: RegionFilter) {
-            this.region = region
-            this.realms = new Set()
-        },
-
-        showAuction(auction: ItemAuction): boolean {
-            if (!this.boes.has(auction.itemId)) {
-                return false
-            }
-            if (auction.buyout > this.maxBuyout) {
+            const itemTertiary = getAuctionTertiary(auction)
+            if (tertiaries.value.size > 0 && (itemTertiary === undefined || !tertiaries.value.has(itemTertiary))) {
                 return false
             }
 
-            const isBoeGear = this.currentTierIlvlRange !== undefined
-            if (isBoeGear) {
-                const itemIlvl = getAuctionIlvl(auction)
-                if (itemIlvl < this.ilvlRange.min || itemIlvl > this.ilvlRange.max) {
-                    return false
-                }
-
-                const itemHasSocket = auctionHasSocket(auction)
-                if (this.mustHaveSocket && !itemHasSocket) {
-                    return false
-                }
-
-                const itemTertiary = getAuctionTertiary(auction)
-                if (this.tertiaries.size > 0 && (itemTertiary === undefined || !this.tertiaries.has(itemTertiary))) {
-                    return false
-                }
-
-                const itemSecondary = getAuctionSecondary(auction)
-                if (this.secondaries.size > 0 && !equal(this.secondaries, itemSecondary)) {
-                    return false
-                }
+            const itemSecondary = getAuctionSecondary(auction)
+            if (secondaries.value.size > 0 && !equal(secondaries.value, itemSecondary)) {
+                return false
             }
+        }
 
-            return true
-        },
+        return true
+    }
 
-        exportToQuery(): QueryFilters {
-            const queryFilters: QueryFilters = {}
+    const exportToQuery = (): QueryFilters => {
+        const queryFilters: QueryFilters = {}
 
-            if (this.tier !== null) {
-                queryFilters.tier = this.tier
+        if (tier.value !== null) {
+            queryFilters.tier = tier.value
+        }
+
+        if (region.value !== null) {
+            queryFilters.region = region.value
+        }
+
+        if (realms.value.size > 0) {
+            queryFilters.realms = exportNumSet(realms.value)
+        }
+
+        if (boes.value.size > 0) {
+            queryFilters.boes = exportNumSet(boes.value)
+        }
+
+        if (!isIlvlRangeEqual(ilvlRange.value, getIlvlRange(tierConfigMap, tier.value))) {
+            queryFilters.ilvlRange = ilvlRange.value.min.toString() + DELIMITER + ilvlRange.value.max.toString()
+        }
+
+        if (maxBuyout.value < GOLD_CAP) {
+            queryFilters.maxBuyout = maxBuyout.value.toString()
+        }
+
+        if (mustHaveSocket.value) {
+            queryFilters.mustHaveSocket = MUST_HAVE_SOCKET_VALUE
+        }
+
+        if (tertiaries.value.size > 0) {
+            queryFilters.tertiaries = exportNumSet(tertiaries.value)
+        }
+
+        if (secondaries.value.size > 0) {
+            queryFilters.secondaries = exportNumSet(secondaries.value)
+        }
+
+        return queryFilters
+    }
+
+    const importFromQuery = (queryFilters: QueryFilters): void => {
+        if (queryFilters.region) {
+            const validRegions: Array<RegionSlug> = ['us', 'eu', 'tw', 'kr']
+            const importedRegion = queryFilters.region as RegionSlug
+            if (validRegions.includes(importedRegion)) {
+                changeRegion(importedRegion)
             }
+        }
 
-            if (this.region !== null) {
-                queryFilters.region = this.region
+        if (queryFilters.realms) {
+            const validRealmIds = getRegionRealmIds(region.value)
+            const importedRealms = importNumArray(queryFilters.realms, validRealmIds)
+            realms.value = new Set(importedRealms)
+        }
+
+        if (queryFilters.tier) {
+            const validTiers = [...tierConfigMap.keys()]
+            const importedTier = queryFilters.tier as Tier
+            if (validTiers.includes(importedTier)) {
+                changeTier(importedTier)
             }
+        }
 
-            if (this.realms.size > 0) {
-                queryFilters.realms = exportNumSet(this.realms)
+        if (queryFilters.boes) {
+            const validBoeIds = getTierBoeIds(tierConfigMap, tier.value)
+            const importedBoes = importNumArray(queryFilters.boes, validBoeIds)
+            boes.value = new Set(importedBoes)
+        }
+
+        if (queryFilters.ilvlRange) {
+            const [min, max] = queryFilters.ilvlRange.split(DELIMITER).map((ilvl) => parseInt(ilvl))
+            const tierIlvls = getIlvlRange(tierConfigMap, tier.value)
+
+            if (!isNaN(min)) {
+                ilvlRange.value.min = Math.max(min, tierIlvls.min)
             }
-
-            if (this.boes.size > 0) {
-                queryFilters.boes = exportNumSet(this.boes)
+            if (!isNaN(max)) {
+                ilvlRange.value.max = Math.min(max, tierIlvls.max)
             }
+        }
 
-            if (!isIlvlRangeEqual(this.ilvlRange, getIlvlRange(tierConfigMap, this.tier))) {
-                queryFilters.ilvlRange = this.ilvlRange.min.toString() + DELIMITER + this.ilvlRange.max.toString()
+        if (queryFilters.maxBuyout) {
+            const importedMaxBuyout = parseInt(queryFilters.maxBuyout)
+            if (!isNaN(importedMaxBuyout)) {
+                maxBuyout.value = clamp(importedMaxBuyout, 0, GOLD_CAP)
             }
+        }
 
-            if (this.maxBuyout < GOLD_CAP) {
-                queryFilters.maxBuyout = this.maxBuyout.toString()
-            }
+        if (queryFilters.mustHaveSocket) {
+            mustHaveSocket.value = (queryFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
+        }
 
-            if (this.mustHaveSocket) {
-                queryFilters.mustHaveSocket = MUST_HAVE_SOCKET_VALUE
-            }
+        if (queryFilters.tertiaries) {
+            const validTertiaries = ALL_TERTIARIES.map((tertiary) => tertiary.bonusId)
+            const importedTertiaries = importNumArray<Tertiary>(queryFilters.tertiaries, validTertiaries)
+            tertiaries.value = new Set(importedTertiaries)
+        }
 
-            if (this.tertiaries.size > 0) {
-                queryFilters.tertiaries = exportNumSet(this.tertiaries)
-            }
+        if (queryFilters.secondaries) {
+            const validSecondaries = ALL_SECONDARIES.map((secondary) => secondary.key)
+            const importedSecondaries = importNumArray<Secondary>(queryFilters.secondaries, validSecondaries)
+            secondaries.value = new Set(importedSecondaries)
+        }
+    }
 
-            if (this.secondaries.size > 0) {
-                queryFilters.secondaries = exportNumSet(this.secondaries)
-            }
+    return {
+        tier,
+        region,
+        realms,
 
-            return queryFilters
-        },
+        boes,
+        ilvlRange,
+        maxBuyout,
+        mustHaveSocket,
+        tertiaries,
+        secondaries,
 
-        importFromQuery(queryFilters: QueryFilters) {
-            if (queryFilters.region) {
-                const validRegions: Array<RegionSlug> = ['us', 'eu', 'tw', 'kr']
-                const region = queryFilters.region as RegionSlug
-                if (validRegions.includes(region)) {
-                    this.changeRegion(region)
-                }
-            }
+        currentTierName,
+        currentTierBoes,
+        currentTierIlvlRange,
+        currentTierIlvlStep,
 
-            if (queryFilters.realms) {
-                const validRealmIds = getRegionRealmIds(this.region)
-                const realms = importNumArray(queryFilters.realms, validRealmIds)
-                this.realms = new Set(realms)
-            }
+        enableIlvlFilter,
+        enableSocketFilter,
+        enableTertiaryFilter,
+        enableSecondaryFilter,
 
-            if (queryFilters.tier) {
-                const validTiers = [...tierConfigMap.keys()]
-                const tier = queryFilters.tier as Tier
-                if (validTiers.includes(tier)) {
-                    this.changeTier(tier)
-                }
-            }
+        changeRegion,
+        changeTier,
+        shouldShowAuction,
+        importFromQuery,
+        exportToQuery,
 
-            if (queryFilters.boes) {
-                const validBoeIds = getTierBoeIds(tierConfigMap, this.tier)
-                const boeIds = importNumArray(queryFilters.boes, validBoeIds)
-                this.boes = new Set(boeIds)
-            }
-
-            if (queryFilters.ilvlRange) {
-                const [min, max] = queryFilters.ilvlRange.split(DELIMITER).map((ilvl) => parseInt(ilvl))
-                const tierIlvls = getIlvlRange(tierConfigMap, this.tier)
-
-                if (!isNaN(min)) {
-                    this.ilvlRange.min = Math.max(min, tierIlvls.min)
-                }
-                if (!isNaN(max)) {
-                    this.ilvlRange.max = Math.min(max, tierIlvls.max)
-                }
-            }
-
-            if (queryFilters.maxBuyout) {
-                const maxBuyout = parseInt(queryFilters.maxBuyout)
-                if (!isNaN(maxBuyout)) {
-                    this.maxBuyout = clamp(maxBuyout, 0, GOLD_CAP)
-                }
-            }
-
-            if (queryFilters.mustHaveSocket) {
-                this.mustHaveSocket = (queryFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
-            }
-
-            if (queryFilters.tertiaries) {
-                const validTertiaries = ALL_TERTIARIES.map((tertiary) => tertiary.bonusId)
-                const tertiaries = importNumArray<Tertiary>(queryFilters.tertiaries, validTertiaries)
-                this.tertiaries = new Set(tertiaries)
-            }
-
-            if (queryFilters.secondaries) {
-                const validSecondaries = ALL_SECONDARIES.map((secondary) => secondary.key)
-                const secondaries = importNumArray<Secondary>(queryFilters.secondaries, validSecondaries)
-                this.secondaries = new Set(secondaries)
-            }
-        },
-    },
+        reset,
+    }
 })
 
 // ----------------------------------------------------------------------------

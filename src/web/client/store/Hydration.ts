@@ -1,7 +1,7 @@
-import { FilterState } from './Filter'
+import { useFilterStore } from './Filter'
 
 type HydrationStateMap = {
-    ['__INITIAL_FILTER_STATE__']: FilterState
+    ['__INITIAL_FILTER_STATE__']: ReturnType<typeof useFilterStore>['$state']
 }
 
 type HydrationKey = keyof HydrationStateMap
