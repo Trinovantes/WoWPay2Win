@@ -137,7 +137,10 @@ run-web: stop-web
 
 convert-icons:
 	for input_file in ./data/tiers/icons/*; do \
-		file_name=$${input_file%.*}; \
-		output_file="$${file_name}.webp"; \
-		convert "$$input_file" -resize "40x40^" -gravity center -crop "40x40+0+0" +repage "$$output_file"; \
+		dimensions=$$(identify -format "%wx%h" "$$input_file"); \
+		if [ "$$dimensions" != "40x40" ]; then \
+			file_name=$${input_file%.*}; \
+			output_file="$${file_name}.webp"; \
+			convert "$$input_file" -resize "40x40^" -gravity center -crop "40x40+0+0" +repage "$$output_file"; \
+		fi \
 	done
