@@ -1,16 +1,19 @@
 import * as Sentry from '@sentry/node'
-import { AUCTIONS_DATA_DIR, REGIONS_DATA_DIR, SENTRY_DSN } from '@/common/Constants'
-import { regionConfigs } from '@/common/RegionConfig'
-import { ApiAccessor } from './api/ApiAccessor'
-import { CacheableRegion } from './api/CacheableRegion'
-import { getTierConfigMap } from './utils/getTierConfigMap'
-import { getAllBoeIds } from '@/common/Boe'
+import { ApiAccessor } from '../common/api/ApiAccessor.ts'
+import { CacheableRegion } from '../common/api/CacheableRegion.ts'
+import { getAllBoeIds } from '../common/Boe.ts'
+import { regionConfigs } from '../common/RegionConfig.ts'
+import { AUCTIONS_DATA_DIR, REGIONS_DATA_DIR, SENTRY_DSN } from '../common/Constants.ts'
+import { getTierConfigMap } from '../common/node/getTierConfigMap.ts'
+import { mkdirp } from '../common/node/mkdirp.ts'
 
 // ----------------------------------------------------------------------------
 // MARK: Helpers
 // ----------------------------------------------------------------------------
 
 async function fetchAuctions() {
+    mkdirp(AUCTIONS_DATA_DIR)
+
     const tierConfigMap = await getTierConfigMap()
     const boeIds = getAllBoeIds(tierConfigMap)
 
@@ -22,7 +25,7 @@ async function fetchAuctions() {
         await region.fetchRegionAuctions(boeIds)
 
         // Only run on 1 region during dev
-        if (DEFINE.IS_DEV) {
+        if (__IS_DEV__) {
             break
         }
     }
@@ -35,16 +38,16 @@ async function fetchAuctions() {
 async function main() {
     Sentry.init({
         dsn: SENTRY_DSN,
-        release: DEFINE.GIT_HASH,
+        release: __GIT_HASH__,
         tracesSampleRate: 0.1,
         profilesSampleRate: 0.0,
-        enabled: !DEFINE.IS_DEV,
+        enabled: !__IS_DEV__,
     })
 
     await Sentry.startSpan({
         op: 'fetchAuctions',
         name: 'Fetch Auctions Cron Job',
-    }, async() => {
+    }, async () => {
         try {
             await fetchAuctions()
         } catch (err) {

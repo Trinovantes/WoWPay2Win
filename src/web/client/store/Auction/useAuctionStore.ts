@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds'
-import { useFilterStore } from '../Filter'
-import { ItemAuction, RegionAuctions } from '@/common/Cache'
-import { RegionSlug } from '@/common/RegionConfig'
+import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds.ts'
+import { useFilterStore } from '../Filter/useFilterStore.ts'
 import { formatDistance } from 'date-fns'
 import { computed, ref } from 'vue'
+import type { ItemAuction, RegionAuctions } from '../../../../common/Cache.ts'
+import type { RegionSlug } from '../../../../common/RegionConfig.ts'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -12,11 +12,11 @@ import { computed, ref } from 'vue'
 
 export type Auctions = Array<ItemAuction>
 
-export const useAuctionsStore = defineStore('Auctions', () => {
+export const useAuctionStore = defineStore('Auctions', () => {
     const filterStore = useFilterStore()
 
     const auctions = ref(new Map<RegionSlug, RegionAuctions>())
-    const loadAuctions = async(regionSlug: RegionSlug): Promise<void> => {
+    const loadAuctions = async (regionSlug: RegionSlug): Promise<void> => {
         const regionAuctions = auctions.value.get(regionSlug)
         const regionExpired = (Date.now() - (regionAuctions?.lastUpdate ?? 0)) > (3600 * 1000) // Expire after 1 hour
         if (!regionExpired) {

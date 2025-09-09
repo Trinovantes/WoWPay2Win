@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { getTierName, Tier } from '@/common/Boe'
-import { useFilterStore } from '../../store/Filter'
-import { getTierIcon } from '../../utils/ImageLoader'
-import { tierConfigMap } from '../../utils/GameData'
+import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
+import { getTierIcon } from '../../utils/ImageLoader.ts'
+import { tierConfigMap } from '../../utils/GameData.ts'
+import { getTierName, type Tier } from '../../../../common/Boe.ts'
 
 const filterStore = useFilterStore()
 const selectedTier = computed<Tier>({

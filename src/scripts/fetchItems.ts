@@ -1,10 +1,10 @@
-import { getAllBoeIds } from '@/common/Boe'
-import { regionConfigs } from '@/common/RegionConfig'
-import { ApiAccessor } from '@/scripts/api/ApiAccessor'
-import { CacheableItem } from '@/scripts/api/CacheableItem'
-import { CacheableRegion } from '@/scripts/api/CacheableRegion'
-import { getTierConfigMap } from './utils/getTierConfigMap'
-import { ITEMS_DATA_DIR, ITEMS_ICON_DIR, REGIONS_DATA_DIR } from '@/common/Constants'
+import { getAllBoeIds } from '../common/Boe.ts'
+import { ITEMS_DATA_DIR, ITEMS_ICON_DIR, REGIONS_DATA_DIR } from '../common/Constants.ts'
+import { regionConfigs } from '../common/RegionConfig.ts'
+import { ApiAccessor } from '../common/api/ApiAccessor.ts'
+import { CacheableItem } from '../common/api/CacheableItem.ts'
+import { CacheableRegion } from '../common/api/CacheableRegion.ts'
+import { getTierConfigMap } from '../common/node/getTierConfigMap.ts'
 
 async function main() {
     const tierConfigMap = await getTierConfigMap()

@@ -1,9 +1,9 @@
 import path from 'node:path'
-import { VueLoaderPlugin } from 'vue-loader'
-import webpack, { DefinePlugin } from 'webpack'
-import { isDev, srcDir, buildConstants } from './BuildConstants'
+import vueLoader from 'vue-loader'
+import webpack, { type Configuration } from 'webpack'
+import { isDev, buildConstants, srcWebDir, srcDir } from './BuildConstants.ts'
 
-export const commonConfig: webpack.Configuration = {
+export const commonConfig: Configuration = {
     mode: isDev
         ? 'development'
         : 'production',
@@ -12,14 +12,15 @@ export const commonConfig: webpack.Configuration = {
     resolve: {
         extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
         alias: {
-            // Need to match aliases in tsconfig.json
-            '@': path.resolve(srcDir),
+            '@css': path.resolve(srcWebDir, 'client', 'assets', 'css'),
+            '@components': path.resolve(srcWebDir, 'client', 'components'),
+            '@Constants': path.resolve(srcDir, 'common', 'Constants.ts'),
         },
     },
 
     plugins: [
-        new DefinePlugin(buildConstants),
-        new VueLoaderPlugin(),
+        new webpack.DefinePlugin(buildConstants),
+        new vueLoader.VueLoaderPlugin(),
     ],
 
     module: {

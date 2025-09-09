@@ -1,5 +1,5 @@
-import { BnetAuctionsResponse } from '@/scripts/api/BnetResponse'
-import { ITEM_MODIFIER_KEY } from '../ItemModifier'
+import type { BnetAuctionsResponse } from '../api/BnetResponse.ts'
+import { ITEM_MODIFIER_KEY } from '../ItemModifier.ts'
 
 type ItemModifier = Required<Required<BnetAuctionsResponse>['auctions'][number]['item']>['modifiers'][number]
 

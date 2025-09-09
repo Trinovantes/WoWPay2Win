@@ -1,9 +1,9 @@
-import { SECONDARY_BONUS_ID_DATA_FILE } from '@/common/Constants'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
-import { SECONDARY, Secondary } from '@/common/ItemBonusId'
+import { SECONDARY, type Secondary } from '../common/ItemBonusId.ts'
+import { SECONDARY_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
 
 const secondaryBonusSchema = Type.Object({
     id: Type.Number(),
@@ -56,7 +56,7 @@ async function main() {
     }
 
     const filePath = path.resolve(SECONDARY_BONUS_ID_DATA_FILE)
-    const fileContents = DEFINE.IS_DEV
+    const fileContents = __IS_DEV__
         ? JSON.stringify(cache, null, 4)
         : JSON.stringify(cache)
 

@@ -1,4 +1,4 @@
-import { useFilterStore } from './Filter'
+import { useFilterStore } from './Filter/useFilterStore.ts'
 
 type HydrationStateMap = {
     ['__INITIAL_FILTER_STATE__']: ReturnType<typeof useFilterStore>['$state']

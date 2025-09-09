@@ -4,17 +4,17 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import { merge } from 'webpack-merge'
-import { srcWebDir, distWebDir, isDev, staticDir } from './BuildConstants'
-import { isAnalyze } from './BuildSecret'
-import { AUCTIONS_DATA_DIR } from '../src/common/Constants'
-import { commonConfig } from './webpack.common'
+import merge from 'webpack-merge'
+import { srcWebDir, distWebDir, isDev, staticDir } from './BuildConstants.ts'
+import { isAnalyze } from './BuildSecret.ts'
+import { AUCTIONS_DATA_DIR } from '../src/common/Constants.ts'
+import { commonConfig } from './webpack.common.ts'
 
 // ----------------------------------------------------------------------------
 // Web
 // ----------------------------------------------------------------------------
 
-export default merge(commonConfig, {
+export default merge.default(commonConfig, {
     target: 'web',
 
     entry: {
@@ -51,8 +51,8 @@ export default merge(commonConfig, {
                         options: {
                             additionalData: (content: string, loaderContext: { resourcePath: string }): string => {
                                 return (loaderContext.resourcePath.endsWith('sass'))
-                                    ? '@use "sass:color"\n@use "sass:math"\n@use "@/web/client/assets/css/variables.scss" as *\n' + content
-                                    : '@use "sass:color"; @use "sass:math"; @use "@/web/client/assets/css/variables.scss" as *; ' + content
+                                    ? '@use "sass:color"\n@use "sass:math"\n@use "@css/variables.scss" as *\n' + content
+                                    : '@use "sass:color"; @use "sass:math"; @use "@css/variables.scss" as *; ' + content
                             },
                         },
                     },

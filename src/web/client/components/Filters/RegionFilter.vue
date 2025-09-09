@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { RegionFilter, useFilterStore } from '../../store/Filter'
-import { regionConfigs } from '@/common/RegionConfig'
+import { type RegionFilter, useFilterStore } from '../../store/Filter/useFilterStore.ts'
+import { regionConfigs } from '../../../../common/RegionConfig.ts'
 
 const filterStore = useFilterStore()
 const selectedRegion = computed<RegionFilter>({

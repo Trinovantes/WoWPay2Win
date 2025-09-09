@@ -1,6 +1,6 @@
-import { SOCKET_BONUS_ID_DATA_FILE } from '@/common/Constants'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { SOCKET_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
 
 export type CachedSocketIdsFile = Array<number>
 
@@ -14,7 +14,7 @@ async function main() {
     }
 
     const filePath = path.resolve(SOCKET_BONUS_ID_DATA_FILE)
-    const fileContents = DEFINE.IS_DEV
+    const fileContents = __IS_DEV__
         ? JSON.stringify(cache, null, 4)
         : JSON.stringify(cache)
 

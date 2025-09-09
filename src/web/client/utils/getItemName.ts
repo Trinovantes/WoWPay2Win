@@ -1,8 +1,8 @@
-import { ItemAuction } from '@/common/Cache'
-import { getItemNameById } from './getItemNameById'
-import { RegionSlug } from '@/common/RegionConfig'
-import { getAuctionSecondary } from './getAuctionSecondary'
-import { ALL_SECONDARIES } from '@/common/ItemBonusId'
+import type { ItemAuction } from '../../../common/Cache.ts'
+import { ALL_SECONDARIES } from '../../../common/ItemBonusId.ts'
+import type { RegionSlug } from '../../../common/RegionConfig.ts'
+import { getAuctionSecondary } from './getAuctionSecondary.ts'
+import { getItemNameById } from './getItemNameById.ts'
 
 export function getItemName(regionSlug: RegionSlug | null, auction: ItemAuction): string {
     if (regionSlug === null) {

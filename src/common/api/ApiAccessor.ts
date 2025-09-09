@@ -1,7 +1,7 @@
-import { getRuntimeSecret } from '../utils/RuntimeSecret'
-import { ResponseValidator, tryExponentialBackoff } from '../utils/tryExponentialBackoff'
-import { RegionConfig } from '@/common/RegionConfig'
-import { BnetOauthResponse } from './BnetResponse'
+import { getRuntimeSecret } from '../node/RuntimeSecret.ts'
+import { tryExponentialBackoff, type ResponseValidator } from '../node/tryExponentialBackoff.ts'
+import type { RegionConfig } from '../RegionConfig.ts'
+import type { BnetOauthResponse } from './BnetResponse.ts'
 
 export class ApiAccessor {
     readonly regionConfig: RegionConfig

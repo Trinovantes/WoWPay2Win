@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useFilterStore } from '../../store/Filter'
-import { ALL_SECONDARIES, Secondary } from '@/common/ItemBonusId'
+import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
+import { ALL_SECONDARIES, type Secondary } from '../../../../common/ItemBonusId.ts'
 
 type SelectedSecondaries = Array<Secondary>
 

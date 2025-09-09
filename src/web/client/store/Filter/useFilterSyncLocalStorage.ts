@@ -1,6 +1,6 @@
 import { useRouter } from 'vue-router'
-import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../Hydration'
-import { useFilterStore } from '.'
+import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../Hydration.ts'
+import { useFilterStore } from './useFilterStore.ts'
 
 export function useFilterSyncLocalStorage() {
     const router = useRouter()

@@ -1,4 +1,4 @@
-import { GOLD_CAP } from '@/common/Constants'
+import { GOLD_CAP } from '../../../../common/Constants.ts'
 
 const SLIDER_TIERS = [
     [25, 100 * 1000],

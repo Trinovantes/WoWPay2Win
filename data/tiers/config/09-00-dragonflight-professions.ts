@@ -1,4 +1,4 @@
-import type { Tier, TierConfig } from '@/common/Boe'
+import type { Tier, TierConfig } from '../../../src/common/Boe.ts'
 
 const config: TierConfig = {
     name: 'Dragonflight Profession Recipes',

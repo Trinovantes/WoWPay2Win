@@ -1,13 +1,15 @@
-declare const DEFINE: Readonly<{
-    IS_DEV: boolean
-    GIT_HASH: string
+declare global {
+    const __IS_DEV__: boolean
+    const __GIT_HASH__: string
 
-    REGIONS_DATA_DIR: string
-    ITEMS_DATA_DIR: string
-    ITEMS_ICON_DIR: string
-    TIERS_CONFIG_DIR: string
-    TIERS_ICON_DIR: string
-    AUCTIONS_DATA_DIR: string
-    SOCKET_BONUS_ID_DATA_FILE: string
-    SECONDARY_BONUS_ID_DATA_FILE: string
-}>
+    const __REGIONS_DATA_DIR__: string
+    const __ITEMS_DATA_DIR__: string
+    const __ITEMS_ICON_DIR__: string
+    const __TIERS_CONFIG_DIR__: string
+    const __TIERS_ICON_DIR__: string
+    const __AUCTIONS_DATA_DIR__: string
+    const __SOCKET_BONUS_ID_DATA_FILE__: string
+    const __SECONDARY_BONUS_ID_DATA_FILE__: string
+}
+
+export {}

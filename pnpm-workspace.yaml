@@ -1,0 +1,8 @@
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@sentry/cli'
+  - esbuild
+  - sharp
+
+patchedDependencies:
+  quasar: patches/quasar.patch

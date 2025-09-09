@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useFilterStore } from '../../store/Filter'
-import { getItemIcon } from '../../utils/ImageLoader'
-import { getItemNameById } from '../../utils/getItemNameById'
-import { getWowheadItemLinkById } from '../../utils/getWowheadItemLinkById'
+import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
+import { getItemIcon } from '../../utils/ImageLoader.ts'
+import { getItemNameById } from '../../utils/getItemNameById.ts'
+import { getWowheadItemLinkById } from '../../utils/getWowheadItemLinkById.ts'
 
 const filterStore = useFilterStore()
 const selectedBoes = computed<Array<number>>({
@@ -114,7 +114,7 @@ const getItemName = (itemId: number) => {
                     class="boe"
                     rel="noopener"
                     target="_blank"
-                    @click="(event) => event.stopPropagation()"
+                    @click="(event: MouseEvent) => event.stopPropagation()"
                 >
                     <q-item
                         v-ripple

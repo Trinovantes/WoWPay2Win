@@ -1,5 +1,5 @@
-import { RegionSlug, regionConfigs } from '@/common/RegionConfig'
-import { itemDataFiles } from './GameData'
+import { type RegionSlug, regionConfigs } from '../../../common/RegionConfig.ts'
+import { itemDataFiles } from './GameData.ts'
 
 export function getItemNameById(itemId: number, regionSlug: RegionSlug): string {
     if (!itemDataFiles.has(itemId)) {

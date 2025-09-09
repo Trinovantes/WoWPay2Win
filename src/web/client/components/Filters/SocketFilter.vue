@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useFilterStore } from '../../store/Filter'
+import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
 
 const filterStore = useFilterStore()
 const mustHaveSocket = computed<boolean>({

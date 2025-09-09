@@ -1,26 +1,26 @@
 <script lang="ts" setup>
 import { QTable } from 'quasar'
 import { computed, ref } from 'vue'
-import { Auctions, useAuctionsStore } from '../store/Auctions'
-import { useFilterStore } from '../store/Filter'
-import { getItemIcon } from '../utils/ImageLoader'
-import { auctionHasSocket } from '../utils/auctionHasSocket'
-import { getAuctionIlvl } from '../utils/getAuctionIlvl'
-import { getAuctionTertiary } from '../utils/getAuctionTertiary'
-import { getItemName } from '../utils/getItemName'
-import { getConnectedRealmName } from '../utils/getConnectedRealmName'
-import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById'
-import { ALL_TERTIARIES, Tertiary } from '@/common/ItemBonusId'
-import { ItemAuction } from '@/common/Cache'
-import { ROWS_PER_PAGE } from '@/common/Constants'
-import { currencyFormatters, tokenPrices } from '@/common/RegionConfig'
+import { type Auctions, useAuctionStore } from '../store/Auction/useAuctionStore.ts'
+import { useFilterStore } from '../store/Filter/useFilterStore.ts'
+import { getItemIcon } from '../utils/ImageLoader.ts'
+import { auctionHasSocket } from '../utils/auctionHasSocket.ts'
+import { getAuctionIlvl } from '../utils/getAuctionIlvl.ts'
+import { getAuctionTertiary } from '../utils/getAuctionTertiary.ts'
+import { getItemName } from '../utils/getItemName.ts'
+import { getConnectedRealmName } from '../utils/getConnectedRealmName.ts'
+import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById.ts'
+import type { ItemAuction } from '../../../common/Cache.ts'
+import { ROWS_PER_PAGE } from '../../../common/Constants.ts'
+import { type Tertiary, ALL_TERTIARIES } from '../../../common/ItemBonusId.ts'
+import { tokenPrices, currencyFormatters } from '../../../common/RegionConfig.ts'
 
 type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
 
 const filterStore = useFilterStore()
 const filteredRegion = computed(() => filterStore.region)
 
-const auctionsStore = useAuctionsStore()
+const auctionsStore = useAuctionStore()
 const filteredAuctions = computed(() => auctionsStore.filteredAuctions)
 const columns: QTable['columns'] = [
     {
