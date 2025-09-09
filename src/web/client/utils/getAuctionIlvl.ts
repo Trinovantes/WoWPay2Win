@@ -1,6 +1,6 @@
-import { isIlvlBonusId } from '@/common/ItemBonusId'
-import { ItemAuction } from '@/common/Cache'
-import { itemDataFiles } from './GameData'
+import type { ItemAuction } from '../../../common/Cache.ts'
+import { isIlvlBonusId } from '../../../common/ItemBonusId.ts'
+import { itemDataFiles } from './GameData.ts'
 
 export function getAuctionIlvl(auction: ItemAuction): number {
     if (!itemDataFiles.has(auction.itemId)) {

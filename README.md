@@ -20,15 +20,15 @@ These two parts are completely independent from each other where their only comm
 
 ```bash
 # Runs linter
-yarn lint
+pnpm lint
 
 # Download game data from the API (localized item names and icon files) before building
-yarn fetchItems
-yarn fetchSocketIds
-yarn fetchSecondaryIds
+pnpm fetchItems
+pnpm fetchSocketIds
+pnpm fetchSecondaryIds
 
 # Starts webpack-dev-server on localhost:8080
-yarn devWeb
+pnpm devWeb
 ```
 
 ## Building for Production
@@ -45,7 +45,7 @@ make run   # Starts Docker images
 
 1. Create new file in `data/tiers/config` directory that default exports a `TierConfig` object. This config will be dynamically loaded via Webpack. The file should be of the form `XX-YY-descriptive-name` where `XX` is the expansion number (e.g. 07 for BfA) and `YY` is simply a number used to order the config (the last file in the filesystem will be considered the default/latest tier).
 
-2. Run `yarn fetchItems`, `yarn fetchSocketIds`, `yarn fetchSecondaryIds` to regenerate data files
+2. Run `pnpm fetchItems`, `pnpm fetchSocketIds`, `pnpm fetchSecondaryIds` to regenerate data files
 
 ### Tip
 

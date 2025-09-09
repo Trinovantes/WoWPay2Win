@@ -67,7 +67,7 @@ sentry:
 	docker cp $(TEMP_CONTAINER):/app/dist/. ./dist
 	docker rm $(TEMP_CONTAINER)
 
-	yarn sentry-cli sourcemaps upload --release=$(GIT_HASH) ./dist
+	pnpm sentry-cli sourcemaps upload --release=$(GIT_HASH) ./dist
 
 # -----------------------------------------------------------------------------
 # Cron

@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, Router } from 'vue-router'
-import { routes } from './routes'
+import { createRouter, createWebHistory, type Router } from 'vue-router'
+import { routes } from './routes.ts'
 
 // ----------------------------------------------------------------------------
 // Router

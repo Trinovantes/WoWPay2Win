@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import throttle from 'lodash.throttle'
 import { ref, watch, computed } from 'vue'
-import { useFilterStore } from '../../store/Filter'
+import { useFilterStore } from '../../store/Filter/useFilterStore'
 import { convertGoldToPosition, convertPositionToGold } from './MaxBuyoutConversion'
 
 const filterStore = useFilterStore()

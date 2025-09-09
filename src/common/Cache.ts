@@ -1,5 +1,5 @@
-import { ItemModifier } from './ItemModifier'
-import { RegionLocale } from './RegionConfig'
+import type { ItemModifier } from './ItemModifier.ts'
+import type { RegionLocale } from './RegionConfig.ts'
 
 // ----------------------------------------------------------------------------
 // Region

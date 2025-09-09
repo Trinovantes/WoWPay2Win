@@ -1,18 +1,18 @@
 {
+    "type": "module",
     "private": true,
     "scripts": {
-        "fetchAuctions": "    bun --preload=./build/bun.preload.ts run ./src/scripts/fetchAuctions.ts",
-        "fetchItems": "       bun --preload=./build/bun.preload.ts run ./src/scripts/fetchItems.ts",
-        "fetchSocketIds": "   bun --preload=./build/bun.preload.ts run ./src/scripts/fetchSocketIds.ts",
-        "fetchSecondaryIds": "bun --preload=./build/bun.preload.ts run ./src/scripts/fetchSecondaryIds.ts",
+        "fetchAuctions": "    node --import=./build/preload.ts ./src/scripts/fetchAuctions.ts",
+        "fetchItems": "       node --import=./build/preload.ts ./src/scripts/fetchItems.ts",
+        "fetchSocketIds": "   node --import=./build/preload.ts ./src/scripts/fetchSocketIds.ts",
+        "fetchSecondaryIds": "node --import=./build/preload.ts ./src/scripts/fetchSecondaryIds.ts",
         "dev": "  NODE_ENV=development webpack serve --config build/webpack.config.web.ts",
         "build": "NODE_ENV=production  webpack       --config build/webpack.config.web.ts && sentry-cli sourcemaps inject ./dist/web",
-        "lint": "vue-tsc --noemit && eslint",
-        "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.ts",
-        "prepare": "patch-package"
+        "lint": "vue-tsc && eslint",
+        "analyze": "WEBPACK_ANALYZE=true NODE_ENV=production webpack --config build/webpack.config.web.ts"
     },
     "dependencies": {
-        "@sentry/node": "^9.27.0",
+        "@sentry/node": "^10.10.0",
         "date-fns": "^4.1.0",
         "dotenv": "^17.0.0"
     },
@@ -20,10 +20,9 @@
         "@eslint/compat": "^1.1.0",
         "@eslint/js": "^9.4.0",
         "@sentry/cli": "^2.21.2",
-        "@sentry/vue": "^9.27.0",
+        "@sentry/vue": "^10.10.0",
         "@sinclair/typebox": "^0.34.39",
         "@stylistic/eslint-plugin": "^5.1.0",
-        "@types/bun": "^1.2.5",
         "@types/lodash.throttle": "^4.1.7",
         "@types/node": "^22.10.0",
         "@types/webpack-bundle-analyzer": "^4.4.1",
@@ -35,10 +34,10 @@
         "eslint": "^9.4.0",
         "eslint-plugin-n": "^17.7.0",
         "eslint-plugin-vue": "^10.0.0",
+        "globals": "^16.3.0",
         "html-webpack-plugin": "^5.3.1",
         "lodash.throttle": "^4.1.1",
         "mini-css-extract-plugin": "^2.2.0",
-        "patch-package": "^8.0.0",
         "pinia": "^3.0.1",
         "quasar": "^2.0.0-beta.12",
         "quasar-unused-plugin": "^0.3.1",
@@ -57,6 +56,7 @@
         "webpack": "^5.28.2",
         "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "^6.0.1",
-        "webpack-dev-server": "^5.0.4"
+        "webpack-dev-server": "^5.0.4",
+        "webpack-merge": "^6.0.1"
     }
 }

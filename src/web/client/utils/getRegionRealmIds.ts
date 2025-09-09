@@ -1,5 +1,5 @@
-import { RegionSlug } from '@/common/RegionConfig'
-import { getRegion } from './getRegion'
+import type { RegionSlug } from '../../../common/RegionConfig.ts'
+import { getRegion } from './getRegion.ts'
 
 export function getRegionRealmIds(region: RegionSlug | null): Array<number> {
     if (region === null) {

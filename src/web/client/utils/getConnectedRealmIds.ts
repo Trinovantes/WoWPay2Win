@@ -1,5 +1,5 @@
-import { RegionSlug } from '@/common/RegionConfig'
-import { regionDataFiles } from './GameData'
+import type { RegionSlug } from '../../../common/RegionConfig.ts'
+import { regionDataFiles } from './GameData.ts'
 
 type ReamToConnectedRealmMap = Record<number, number>
 

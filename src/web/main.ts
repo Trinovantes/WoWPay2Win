@@ -3,13 +3,13 @@ import * as Sentry from '@sentry/vue'
 import { createPinia } from 'pinia'
 import { Quasar } from 'quasar'
 import { createApp } from 'vue'
-import { SENTRY_DSN } from '@/common/Constants'
 import AppLoader from './client/AppLoader.vue'
-import { createAppRouter } from './client/router'
-import { cleanLocalStorage } from './client/store/Hydration'
+import { createAppRouter } from './client/router/createAppRouter.ts'
+import { cleanLocalStorage } from './client/store/Hydration.ts'
+import { SENTRY_DSN } from '../common/Constants.ts'
 
 async function main() {
-    console.info('Release', DEFINE.GIT_HASH)
+    console.info('Release', __GIT_HASH__)
 
     // Vue
     const app = createApp(AppLoader)
@@ -30,10 +30,10 @@ async function main() {
         },
     })
 
-    if (!DEFINE.IS_DEV) {
+    if (!__IS_DEV__) {
         Sentry.init({
             app,
-            release: DEFINE.GIT_HASH,
+            release: __GIT_HASH__,
             dsn: SENTRY_DSN,
             integrations: [
                 Sentry.browserTracingIntegration({ router }),

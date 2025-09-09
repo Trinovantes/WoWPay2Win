@@ -1,8 +1,8 @@
-import { ItemAuction } from '@/common/Cache'
-import { CachedSocketIdsFile } from '@/scripts/fetchSocketIds'
+import type { ItemAuction } from '../../../common/Cache.ts'
+import type { CachedSocketIdsFile } from '../../../scripts/fetchSocketIds.ts'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const socketBonusIds = new Set(require(DEFINE.SOCKET_BONUS_ID_DATA_FILE) as CachedSocketIdsFile) // Webpack specific function
+const socketBonusIds = new Set(require(__SOCKET_BONUS_ID_DATA_FILE__) as CachedSocketIdsFile) // Webpack specific function
 
 export function auctionHasSocket(auction: ItemAuction): boolean {
     for (const bonusId of auction.bonusIds ?? []) {
