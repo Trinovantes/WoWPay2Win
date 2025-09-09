@@ -1,9 +1,9 @@
-import { Tier, TierConfig, TierConfigMap } from '@/common/Boe'
-import { Item, Region } from '@/common/Cache'
-import { RegionSlug } from '@/common/RegionConfig'
+import type { TierConfig, TierConfigMap, Tier } from '../../../common/Boe.ts'
+import type { Region, Item } from '../../../common/Cache.ts'
+import type { RegionSlug } from '../../../common/RegionConfig.ts'
 
 export const regionDataFiles: Map<RegionSlug, Region> = (() => {
-    const req = require.context(DEFINE.REGIONS_DATA_DIR, false, /region-(\w+)\.json$/) // Webpack specific function
+    const req = require.context(__REGIONS_DATA_DIR__, false, /region-(\w+)\.json$/) // Webpack specific function
     const files = new Map<RegionSlug, Region>()
 
     for (const fileName of req.keys()) {
@@ -20,7 +20,7 @@ export const regionDataFiles: Map<RegionSlug, Region> = (() => {
 })()
 
 export const itemDataFiles: Map<number, Item> = (() => {
-    const req = require.context(DEFINE.ITEMS_DATA_DIR, false, /item-(\d+)\.json$/) // Webpack specific function
+    const req = require.context(__ITEMS_DATA_DIR__, false, /item-(\d+)\.json$/) // Webpack specific function
     const files = new Map<number, Item>()
 
     for (const fileName of req.keys()) {
@@ -41,7 +41,7 @@ export const itemDataFiles: Map<number, Item> = (() => {
 })()
 
 export const { tierConfigMap, defaultTier } = (() => {
-    const tierConfigsImportCtx = require.context(DEFINE.TIERS_CONFIG_DIR, true, /\d{2}-\d{2}-[\w-]+\.ts$/) // Webpack specific function
+    const tierConfigsImportCtx = require.context(__TIERS_CONFIG_DIR__, true, /\d{2}-\d{2}-[\w-]+\.ts$/) // Webpack specific function
     const tierConfigs = new Array<TierConfig>()
 
     for (const fileName of tierConfigsImportCtx.keys()) {

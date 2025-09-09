@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useAuctionsStore } from '../store/Auctions'
-import { useLiveAuctions } from '../store/Auctions/useLiveAuctions'
-import { useFilterStore } from '../store/Filter'
-import { useFilterSyncLocalStorage } from '../store/Filter/useFilterSyncLocalStorage'
-import { useFilterSyncQuery } from '../store/Filter/useFilterSyncQuery'
-import { APP_NAME, APP_DESC } from '@/common/Constants'
+import { useAuctionStore } from '../store/Auction/useAuctionStore.ts'
+import { useLiveAuctions } from '../store/Auction/useLiveAuctions.ts'
+import { useFilterStore } from '../store/Filter/useFilterStore.ts'
+import { useFilterSyncLocalStorage } from '../store/Filter/useFilterSyncLocalStorage.ts'
+import { useFilterSyncQuery } from '../store/Filter/useFilterSyncQuery.ts'
 import BoeFilter from './Filters/BoeFilter.vue'
 import ItemLevelFilter from './Filters/ItemLevelFilter.vue'
 import MaxBuyoutFilter from './Filters/MaxBuyoutFilter.vue'
@@ -17,6 +16,7 @@ import TierFilter from './Filters/TierFilter.vue'
 import HomePageAuctionsTable from './HomePageAuctionsTable.vue'
 import HomePageFlavorText from './HomePageFlavorText.vue'
 import SecondaryFilter from './Filters/SecondaryFilter.vue'
+import { APP_DESC, APP_NAME } from '../../../common/Constants.ts'
 
 useFilterSyncLocalStorage()
 useFilterSyncQuery()
@@ -25,7 +25,7 @@ useLiveAuctions()
 const filterStore = useFilterStore()
 const selectedRegion = computed(() => filterStore.region)
 
-const auctionsStore = useAuctionsStore()
+const auctionsStore = useAuctionStore()
 const lastUpdateIso = computed(() => auctionsStore.lastUpdateIso)
 const lastUpdateString = computed(() => auctionsStore.lastUpdateFull)
 const lastUpdateFromNow = computed(() => auctionsStore.lastUpdateFromNow)

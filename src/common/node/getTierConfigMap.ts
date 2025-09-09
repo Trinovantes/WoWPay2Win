@@ -1,7 +1,7 @@
-import { TierConfig, TierConfigMap } from '@/common/Boe'
-import { TIERS_CONFIG_DIR } from '@/common/Constants'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import type { TierConfigMap, TierConfig } from '../Boe.ts'
+import { TIERS_CONFIG_DIR } from '../Constants.ts'
 
 export async function getTierConfigMap(): Promise<TierConfigMap> {
     const tierConfigs = new Array<TierConfig>()

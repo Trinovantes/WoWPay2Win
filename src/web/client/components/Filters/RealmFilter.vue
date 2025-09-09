@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useFilterStore } from '../../store/Filter'
+import { useFilterStore } from '../../store/Filter/useFilterStore'
 import { getRegion } from '../../utils/getRegion'
-import { Realm } from '@/common/Cache'
+import type { Realm } from '../../../../common/Cache.ts'
 
 type SelectedRealms = Array<number>
 type Realms = Array<Realm>

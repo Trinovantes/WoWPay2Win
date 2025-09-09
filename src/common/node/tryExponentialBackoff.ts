@@ -1,5 +1,5 @@
-import { API_TIMEOUT, MAX_API_ATTEMPTS } from '@/common/Constants'
-import { sleep } from '@/common/utils/sleep'
+import { API_TIMEOUT, MAX_API_ATTEMPTS } from '../Constants.ts'
+import { sleep } from '../utils/sleep.ts'
 
 export type ResponseValidator<T> = (data: T | null) => string | null
 

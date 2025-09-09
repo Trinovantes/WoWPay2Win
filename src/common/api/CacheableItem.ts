@@ -1,11 +1,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fetchFile } from '../utils/fetchFile'
-import { Item } from '@/common/Cache'
-import { RegionLocale } from '@/common/RegionConfig'
-import { Cacheable } from './Cacheable'
-import { ApiAccessor } from './ApiAccessor'
-import { BnetItemMediaResponse, BnetItemResponse } from './BnetResponse'
+import { Cacheable } from './Cacheable.ts'
+import { ApiAccessor } from './ApiAccessor.ts'
+import type { BnetItemMediaResponse, BnetItemResponse } from './BnetResponse.ts'
+import type { Item } from '../Cache.ts'
+import type { RegionLocale } from '../RegionConfig.ts'
+import { fetchFile } from '../node/fetchFile.ts'
 
 /**
  * High level information about an Item for a specific region (specific to the ApiAccessor)

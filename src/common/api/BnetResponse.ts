@@ -1,4 +1,4 @@
-import { ItemModifier } from '@/common/ItemModifier'
+import type { ItemModifier } from '../ItemModifier.ts'
 
 export type BnetOauthResponse = {
     access_token: string

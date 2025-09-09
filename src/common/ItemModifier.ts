@@ -1,4 +1,4 @@
-import { SECONDARY, Secondary } from './ItemBonusId'
+import { SECONDARY, type Secondary } from './ItemBonusId.ts'
 
 // https://warcraft.wiki.gg/wiki/ItemLink
 export const ITEM_MODIFIER_KEY = {

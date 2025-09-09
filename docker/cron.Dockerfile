@@ -1,18 +1,35 @@
 # -----------------------------------------------------------------------------
-FROM node:22 AS builder
+FROM node:24-alpine AS base
 # -----------------------------------------------------------------------------
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable pnpm
 
 WORKDIR /app
 
-# Install Bun
-RUN yarn global add bun && \
-    bun --version
-
-# Install dependencies
 COPY tsconfig.json              ./
-COPY yarn.lock package.json     ./
+COPY package.json               ./
+COPY pnpm-workspace.yaml        ./
+COPY pnpm-lock.yaml             ./
 COPY patches/                   ./patches/
-RUN yarn install
+
+# -----------------------------------------------------------------------------
+FROM base AS deps
+# -----------------------------------------------------------------------------
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install \
+        --frozen-lockfile \
+        --production
+
+# -----------------------------------------------------------------------------
+FROM base AS builder
+# -----------------------------------------------------------------------------
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install \
+        --frozen-lockfile
 
 # Copy app
 COPY build/                     ./build/
@@ -23,19 +40,16 @@ COPY data/                      ./data/
 RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
     --mount=type=secret,id=GIT_HASH \
-    yarn fetchItems && \
-    yarn fetchSocketIds && \
-    yarn fetchSecondaryIds
+    pnpm fetchItems && \
+    pnpm fetchSocketIds && \
+    pnpm fetchSecondaryIds
 
 # Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \
-    yarn build
-
-# Remove dev dependencies
-RUN yarn install --production
+    pnpm build
 
 # -----------------------------------------------------------------------------
-FROM oven/bun:alpine
+FROM node:24-alpine
 LABEL org.opencontainers.image.source=https://github.com/Trinovantes/WoWPay2Win
 # -----------------------------------------------------------------------------
 
@@ -43,17 +57,17 @@ WORKDIR /app
 
 ENV NODE_ENV='production'
 
-# Install dependencies
-RUN apk update && apk add --no-cache curl git
+# Install cron dependencies
+RUN apk update && \
+    apk add --no-cache git
 
 # Copy app
-COPY --from=builder /app/tsconfig.json  ./
-COPY --from=builder /app/package.json   ./
-COPY --from=builder /app/node_modules/  ./node_modules/
-COPY --from=builder /app/build/         ./build/
-COPY --from=builder /app/src/           ./src/
-COPY --from=builder /app/data/          ./data/
+COPY --from=deps /app/package.json      ./
+COPY --from=deps /app/node_modules/     ./node_modules/
 COPY docker/                            ./docker/
+COPY build/                             ./build/
+COPY data/                              ./data/
+COPY src/                               ./src/
 COPY .git/                              ./.git/
 
 # Mount points

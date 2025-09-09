@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import throttle from 'lodash.throttle'
 import { ref, watch, computed } from 'vue'
-import { useFilterStore } from '../../store/Filter'
-import { convertGoldToPosition, convertPositionToGold } from './MaxBuyoutConversion'
+import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
+import { convertGoldToPosition, convertPositionToGold } from './MaxBuyoutConversion.ts'
 
 const filterStore = useFilterStore()
 const formatter = Intl.NumberFormat(undefined, { maximumFractionDigits: 0 })

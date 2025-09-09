@@ -1,6 +1,6 @@
-import { Region } from '@/common/Cache'
-import { RegionSlug } from '@/common/RegionConfig'
-import { regionDataFiles } from './GameData'
+import type { Region } from '../../../common/Cache.ts'
+import type { RegionSlug } from '../../../common/RegionConfig.ts'
+import { regionDataFiles } from './GameData.ts'
 
 export function getRegion(region: RegionSlug): Region | undefined {
     if (!regionDataFiles.has(region)) {
