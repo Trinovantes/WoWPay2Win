@@ -4,8 +4,7 @@
     "scripts": {
         "fetchAuctions": "    node --import=./build/preload.ts ./src/scripts/fetchAuctions.ts",
         "fetchItems": "       node --import=./build/preload.ts ./src/scripts/fetchItems.ts",
-        "fetchSocketIds": "   node --import=./build/preload.ts ./src/scripts/fetchSocketIds.ts",
-        "fetchSecondaryIds": "node --import=./build/preload.ts ./src/scripts/fetchSecondaryIds.ts",
+        "fetchBonusIds": "    node --import=./build/preload.ts ./src/scripts/fetchBonusIds.ts",
         "dev": "  NODE_ENV=development webpack serve --config build/webpack.config.web.ts",
         "build": "NODE_ENV=production  webpack       --config build/webpack.config.web.ts && sentry-cli sourcemaps inject ./dist/web",
         "lint": "vue-tsc && eslint",

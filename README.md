@@ -24,8 +24,7 @@ pnpm lint
 
 # Download game data from the API (localized item names and icon files) before building
 pnpm fetchItems
-pnpm fetchSocketIds
-pnpm fetchSecondaryIds
+pnpm fetchBonusIds
 
 # Starts webpack-dev-server on localhost:8080
 pnpm devWeb
@@ -45,7 +44,7 @@ make run   # Starts Docker images
 
 1. Create new file in `data/tiers/config` directory that default exports a `TierConfig` object. This config will be dynamically loaded via Webpack. The file should be of the form `XX-YY-descriptive-name` where `XX` is the expansion number (e.g. 07 for BfA) and `YY` is simply a number used to order the config (the last file in the filesystem will be considered the default/latest tier).
 
-2. Run `pnpm fetchItems`, `pnpm fetchSocketIds`, `pnpm fetchSecondaryIds` to regenerate data files
+2. Run `pnpm fetchItems` and `pnpm fetchBonusIds` to regenerate data files
 
 ### Tip
 

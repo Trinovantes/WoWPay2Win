@@ -6,7 +6,7 @@ import { useFilterStore } from '../store/Filter/useFilterStore.ts'
 import { useFilterSyncLocalStorage } from '../store/Filter/useFilterSyncLocalStorage.ts'
 import { useFilterSyncQuery } from '../store/Filter/useFilterSyncQuery.ts'
 import BoeFilter from './Filters/BoeFilter.vue'
-import ItemLevelFilter from './Filters/ItemLevelFilter.vue'
+import DifficultyFilter from './Filters/DifficultyFilter.vue'
 import MaxBuyoutFilter from './Filters/MaxBuyoutFilter.vue'
 import RealmFilter from './Filters/RealmFilter.vue'
 import RegionFilter from './Filters/RegionFilter.vue'
@@ -66,7 +66,7 @@ const lastUpdateFromNow = computed(() => auctionsStore.lastUpdateFromNow)
 
                     <RealmFilter />
                     <BoeFilter />
-                    <ItemLevelFilter />
+                    <DifficultyFilter />
                     <MaxBuyoutFilter />
                     <SocketFilter />
                     <SecondaryFilter />

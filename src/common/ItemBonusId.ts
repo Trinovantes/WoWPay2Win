@@ -26,30 +26,37 @@ export function hasBannedId(bonusIds?: Array<number>): boolean {
 }
 
 // ----------------------------------------------------------------------------
-// Bonus ilvl
+// Difficulty
 // ----------------------------------------------------------------------------
 
-export function isIlvlBonusId(bonusId: number): number | undefined {
-    // Modifies -100 to +100 ilvls
-    if (bonusId >= 1372 && bonusId <= 1672) {
-        const ZERO_ILVL = 1472
-        return bonusId - ZERO_ILVL
-    }
+// These key values are simply for sorting purposes and do not correspond to anything in-game
+export const ALL_DIFFICULTIES = [
+    {
+        label: 'Raid Finder',
+        key: 0,
+    },
+    {
+        label: 'Normal',
+        key: 1,
+    },
+    {
+        label: 'Heroic',
+        key: 2,
+    },
+    {
+        label: 'Mythic',
+        key: 3,
+    },
+] as const
 
-    // Subtracts 101-400 ilvls
-    if (bonusId >= 2829 && bonusId <= 3129) {
-        const BASE_ILVL = 2829
-        return -400 + (bonusId - BASE_ILVL)
-    }
+export const DIFFICULTY = {
+    LFR: ALL_DIFFICULTIES[0].key,
+    NORMAL: ALL_DIFFICULTIES[1].key,
+    HEROIC: ALL_DIFFICULTIES[2].key,
+    MYTHIC: ALL_DIFFICULTIES[3].key,
+} as const
 
-    // Adds 201-400 ilvls
-    if (bonusId >= 3130 && bonusId <= 3329) {
-        const BASE_ILVL = 3130
-        return 201 + (bonusId - BASE_ILVL)
-    }
-
-    return undefined
-}
+export type Difficulty = typeof ALL_DIFFICULTIES[number]['key']
 
 // ----------------------------------------------------------------------------
 // Tertiary

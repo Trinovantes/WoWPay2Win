@@ -41,8 +41,7 @@ RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
     --mount=type=secret,id=GIT_HASH \
     pnpm fetchItems && \
-    pnpm fetchSocketIds && \
-    pnpm fetchSecondaryIds
+    pnpm fetchBonusIds
 
 # Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \

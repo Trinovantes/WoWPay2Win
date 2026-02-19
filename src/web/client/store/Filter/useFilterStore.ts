@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
 import { getRegionRealmIds } from '../../utils/getRegionRealmIds.ts'
 import { defaultTier, tierConfigMap } from '../../utils/GameData.ts'
-import { getAuctionIlvl } from '../../utils/getAuctionIlvl.ts'
-import { auctionHasSocket } from '../../utils/auctionHasSocket.ts'
+import { getAuctionHasSocket } from '../../utils/getAuctionHasSocket.ts'
 import { getAuctionTertiary } from '../../utils/getAuctionTertiary.ts'
 import { getAuctionSecondary } from '../../utils/getAuctionSecondary.ts'
 import { computed, ref } from 'vue'
-import { getIlvlRange, type Tier, getTierBoeIds, type BoeIlvlRange } from '../../../../common/Boe.ts'
+import { type Tier, getTierBoeIds } from '../../../../common/Boe.ts'
 import type { ItemAuction } from '../../../../common/Cache.ts'
 import { GOLD_CAP } from '../../../../common/Constants.ts'
-import { type Tertiary, type Secondary, ALL_TERTIARIES, ALL_SECONDARIES } from '../../../../common/ItemBonusId.ts'
+import { type Tertiary, type Secondary, ALL_TERTIARIES, ALL_SECONDARIES, type Difficulty, ALL_DIFFICULTIES } from '../../../../common/ItemBonusId.ts'
 import type { RegionSlug } from '../../../../common/RegionConfig.ts'
+import { getAuctionDifficulty } from '../../utils/getAuctionDifficulty.ts'
 
 // ----------------------------------------------------------------------------
 // State
@@ -19,6 +19,7 @@ import type { RegionSlug } from '../../../../common/RegionConfig.ts'
 export type RegionFilter = RegionSlug | null
 export type RealmFilter = Set<number>
 export type BoeFilter = Set<number>
+export type DifficultyFilter = Set<Difficulty>
 export type TertiaryFilter = Set<Tertiary>
 export type SecondaryFilter = Set<Secondary>
 
@@ -30,7 +31,7 @@ type QueryFiltersField =
     | 'region'
     | 'realms'
     | 'boes'
-    | 'ilvlRange'
+    | 'difficulty'
     | 'maxBuyout'
     | 'mustHaveSocket'
     | 'tertiaries'
@@ -43,12 +44,11 @@ type QueryFilters = Partial<Record<QueryFiltersField, string>>
 // ----------------------------------------------------------------------------
 
 export const useFilterStore = defineStore('Filter', () => {
-    const tier = ref(defaultTier)
     const region = ref<RegionFilter>(null)
     const realms = ref<RealmFilter>(new Set())
 
     /**
-     * We could alteratively save these item filters in a new obj and index them by tier i.e. { [key in Tier]: {...} }
+     * We could alteratively save these item filters in a map and index them by tier i.e. { [key in Tier]: {...} }
      * However:
      * - It is impractical to save the entire store as an URL query
      * - There's probably a bigger use case for sharing URLs than people trying to compare items between multiple tiers
@@ -56,51 +56,37 @@ export const useFilterStore = defineStore('Filter', () => {
      *
      * Therefore we will keep things simple and reset the tier-related item states whenever we change tiers
      */
+    const tier = ref(defaultTier)
     const boes = ref<BoeFilter>(new Set())
-    const ilvlRange = ref<{ min: number; max: number }>(getIlvlRange(tierConfigMap, defaultTier))
     const maxBuyout = ref(GOLD_CAP)
     const mustHaveSocket = ref(false)
+    const difficulties = ref<DifficultyFilter>(new Set())
     const tertiaries = ref<TertiaryFilter>(new Set())
     const secondaries = ref<SecondaryFilter>(new Set())
-
-    const reset = () => {
-        tier.value = defaultTier
-        region.value = null
-        realms.value = new Set()
-
-        boes.value = new Set()
-        ilvlRange.value = getIlvlRange(tierConfigMap, defaultTier)
-        maxBuyout.value = GOLD_CAP
-        mustHaveSocket.value = false
-        tertiaries.value = new Set()
-        secondaries.value = new Set()
-    }
-
-    const currentTierName = computed(() => tierConfigMap.get(tier.value)?.name ?? `[INVALID TIER "${tier.value}"]`)
-    const currentTierBoes = computed(() => tierConfigMap.get(tier.value)?.boes ?? [])
-    const currentTierIlvlStep = computed(() => tierConfigMap.get(tier.value)?.ilvlStep)
-    const currentTierIlvlRange = computed(() => tierConfigMap.get(tier.value)?.ilvlRange)
-
-    const enableIlvlFilter = computed(() => {
-        if (currentTierIlvlStep.value === undefined) {
-            return false
-        }
-
-        if (currentTierIlvlRange.value === undefined) {
-            return false
-        }
-
-        return currentTierIlvlStep.value > 0 && currentTierIlvlRange.value.min !== currentTierIlvlRange.value.max
-    })
-    const enableSocketFilter = computed(() => enableIlvlFilter.value)
-    const enableTertiaryFilter = computed(() => enableIlvlFilter.value)
-    const enableSecondaryFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableSecondaryFilter))
 
     const changeTier = (newTier: Tier): void => {
         tier.value = newTier
         boes.value = new Set()
-        ilvlRange.value = getIlvlRange(tierConfigMap, newTier)
+        maxBuyout.value = GOLD_CAP
+        mustHaveSocket.value = false
+        difficulties.value = new Set()
+        tertiaries.value = new Set()
+        secondaries.value = new Set()
     }
+
+    const reset = () => {
+        region.value = null
+        realms.value = new Set()
+        changeTier(defaultTier)
+    }
+
+    const currentTierName = computed(() => tierConfigMap.get(tier.value)?.name ?? `[INVALID TIER "${tier.value}"]`)
+    const currentTierBoes = computed(() => tierConfigMap.get(tier.value)?.boes ?? [])
+
+    const enableDifficultyFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableDifficultyFilter))
+    const enableSocketFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableSocketFilter))
+    const enableTertiaryFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableTertiaryFilter))
+    const enableSecondaryFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableSecondaryFilter))
 
     const changeRegion = (newRegion: RegionFilter): void => {
         region.value = newRegion
@@ -111,27 +97,33 @@ export const useFilterStore = defineStore('Filter', () => {
         if (!boes.value.has(auction.itemId)) {
             return false
         }
+
         if (auction.buyout > maxBuyout.value) {
             return false
         }
 
-        const isBoeGear = currentTierIlvlRange.value !== undefined
-        if (isBoeGear) {
-            const itemIlvl = getAuctionIlvl(auction)
-            if (itemIlvl < ilvlRange.value.min || itemIlvl > ilvlRange.value.max) {
+        if (enableDifficultyFilter.value) {
+            const itemDifficulty = getAuctionDifficulty(auction)
+            if (difficulties.value.size > 0 && (itemDifficulty === undefined || !difficulties.value.has(itemDifficulty))) {
                 return false
             }
+        }
 
-            const itemHasSocket = auctionHasSocket(auction)
+        if (enableSocketFilter.value) {
+            const itemHasSocket = getAuctionHasSocket(auction)
             if (mustHaveSocket.value && !itemHasSocket) {
                 return false
             }
+        }
 
+        if (enableTertiaryFilter.value) {
             const itemTertiary = getAuctionTertiary(auction)
             if (tertiaries.value.size > 0 && (itemTertiary === undefined || !tertiaries.value.has(itemTertiary))) {
                 return false
             }
+        }
 
+        if (enableSecondaryFilter.value) {
             const itemSecondary = getAuctionSecondary(auction)
             if (secondaries.value.size > 0 && !equal(secondaries.value, itemSecondary)) {
                 return false
@@ -160,16 +152,16 @@ export const useFilterStore = defineStore('Filter', () => {
             queryFilters.boes = exportNumSet(boes.value)
         }
 
-        if (!isIlvlRangeEqual(ilvlRange.value, getIlvlRange(tierConfigMap, tier.value))) {
-            queryFilters.ilvlRange = ilvlRange.value.min.toString() + DELIMITER + ilvlRange.value.max.toString()
-        }
-
         if (maxBuyout.value < GOLD_CAP) {
             queryFilters.maxBuyout = maxBuyout.value.toString()
         }
 
         if (mustHaveSocket.value) {
             queryFilters.mustHaveSocket = MUST_HAVE_SOCKET_VALUE
+        }
+
+        if (difficulties.value.size > 0) {
+            queryFilters.difficulty = exportNumSet(difficulties.value)
         }
 
         if (tertiaries.value.size > 0) {
@@ -212,18 +204,6 @@ export const useFilterStore = defineStore('Filter', () => {
             boes.value = new Set(importedBoes)
         }
 
-        if (queryFilters.ilvlRange) {
-            const [min, max] = queryFilters.ilvlRange.split(DELIMITER).map((ilvl) => parseInt(ilvl))
-            const tierIlvls = getIlvlRange(tierConfigMap, tier.value)
-
-            if (!isNaN(min)) {
-                ilvlRange.value.min = Math.max(min, tierIlvls.min)
-            }
-            if (!isNaN(max)) {
-                ilvlRange.value.max = Math.min(max, tierIlvls.max)
-            }
-        }
-
         if (queryFilters.maxBuyout) {
             const importedMaxBuyout = parseInt(queryFilters.maxBuyout)
             if (!isNaN(importedMaxBuyout)) {
@@ -233,6 +213,12 @@ export const useFilterStore = defineStore('Filter', () => {
 
         if (queryFilters.mustHaveSocket) {
             mustHaveSocket.value = (queryFilters.mustHaveSocket === MUST_HAVE_SOCKET_VALUE)
+        }
+
+        if (queryFilters.difficulty) {
+            const validDifficulties = ALL_DIFFICULTIES.map((difficulty) => difficulty.key)
+            const importedDifficulties = importNumArray<Difficulty>(queryFilters.difficulty, validDifficulties)
+            difficulties.value = new Set(importedDifficulties)
         }
 
         if (queryFilters.tertiaries) {
@@ -249,23 +235,21 @@ export const useFilterStore = defineStore('Filter', () => {
     }
 
     return {
-        tier,
         region,
         realms,
 
+        tier,
         boes,
-        ilvlRange,
         maxBuyout,
         mustHaveSocket,
+        difficulties,
         tertiaries,
         secondaries,
 
         currentTierName,
         currentTierBoes,
-        currentTierIlvlRange,
-        currentTierIlvlStep,
 
-        enableIlvlFilter,
+        enableDifficultyFilter,
         enableSocketFilter,
         enableTertiaryFilter,
         enableSecondaryFilter,
@@ -284,10 +268,6 @@ export const useFilterStore = defineStore('Filter', () => {
 // Helpers
 // ----------------------------------------------------------------------------
 
-function isIlvlRangeEqual(a: BoeIlvlRange, b: BoeIlvlRange): boolean {
-    return a.max === b.max && a.min === b.min
-}
-
 function clamp(val: number, min: number, max: number): number {
     val = Math.min(val, max)
     val = Math.max(val, min)
@@ -295,7 +275,7 @@ function clamp(val: number, min: number, max: number): number {
 }
 
 function exportNumSet(set: Set<number>): string {
-    return [...set].sort((a, b) => a - b).join(DELIMITER)
+    return [...set].toSorted((a, b) => a - b).join(DELIMITER)
 }
 
 function importNumArray<T extends number = number>(setString: string, validValues: ReadonlyArray<number>): Array<T> {

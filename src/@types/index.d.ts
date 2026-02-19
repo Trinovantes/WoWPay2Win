@@ -10,6 +10,7 @@ declare global {
     const __AUCTIONS_DATA_DIR__: string
     const __SOCKET_BONUS_ID_DATA_FILE__: string
     const __SECONDARY_BONUS_ID_DATA_FILE__: string
+    const __DIFFICULTY_BONUS_ID_DATA_FILE__: string
 }
 
 export {}

@@ -34,10 +34,10 @@ const config: TierConfig = {
             ],
         },
     ],
-    ilvlStep: 13,
-    ilvlRange: {
-        min: 402,
-        max: 402 + (13 * 3) + 9, // Later bosses drop up to base+9
+    features: {
+        enableDifficultyFilter: true,
+        enableSocketFilter: true,
+        enableTertiaryFilter: true,
     },
 }
 

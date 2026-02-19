@@ -9,11 +9,6 @@ export type BoeCategory = Readonly<{
     ids: ReadonlyArray<number>
 }>
 
-export type BoeIlvlRange = Readonly<{
-    min: number
-    max: number
-}>
-
 export type Tier = Brand<string, 'Tier'>
 
 export type TierConfig = Readonly<{
@@ -21,9 +16,10 @@ export type TierConfig = Readonly<{
     slug: Tier
     iconName: string
     boes: ReadonlyArray<BoeCategory>
-    ilvlStep?: number
-    ilvlRange?: BoeIlvlRange
     features?: Partial<{
+        enableDifficultyFilter: boolean
+        enableSocketFilter: boolean
+        enableTertiaryFilter: boolean
         enableSecondaryFilter: boolean
     }>
 }>
@@ -56,11 +52,4 @@ export function getTierBoeIds(tierConfigMap: TierConfigMap, tier: Tier): Array<n
 
 export function getTierName(tierConfigMap: TierConfigMap, tier: Tier): string | undefined {
     return tierConfigMap.get(tier)?.name
-}
-
-export function getIlvlRange(tierConfigMap: TierConfigMap, tier: Tier): BoeIlvlRange {
-    return {
-        max: tierConfigMap.get(tier)?.ilvlRange?.max ?? 0,
-        min: tierConfigMap.get(tier)?.ilvlRange?.min ?? 0,
-    }
 }

@@ -4,16 +4,16 @@ import { computed, ref } from 'vue'
 import { type Auctions, useAuctionStore } from '../store/Auction/useAuctionStore.ts'
 import { useFilterStore } from '../store/Filter/useFilterStore.ts'
 import { getItemIcon } from '../utils/ImageLoader.ts'
-import { auctionHasSocket } from '../utils/auctionHasSocket.ts'
-import { getAuctionIlvl } from '../utils/getAuctionIlvl.ts'
+import { getAuctionHasSocket } from '../utils/getAuctionHasSocket.ts'
 import { getAuctionTertiary } from '../utils/getAuctionTertiary.ts'
 import { getItemName } from '../utils/getItemName.ts'
 import { getConnectedRealmName } from '../utils/getConnectedRealmName.ts'
 import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById.ts'
 import type { ItemAuction } from '../../../common/Cache.ts'
 import { ROWS_PER_PAGE } from '../../../common/Constants.ts'
-import { type Tertiary, ALL_TERTIARIES } from '../../../common/ItemBonusId.ts'
+import { type Difficulty, type Tertiary, ALL_DIFFICULTIES, ALL_TERTIARIES } from '../../../common/ItemBonusId.ts'
 import { tokenPrices, currencyFormatters } from '../../../common/RegionConfig.ts'
+import { getAuctionDifficulty } from '../utils/getAuctionDifficulty.ts'
 
 type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
 
@@ -22,9 +22,10 @@ const filteredRegion = computed(() => filterStore.region)
 
 const auctionsStore = useAuctionStore()
 const filteredAuctions = computed(() => auctionsStore.filteredAuctions)
-const columns: QTable['columns'] = [
+const tableColumns = [
     {
-        name: 'itemId',
+        required: true,
+        name: 'colItemId',
         label: 'Item',
         align: 'left',
         sortable: true,
@@ -33,7 +34,8 @@ const columns: QTable['columns'] = [
         headerClasses: 'md-col',
     },
     {
-        name: 'buyout',
+        required: true,
+        name: 'colBuyout',
         label: 'Buyout',
         sortable: true,
         field: (auction: ItemAuction) => auction.buyout,
@@ -41,24 +43,26 @@ const columns: QTable['columns'] = [
         headerClasses: 'sm-col',
     },
     {
-        name: 'bonusIlvl',
-        label: 'Level',
+        name: 'colDifficulty',
+        label: 'iLvl',
         sortable: true,
-        field: (auction: ItemAuction) => getAuctionIlvl(auction),
+        align: 'left',
+        field: (auction: ItemAuction) => getAuctionDifficulty(auction),
+        format: (val?: Difficulty) => ALL_DIFFICULTIES.find((d) => d.key === val)?.label,
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },
     {
-        name: 'hasSocket',
+        name: 'colHasSocket',
         label: 'Has Socket',
         sortable: true,
         align: 'left',
-        field: (auction: ItemAuction) => auctionHasSocket(auction),
+        field: (auction: ItemAuction) => getAuctionHasSocket(auction),
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },
     {
-        name: 'tertiary',
+        name: 'colTertiary',
         label: 'Tertiary',
         sortable: true,
         align: 'left',
@@ -68,43 +72,64 @@ const columns: QTable['columns'] = [
         headerClasses: 'sm-col',
     },
     {
-        name: 'connectedRealm',
+        required: true,
+        name: 'colConnectedRealms',
         label: 'Connected Realms',
         align: 'left',
         field: (auction: ItemAuction) => getConnectedRealmName(filteredRegion.value, auction.crId),
     },
-]
+] as const satisfies QTable['columns']
+
+type ColumnNames = (typeof tableColumns)[number]['name']
+
+const visibleColumns = computed<Array<ColumnNames>>(() => {
+    const columns: Array<ColumnNames> = []
+
+    if (filterStore.enableDifficultyFilter) {
+        columns.push('colDifficulty')
+    }
+
+    if (filterStore.enableSocketFilter) {
+        columns.push('colHasSocket')
+    }
+
+    if (filterStore.enableTertiaryFilter) {
+        columns.push('colTertiary')
+    }
+
+    return columns
+})
 
 const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: boolean) => {
     return [...auctions].sort((a, b) => {
-        const compare = (key: string, ascending = true) => {
+        const compare = (key: ColumnNames, ascending = true) => {
             let comp = 0
             switch (key) {
-                case 'itemId': {
+                case 'colItemId': {
                     const x = getItemName(filteredRegion.value, a)
                     const y = getItemName(filteredRegion.value, b)
                     comp = x.localeCompare(y)
                     break
                 }
-                case 'buyout': {
-                    const x = (a[key] ?? 0)
-                    const y = (b[key] ?? 0)
+                case 'colBuyout': {
+                    const x = (a.buyout ?? 0)
+                    const y = (b.buyout ?? 0)
                     comp = x - y
                     break
                 }
-                case 'bonusIlvl': {
-                    const x = getAuctionIlvl(a)
-                    const y = getAuctionIlvl(b)
+                case 'colDifficulty': {
+                    const x = getAuctionDifficulty(a) ?? 0
+                    const y = getAuctionDifficulty(b) ?? 0
                     comp = x - y
                     break
                 }
-                case 'hasSocket': {
-                    const x = auctionHasSocket(a) ? 1 : 0
-                    const y = auctionHasSocket(b) ? 1 : 0
+                case 'colHasSocket': {
+                    const x = getAuctionHasSocket(a) ? 1 : 0
+                    const y = getAuctionHasSocket(b) ? 1 : 0
                     comp = x - y
                     break
                 }
-                case 'tertiary': {
+                case 'colTertiary': {
                     const x = getAuctionTertiary(a) ?? 0
                     const y = getAuctionTertiary(b) ?? 0
                     comp = x - y
@@ -115,7 +140,7 @@ const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: 
             return comp * (ascending ? 1 : -1)
         }
 
-        return (sortBy && compare(sortBy, !descending)) || compare('buyout') || compare('bonusIlvl', false) || compare('itemId') || compare('hasSocket', false) || compare('tertiary', false)
+        return (sortBy && compare(sortBy as ColumnNames, !descending)) || compare('colBuyout') || compare('colDifficulty', false) || compare('colItemId') || compare('colHasSocket', false) || compare('colTertiary', false)
     })
 }
 
@@ -136,7 +161,7 @@ const pagination = ref<Pagination>({
     page: 1,
     rowsPerPage: ROWS_PER_PAGE,
     descending: false,
-    sortBy: 'buyout',
+    sortBy: 'colBuyout',
 })
 
 const getWowheadLink = (auction: ItemAuction) => {
@@ -192,12 +217,13 @@ const getBuyoutTooltip = (val: number): string => {
         class="no-shadow no-border-radius"
         row-key="id"
         :rows="filteredAuctions"
-        :columns="columns"
+        :columns="tableColumns"
+        :visible-columns="visibleColumns"
         :sort-method="sortAuctions"
         :no-data-label="noDataLabel"
         hide-pagination
     >
-        <template #body-cell-itemId="props">
+        <template #body-cell-colItemId="props">
             <q-td :props="props">
                 <a
                     :href="getWowheadLink(props.row)"
@@ -221,7 +247,7 @@ const getBuyoutTooltip = (val: number): string => {
                 </a>
             </q-td>
         </template>
-        <template #body-cell-buyout="props: { row: ItemAuction }">
+        <template #body-cell-colBuyout="props: { row: ItemAuction }">
             <q-td :props="props">
                 {{ numFormatter.format(props.row.buyout) }}
 
@@ -234,10 +260,10 @@ const getBuyoutTooltip = (val: number): string => {
                 </q-tooltip>
             </q-td>
         </template>
-        <template #body-cell-hasSocket="props">
+        <template #body-cell-colHasSocket="props">
             <q-td :props="props">
                 <q-icon
-                    v-if="auctionHasSocket(props.row)"
+                    v-if="getAuctionHasSocket(props.row)"
                     name="check_circle_outline"
                     title="Has Socket"
                 />

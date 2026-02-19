@@ -49,10 +49,11 @@ const config: TierConfig = {
             ],
         },
     ],
-    ilvlStep: 13,
-    ilvlRange: {
-        min: 584,
-        max: 584 + (13 * 2),
+    features: {
+        enableDifficultyFilter: true,
+        enableSocketFilter: true,
+        enableTertiaryFilter: true,
+        enableSecondaryFilter: true,
     },
 }
 
