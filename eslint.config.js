@@ -95,6 +95,7 @@ export default defineConfig(
 
     {
         rules: {
+            'no-useless-assignment': ['off'],
             'no-empty-pattern': ['error', {
                 allowObjectPatternsAsParameters: true,
             }],
