@@ -6,3 +6,6 @@ ignoredBuiltDependencies:
 
 patchedDependencies:
   quasar: patches/quasar.patch
+
+overrides:
+  "@types/node": "^24"
