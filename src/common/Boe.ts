@@ -26,7 +26,7 @@ export type TierConfig = Readonly<{
 
 // Tier data is stored in from ./data/tiers/config and must be dynamically constructed into this Map
 // For frontend, webpack can use require.context to generate this Map
-// For backend, bunjs can use Glob to generate this Map
+// For backend, node can use dynamic imports to generate this Map
 export type TierConfigMap = ReadonlyMap<Tier, TierConfig>
 
 // ----------------------------------------------------------------------------
