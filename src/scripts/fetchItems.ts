@@ -4,10 +4,9 @@ import { regionConfigs } from '../common/RegionConfig.ts'
 import { ApiAccessor } from '../common/api/ApiAccessor.ts'
 import { CacheableItem } from '../common/api/CacheableItem.ts'
 import { CacheableRegion } from '../common/api/CacheableRegion.ts'
-import { getTierConfigMap } from '../common/node/getTierConfigMap.ts'
+import { tierConfigMap } from '../common/utils/getTierConfigMap.ts'
 
 async function main() {
-    const tierConfigMap = await getTierConfigMap()
     const boeIds = getAllBoeIds(tierConfigMap)
 
     for (const regionConfig of regionConfigs) {

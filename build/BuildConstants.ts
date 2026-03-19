@@ -22,6 +22,7 @@ export const buildConstants = {
     __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
 
+    __IS_WEBPACK__: JSON.stringify(process.env.NODE_PATH?.includes('webpack-cli')),
     __IS_DEV__: JSON.stringify(isDev),
     __GIT_HASH__: JSON.stringify(gitHash),
 

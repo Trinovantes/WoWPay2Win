@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { getConnectedRealmIds } from '../../utils/getConnectedRealmIds.ts'
 import { useFilterStore } from '../Filter/useFilterStore.ts'
 import { formatDistance } from 'date-fns'
 import { computed, ref } from 'vue'
 import type { ItemAuction, RegionAuctions } from '../../../../common/Cache.ts'
 import type { RegionSlug } from '../../../../common/RegionConfig.ts'
+import { getRegionConnectedRealmIds } from '../../../../common/utils/getRegion.ts'
 
 // ----------------------------------------------------------------------------
 // Store
@@ -35,7 +35,7 @@ export const useAuctionStore = defineStore('Auctions', () => {
         }
 
         // If the user filtered by realms, we need to find their corresponding parent crIds
-        const connectedRealms = getConnectedRealmIds(filterStore.region, filterStore.realms)
+        const connectedRealms = getRegionConnectedRealmIds(filterStore.region, filterStore.realms)
 
         // Get and filter auctions
         const regionAuctions = auctions.value.get(filterStore.region)?.auctions ?? []

@@ -4,16 +4,16 @@ import { computed, ref } from 'vue'
 import { type Auctions, useAuctionStore } from '../store/Auction/useAuctionStore.ts'
 import { useFilterStore } from '../store/Filter/useFilterStore.ts'
 import { getItemIcon } from '../utils/ImageLoader.ts'
-import { getAuctionHasSocket } from '../utils/getAuctionHasSocket.ts'
-import { getAuctionTertiary } from '../utils/getAuctionTertiary.ts'
-import { getItemName } from '../utils/getItemName.ts'
-import { getConnectedRealmName } from '../utils/getConnectedRealmName.ts'
-import { getWowheadItemLinkById } from '../utils/getWowheadItemLinkById.ts'
+import { getItemHasSocket } from '../../../common/utils/getItemHasSocket.ts'
+import { getItemTertiary } from '../../../common/utils/getItemTertiary.ts'
+import { getItemName } from '../../../common/utils/getItemName.ts'
+import { getWowheadItemLinkById } from '../../../common/utils/getWowheadItemLinkById.ts'
 import type { ItemAuction } from '../../../common/Cache.ts'
 import { ROWS_PER_PAGE } from '../../../common/Constants.ts'
 import { type Difficulty, type Tertiary, ALL_DIFFICULTIES, ALL_TERTIARIES } from '../../../common/ItemBonusId.ts'
 import { tokenPrices, currencyFormatters } from '../../../common/RegionConfig.ts'
-import { getAuctionDifficulty } from '../utils/getAuctionDifficulty.ts'
+import { getItemDifficulty } from '../../../common/utils/getItemDifficulty.ts'
+import { getRegionConnectedRealmName } from '../../../common/utils/getRegion.ts'
 
 type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
 
@@ -47,7 +47,7 @@ const tableColumns = [
         label: 'iLvl',
         sortable: true,
         align: 'left',
-        field: (auction: ItemAuction) => getAuctionDifficulty(auction),
+        field: (auction: ItemAuction) => getItemDifficulty(auction.bonusIds),
         format: (val?: Difficulty) => ALL_DIFFICULTIES.find((d) => d.key === val)?.label,
         classes: 'sm-col',
         headerClasses: 'sm-col',
@@ -57,7 +57,7 @@ const tableColumns = [
         label: 'Has Socket',
         sortable: true,
         align: 'left',
-        field: (auction: ItemAuction) => getAuctionHasSocket(auction),
+        field: (auction: ItemAuction) => getItemHasSocket(auction.bonusIds),
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },
@@ -66,7 +66,7 @@ const tableColumns = [
         label: 'Tertiary',
         sortable: true,
         align: 'left',
-        field: (auction: ItemAuction) => getAuctionTertiary(auction),
+        field: (auction: ItemAuction) => getItemTertiary(auction.bonusIds),
         format: (val?: Tertiary) => ALL_TERTIARIES.find((t) => t.bonusId === val)?.label,
         classes: 'sm-col',
         headerClasses: 'sm-col',
@@ -76,7 +76,7 @@ const tableColumns = [
         name: 'colConnectedRealms',
         label: 'Connected Realms',
         align: 'left',
-        field: (auction: ItemAuction) => getConnectedRealmName(filteredRegion.value, auction.crId),
+        field: (auction: ItemAuction) => getRegionConnectedRealmName(filteredRegion.value, auction.crId),
     },
 ] as const satisfies QTable['columns']
 
@@ -118,20 +118,20 @@ const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: 
                     break
                 }
                 case 'colDifficulty': {
-                    const x = getAuctionDifficulty(a) ?? 0
-                    const y = getAuctionDifficulty(b) ?? 0
+                    const x = getItemDifficulty(a.bonusIds) ?? 0
+                    const y = getItemDifficulty(b.bonusIds) ?? 0
                     comp = x - y
                     break
                 }
                 case 'colHasSocket': {
-                    const x = getAuctionHasSocket(a) ? 1 : 0
-                    const y = getAuctionHasSocket(b) ? 1 : 0
+                    const x = getItemHasSocket(a.bonusIds) ? 1 : 0
+                    const y = getItemHasSocket(b.bonusIds) ? 1 : 0
                     comp = x - y
                     break
                 }
                 case 'colTertiary': {
-                    const x = getAuctionTertiary(a) ?? 0
-                    const y = getAuctionTertiary(b) ?? 0
+                    const x = getItemTertiary(a.bonusIds) ?? 0
+                    const y = getItemTertiary(b.bonusIds) ?? 0
                     comp = x - y
                     break
                 }
@@ -263,7 +263,7 @@ const getBuyoutTooltip = (val: number): string => {
         <template #body-cell-colHasSocket="props">
             <q-td :props="props">
                 <q-icon
-                    v-if="getAuctionHasSocket(props.row)"
+                    v-if="getItemHasSocket(props.row.bonusIds)"
                     name="check_circle_outline"
                     title="Has Socket"
                 />

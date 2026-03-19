@@ -4,17 +4,13 @@ import { CacheableRegion } from '../common/api/CacheableRegion.ts'
 import { getAllBoeIds } from '../common/Boe.ts'
 import { regionConfigs } from '../common/RegionConfig.ts'
 import { AUCTIONS_DATA_DIR, REGIONS_DATA_DIR, SENTRY_DSN } from '../common/Constants.ts'
-import { getTierConfigMap } from '../common/node/getTierConfigMap.ts'
-import { mkdirp } from '../common/node/mkdirp.ts'
+import { tierConfigMap } from '../common/utils/getTierConfigMap.ts'
 
 // ----------------------------------------------------------------------------
 // MARK: Helpers
 // ----------------------------------------------------------------------------
 
 async function fetchAuctions() {
-    mkdirp(AUCTIONS_DATA_DIR)
-
-    const tierConfigMap = await getTierConfigMap()
     const boeIds = getAllBoeIds(tierConfigMap)
 
     for (const regionConfig of regionConfigs) {

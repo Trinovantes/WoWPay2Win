@@ -7,6 +7,7 @@ import { convertCopperToGold } from '../utils/convertCopperToGold.ts'
 import { hasBannedId } from '../ItemBonusId.ts'
 import { filterItemModifiers } from '../utils/filterItemModifiers.ts'
 import { getProcessMemoryStats } from '../node/getProcessMemoryStats.ts'
+import { mkdirp } from '../node/mkdirp.ts'
 
 // ----------------------------------------------------------------------------
 // Region (us, eu, tw, kr)
@@ -173,6 +174,8 @@ export class CacheableRegion extends Cacheable<Region> {
 
         const auctionCacheFile = path.resolve(this.auctionsDir, `auctions-${this.apiAccessor.regionConfig.slug}.json`)
         console.info(`Saving ${regionAuctions.auctions.length} auctions to ${auctionCacheFile}`)
+
+        mkdirp(this.auctionsDir)
         await this.saveDataToCache(auctionCacheFile, regionAuctions)
     }
 }

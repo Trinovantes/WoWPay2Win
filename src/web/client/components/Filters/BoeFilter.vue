@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
 import { getItemIcon } from '../../utils/ImageLoader.ts'
-import { getItemNameById } from '../../utils/getItemNameById.ts'
-import { getWowheadItemLinkById } from '../../utils/getWowheadItemLinkById.ts'
+import { getWowheadItemLinkById } from '../../../../common/utils/getWowheadItemLinkById.ts'
+import { getItemNameById } from '../../../../common/utils/getItemName.ts'
 
 const filterStore = useFilterStore()
 const selectedBoes = computed<Array<number>>({

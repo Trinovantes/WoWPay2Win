@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
-import { getRegionRealmIds } from '../../utils/getRegionRealmIds.ts'
-import { defaultTier, tierConfigMap } from '../../utils/GameData.ts'
-import { getAuctionHasSocket } from '../../utils/getAuctionHasSocket.ts'
-import { getAuctionTertiary } from '../../utils/getAuctionTertiary.ts'
-import { getAuctionSecondary } from '../../utils/getAuctionSecondary.ts'
+import { getItemHasSocket } from '../../../../common/utils/getItemHasSocket.ts'
+import { getItemTertiary } from '../../../../common/utils/getItemTertiary.ts'
+import { getAuctionSecondary } from '../../../../common/utils/getItemSecondary.ts'
 import { computed, ref } from 'vue'
 import { type Tier, getTierBoeIds } from '../../../../common/Boe.ts'
 import type { ItemAuction } from '../../../../common/Cache.ts'
 import { GOLD_CAP } from '../../../../common/Constants.ts'
 import { type Tertiary, type Secondary, ALL_TERTIARIES, ALL_SECONDARIES, type Difficulty, ALL_DIFFICULTIES } from '../../../../common/ItemBonusId.ts'
 import type { RegionSlug } from '../../../../common/RegionConfig.ts'
-import { getAuctionDifficulty } from '../../utils/getAuctionDifficulty.ts'
+import { getItemDifficulty } from '../../../../common/utils/getItemDifficulty.ts'
+import { defaultTier, tierConfigMap } from '../../../../common/utils/getTierConfigMap.ts'
+import { getRegionRealmIds } from '../../../../common/utils/getRegion.ts'
 
 // ----------------------------------------------------------------------------
 // State
@@ -103,21 +103,21 @@ export const useFilterStore = defineStore('Filter', () => {
         }
 
         if (enableDifficultyFilter.value) {
-            const itemDifficulty = getAuctionDifficulty(auction)
+            const itemDifficulty = getItemDifficulty(auction.bonusIds)
             if (difficulties.value.size > 0 && (itemDifficulty === undefined || !difficulties.value.has(itemDifficulty))) {
                 return false
             }
         }
 
         if (enableSocketFilter.value) {
-            const itemHasSocket = getAuctionHasSocket(auction)
+            const itemHasSocket = getItemHasSocket(auction.bonusIds)
             if (mustHaveSocket.value && !itemHasSocket) {
                 return false
             }
         }
 
         if (enableTertiaryFilter.value) {
-            const itemTertiary = getAuctionTertiary(auction)
+            const itemTertiary = getItemTertiary(auction.bonusIds)
             if (tertiaries.value.size > 0 && (itemTertiary === undefined || !tertiaries.value.has(itemTertiary))) {
                 return false
             }

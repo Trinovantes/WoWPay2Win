@@ -1,4 +1,4 @@
-import type { RegionSlug } from '../../../common/RegionConfig.ts'
+import type { RegionSlug } from '../RegionConfig.ts'
 
 export function getWowheadItemLinkById(itemId: number, region: RegionSlug): string {
     let domain: string

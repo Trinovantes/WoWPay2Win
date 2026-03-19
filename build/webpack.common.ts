@@ -31,6 +31,7 @@ export const commonConfig: Configuration = {
                 use: [{
                     loader: 'esbuild-loader',
                     options: {
+                        target: 'esnext',
                         loader: 'ts',
                     },
                 }],

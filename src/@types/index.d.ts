@@ -1,4 +1,6 @@
 declare global {
+    const __IS_WEBPACK__: boolean | undefined
+
     const __IS_DEV__: boolean
     const __GIT_HASH__: string
 
