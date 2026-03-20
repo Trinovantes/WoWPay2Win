@@ -4,10 +4,12 @@ import { ApiAccessor } from './ApiAccessor.ts'
 import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse } from './BnetResponse.ts'
 import type { ConnectedRealm, Region, RegionAuctions } from '../Cache.ts'
 import { convertCopperToGold } from '../utils/convertCopperToGold.ts'
-import { hasBannedId } from '../ItemBonusId.ts'
+import { DIFFICULTY, hasBannedId } from '../ItemBonusId.ts'
 import { filterItemModifiers } from '../utils/filterItemModifiers.ts'
 import { getProcessMemoryStats } from '../node/getProcessMemoryStats.ts'
 import { mkdirp } from '../node/mkdirp.ts'
+import { ITEM_CONTEXT } from '../ItemContext.ts'
+import { getItemDifficulty } from '../utils/getItemDifficulty.ts'
 
 // ----------------------------------------------------------------------------
 // Region (us, eu, tw, kr)
@@ -177,5 +179,70 @@ export class CacheableRegion extends Cacheable<Region> {
 
         mkdirp(this.auctionsDir)
         await this.saveDataToCache(auctionCacheFile, regionAuctions)
+    }
+
+    async fetchNewBoeIds(knownBoeIds: Array<number>) {
+        const newBoeIds = new Set<number>()
+        const maxKnownBoeId = Math.max(...knownBoeIds)
+
+        for (const [, cr] of this.#connectedRealms.entries()) {
+            const crId = cr.id
+            const crStr = `${this.toString()} [ConnectedRealm:${crId.toString().padStart(4, '0')} ${cr.realms.map((realm) => realm.name).join(', ')}]`
+
+            const auctionsEndpoint = `/data/wow/connected-realm/${crId}/auctions`
+            const auctionsResponse = await this.apiAccessor.fetch<BnetAuctionsResponse>(auctionsEndpoint, true, (res) => {
+                // Sometimes the API returns a malformed 200 response and we need to retry
+                if (!res?.auctions) {
+                    return `No auctions found for ${crStr}`
+                }
+
+                return null
+            })
+
+            for (const auctionResponse of auctionsResponse?.auctions ?? []) {
+                // If item is already known, then we skip it
+                const itemId = auctionResponse.item.id
+                if (knownBoeIds.includes(itemId)) {
+                    continue
+                }
+
+                // If item is not from a raid drop, then we skip it
+                switch (auctionResponse.item.context) {
+                    case ITEM_CONTEXT.RaidFinder:
+                    case ITEM_CONTEXT.RaidNormal:
+                    case ITEM_CONTEXT.RaidHeroic:
+                    case ITEM_CONTEXT.RaidMythic: {
+                        break
+                    }
+                    default: {
+                        continue
+                    }
+                }
+
+                // If item does not have bonus ids, then it might not be equippable item
+                const bonusIds = auctionResponse.item.bonus_lists ?? []
+                if (bonusIds.length === 0) {
+                    continue
+                }
+
+                // If item does not have a raid difficulty tag, then it's probably not a raid BoE
+                // Cannot check LFR/MYTHIC because they're not available week 1 (when this script should be run)
+                // Cannot check NORMAL because this function defaults to normal when it cannot find other difficulty tags
+                const difficulty = getItemDifficulty(bonusIds)
+                if (difficulty !== DIFFICULTY.HEROIC) {
+                    continue
+                }
+
+                // If item has a smaller id than our max known id, then it's probably from an old raid
+                // This ASSUMES item ids are monotonically increasing (newer items have higher ids)
+                if (itemId <= maxKnownBoeId) {
+                    continue
+                }
+
+                newBoeIds.add(itemId)
+            }
+        }
+
+        return newBoeIds
     }
 }

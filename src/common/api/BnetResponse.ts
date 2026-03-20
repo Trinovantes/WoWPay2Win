@@ -1,3 +1,4 @@
+import type { ItemContext } from '../ItemContext.ts'
 import type { ItemModifier } from '../ItemModifier.ts'
 
 export type BnetOauthResponse = {
@@ -37,6 +38,7 @@ export type BnetAuctionsResponse = {
         id: number
         item: {
             id: number
+            context?: ItemContext
             bonus_lists?: Array<number>
             modifiers?: Array<ItemModifier>
         }
