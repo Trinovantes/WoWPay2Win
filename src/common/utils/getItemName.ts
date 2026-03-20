@@ -1,10 +1,11 @@
+import type { ItemId } from '../api/BnetResponse.ts'
 import type { Item, ItemAuction } from '../Cache.ts'
 import { ALL_SECONDARIES } from '../ItemBonusId.ts'
 import { regionConfigs, type RegionSlug } from '../RegionConfig.ts'
 import { getAuctionSecondary } from './getItemSecondary.ts'
 
-const itemDataFiles: Map<number, Item> = (() => {
-    const files = new Map<number, Item>()
+const itemDataFiles: Map<ItemId, Item> = (() => {
+    const files = new Map<ItemId, Item>()
 
     if (__IS_WEBPACK__) {
         const req = require.context(__ITEMS_DATA_DIR__, false, /item-(\d+)\.json$/) // Webpack specific function
@@ -20,7 +21,7 @@ const itemDataFiles: Map<number, Item> = (() => {
                 throw new Error('Invalid item id while parsing item file')
             }
 
-            files.set(itemId, req(fileName) as Item)
+            files.set(itemId as ItemId, req(fileName) as Item)
         }
     } else {
         throw new Error('Not implemented')
@@ -49,7 +50,7 @@ export function getItemName(regionSlug: RegionSlug | null, auction: ItemAuction)
     }
 }
 
-export function getItemNameById(itemId: number, regionSlug: RegionSlug): string {
+export function getItemNameById(itemId: ItemId, regionSlug: RegionSlug): string {
     if (!itemDataFiles.has(itemId)) {
         console.warn('Item data file not found during compilation', itemId, itemDataFiles)
         return `Item ${itemId}`

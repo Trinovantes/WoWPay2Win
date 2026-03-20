@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { Cacheable } from './Cacheable.ts'
 import { ApiAccessor } from './ApiAccessor.ts'
-import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse } from './BnetResponse.ts'
+import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse, ConnectedRealmId, ItemId } from './BnetResponse.ts'
 import type { ConnectedRealm, Region, RegionAuctions } from '../Cache.ts'
 import { convertCopperToGold } from '../utils/convertCopperToGold.ts'
 import { DIFFICULTY } from '../ItemBonusId.ts'
@@ -89,7 +89,7 @@ export class CacheableRegion extends Cacheable<Region> {
                 return
             }
 
-            const crId = parseInt(matches[1])
+            const crId = parseInt(matches[1]) as ConnectedRealmId
             const endpoint = `/data/wow/connected-realm/${crId}`
             const crResponse = await this.apiAccessor.fetch<BnetConnectedRealmResponse>(endpoint, true, (res) => {
                 if (!res?.realms) {
@@ -109,7 +109,7 @@ export class CacheableRegion extends Cacheable<Region> {
         await this.saveDataToCache()
     }
 
-    async fetchRegionAuctions(boeIds: Array<number>) {
+    async fetchRegionAuctions(boeIds: Array<ItemId>) {
         const tokenResponse = await this.apiAccessor.fetch<BnetTokenResponse>(this.wowTokenEndpoint, true, (res) => {
             if (res?.price === undefined) {
                 return 'Missing price in response'
@@ -177,8 +177,8 @@ export class CacheableRegion extends Cacheable<Region> {
         await this.saveDataToCache(auctionCacheFile, regionAuctions)
     }
 
-    async fetchNewBoeIds(knownBoeIds: Array<number>) {
-        const newBoeIds = new Set<number>()
+    async fetchNewBoeIds(knownBoeIds: Array<ItemId>) {
+        const newBoeIds = new Set<ItemId>()
         const maxKnownBoeId = Math.max(...knownBoeIds)
 
         for (const [, cr] of this.#connectedRealms.entries()) {

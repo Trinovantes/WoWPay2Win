@@ -1,3 +1,4 @@
+import type { ItemId } from '../../../src/common/api/BnetResponse.ts'
 import type { Tier, TierConfig } from '../../../src/common/Boe.ts'
 
 const config: TierConfig = {
@@ -15,7 +16,7 @@ const config: TierConfig = {
                 175008,
                 175007,
                 175006,
-            ],
+            ] as Array<ItemId>,
         },
     ],
     features: {

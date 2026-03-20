@@ -1,3 +1,4 @@
+import type { ItemId } from '../../../src/common/api/BnetResponse.ts'
 import type { Tier, TierConfig } from '../../../src/common/Boe.ts'
 
 const config: TierConfig = {
@@ -10,33 +11,33 @@ const config: TierConfig = {
             ids: [
                 231507, // https://www.wowhead.com/item=231507/battlechasers-greaves
                 231504, // https://www.wowhead.com/item=231504/runed-golem-shackles
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Mail',
             ids: [
                 231503, // https://www.wowhead.com/item=231503/braincage
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Leather',
             ids: [
                 231502, // https://www.wowhead.com/item=231502/mar-aloms-grip
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Cloth',
             ids: [
                 231500, // https://www.wowhead.com/item=231500/funeral-pyre-vestment
                 231501, // https://www.wowhead.com/item=231501/aristocratic-cuffs
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Back',
             ids: [
                 231506, // https://www.wowhead.com/item=231506/blisterbane-wrap
                 231505, // https://www.wowhead.com/item=231505/stoneshield-cloak
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Weapon',
@@ -46,7 +47,7 @@ const config: TierConfig = {
                 231499, // https://www.wowhead.com/item=231499/doomforged-straightedge
                 231495, // https://www.wowhead.com/item=231495/ribsplitter
                 231497, // https://www.wowhead.com/item=231497/searing-needle
-            ],
+            ] as Array<ItemId>,
         },
     ],
     features: {

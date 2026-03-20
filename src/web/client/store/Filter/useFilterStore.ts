@@ -11,14 +11,15 @@ import type { RegionSlug } from '../../../../common/RegionConfig.ts'
 import { getItemDifficulty } from '../../../../common/utils/getItemDifficulty.ts'
 import { defaultTier, tierConfigMap } from '../../../../common/utils/getTierConfigMap.ts'
 import { getRegionRealmIds } from '../../../../common/utils/getRegion.ts'
+import type { ItemId, RealmId } from '../../../../common/api/BnetResponse.ts'
 
 // ----------------------------------------------------------------------------
 // State
 // ----------------------------------------------------------------------------
 
 export type RegionFilter = RegionSlug | null
-export type RealmFilter = Set<number>
-export type BoeFilter = Set<number>
+export type RealmFilter = Set<RealmId>
+export type BoeFilter = Set<ItemId>
 export type DifficultyFilter = Set<Difficulty>
 export type TertiaryFilter = Set<Tertiary>
 export type SecondaryFilter = Set<Secondary>
@@ -187,7 +188,7 @@ export const useFilterStore = defineStore('Filter', () => {
         if (queryFilters.realms) {
             const validRealmIds = getRegionRealmIds(region.value)
             const importedRealms = importNumArray(queryFilters.realms, validRealmIds)
-            realms.value = new Set(importedRealms)
+            realms.value = new Set(importedRealms as Array<RealmId>)
         }
 
         if (queryFilters.tier) {
@@ -201,7 +202,7 @@ export const useFilterStore = defineStore('Filter', () => {
         if (queryFilters.boes) {
             const validBoeIds = getTierBoeIds(tierConfigMap, tier.value)
             const importedBoes = importNumArray(queryFilters.boes, validBoeIds)
-            boes.value = new Set(importedBoes)
+            boes.value = new Set(importedBoes as Array<ItemId>)
         }
 
         if (queryFilters.maxBuyout) {

@@ -1,4 +1,5 @@
 import type { Brand } from '../@types/Brand.ts'
+import type { ItemId } from './api/BnetResponse.ts'
 
 export type BoeGearLabel = 'Plate' | 'Mail' | 'Leather' | 'Cloth' | 'Weapon' | 'Back' | 'Jewelry' | 'Trinket' | 'Raid BoEs'
 export type BoeProfessionLabel = 'Jewelcrafting' | 'Blacksmithing' | 'Leatherworking' | 'Tailoring' | 'Inscription' | 'Alchemy' | 'Enchanting' | 'Engineering' | 'Cooking'
@@ -6,7 +7,7 @@ export type BoeLabel = BoeGearLabel | BoeProfessionLabel
 
 export type BoeCategory = Readonly<{
     label: BoeLabel
-    ids: ReadonlyArray<number>
+    ids: ReadonlyArray<ItemId>
 }>
 
 export type Tier = Brand<string, 'Tier'>
@@ -33,13 +34,13 @@ export type TierConfigMap = ReadonlyMap<Tier, TierConfig>
 // Helpers
 // ----------------------------------------------------------------------------
 
-export function getAllBoeIds(tierConfigMap: TierConfigMap): Array<number> {
+export function getAllBoeIds(tierConfigMap: TierConfigMap): Array<ItemId> {
     return [...tierConfigMap.keys()].flatMap((tier) => getTierBoeIds(tierConfigMap, tier))
 }
 
-export function getTierBoeIds(tierConfigMap: TierConfigMap, tier: Tier): Array<number> {
+export function getTierBoeIds(tierConfigMap: TierConfigMap, tier: Tier): Array<ItemId> {
     const tierConfig = tierConfigMap.get(tier)
-    const boeIds = new Array<number>()
+    const boeIds = new Array<ItemId>()
 
     for (const category of tierConfig?.boes ?? []) {
         for (const id of category.ids) {

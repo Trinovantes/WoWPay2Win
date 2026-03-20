@@ -4,8 +4,7 @@ import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { SECONDARY, type Secondary, type Difficulty, DIFFICULTY } from '../common/ItemBonusId.ts'
 import { DIFFICULTY_BONUS_ID_DATA_FILE, SECONDARY_BONUS_ID_DATA_FILE, SOCKET_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
-
-type BonusId = number
+import type { BonusId } from '../common/api/BnetResponse.ts'
 
 type RaidbotsBonusJson = Record<string, unknown>
 
@@ -45,7 +44,7 @@ main().catch((err) => {
 // ----------------------------------------------------------------------------
 
 const secondarySchema = Type.Object({
-    id: Type.Number(),
+    id: Type.Unsafe<BonusId>(Type.Number()),
     rawStats: Type.Array(
         Type.Object({
             stat: Type.Number(),
@@ -101,7 +100,7 @@ function getSecondaryBonusIds(bonusJson: RaidbotsBonusJson): SecondaryBonusIdsCa
 // ----------------------------------------------------------------------------
 
 const socketBonusSchema = Type.Object({
-    id: Type.Number(),
+    id: Type.Unsafe<BonusId>(Type.Number()),
     socket: Type.Number(),
 })
 
@@ -128,7 +127,7 @@ function getSocketBonusIds(bonusJson: RaidbotsBonusJson): SocketBonusIdsCacheFil
 // ----------------------------------------------------------------------------
 
 const difficultySchema = Type.Object({
-    id: Type.Number(),
+    id: Type.Unsafe<BonusId>(Type.Number()),
     tag: Type.String({
         pattern: '^(Fated )?(Raid Finder|Heroic|Mythic(?!\\+))',
     }),

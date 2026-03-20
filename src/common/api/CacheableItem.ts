@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { Cacheable } from './Cacheable.ts'
 import { ApiAccessor } from './ApiAccessor.ts'
-import type { BnetItemMediaResponse, BnetItemResponse } from './BnetResponse.ts'
+import type { BnetItemMediaResponse, BnetItemResponse, ItemId } from './BnetResponse.ts'
 import type { Item } from '../Cache.ts'
 import type { RegionLocale } from '../RegionConfig.ts'
 import { fetchFile } from '../node/fetchFile.ts'
@@ -12,11 +12,11 @@ import { fetchFile } from '../node/fetchFile.ts'
  * This has no relation to specific instances of items in game
  */
 export class CacheableItem extends Cacheable<Item> {
-    readonly id: number
+    readonly id: ItemId
     readonly iconPath: string
     #localizedName: Partial<Record<RegionLocale, string>>
 
-    constructor(apiAccessor: ApiAccessor, id: number, dataDir: string, imgDir: string) {
+    constructor(apiAccessor: ApiAccessor, id: ItemId, dataDir: string, imgDir: string) {
         super(apiAccessor, path.resolve(dataDir, `item-${id}.json`))
 
         this.id = id

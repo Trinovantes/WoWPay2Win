@@ -1,3 +1,4 @@
+import type { ConnectedRealmId, RealmId } from '../api/BnetResponse.ts'
 import type { Region } from '../Cache.ts'
 import type { RegionSlug } from '../RegionConfig.ts'
 
@@ -23,13 +24,13 @@ const regionDataFiles: Map<RegionSlug, Region> = (() => {
     return files
 })()
 
-type ReamToConnectedRealmMap = Record<number, number>
+type ReamToConnectedRealmMap = Record<RealmId, ConnectedRealmId>
 
 const regionRealmMaps: Map<RegionSlug, ReamToConnectedRealmMap> = (() => {
     const maps = new Map<RegionSlug, ReamToConnectedRealmMap>()
 
     for (const [regionSlug, regionCache] of regionDataFiles.entries()) {
-        const map: Record<number, number> = {}
+        const map: Record<RealmId, ConnectedRealmId> = {}
 
         for (const connectedRealm of regionCache.connectedRealms) {
             for (const realm of connectedRealm.realms) {
@@ -52,7 +53,7 @@ export function getRegion(region: RegionSlug): Region | undefined {
     return regionDataFiles.get(region)
 }
 
-export function getRegionRealmIds(region: RegionSlug | null): Array<number> {
+export function getRegionRealmIds(region: RegionSlug | null): Array<RealmId> {
     if (region === null) {
         return []
     }
@@ -65,8 +66,8 @@ export function getRegionRealmIds(region: RegionSlug | null): Array<number> {
     return connectedRealms.flatMap((cr) => cr.realms.map((r) => r.id))
 }
 
-export function getRegionConnectedRealmIds(regionSlug: RegionSlug, realms: Set<number>): Set<number> {
-    const connectedRealms = new Set<number>()
+export function getRegionConnectedRealmIds(regionSlug: RegionSlug, realms: Set<RealmId>): Set<ConnectedRealmId> {
+    const connectedRealms = new Set<ConnectedRealmId>()
 
     for (const realm of realms) {
         const cr = regionRealmMaps.get(regionSlug)?.[realm]
@@ -78,7 +79,7 @@ export function getRegionConnectedRealmIds(regionSlug: RegionSlug, realms: Set<n
     return connectedRealms
 }
 
-export function getRegionConnectedRealmName(regionSlug: RegionSlug | null, crId: number): string {
+export function getRegionConnectedRealmName(regionSlug: RegionSlug | null, crId: ConnectedRealmId): string {
     if (regionSlug === null) {
         return ''
     }

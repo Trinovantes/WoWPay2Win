@@ -1,6 +1,7 @@
 import type { SocketBonusIdsCacheFile } from '../../scripts/fetchBonusIds.ts'
+import type { BonusId } from '../api/BnetResponse.ts'
 
-const socketBonusIds = await (async (): Promise<Set<number>> => {
+const socketBonusIds = await (async (): Promise<Set<BonusId>> => {
     if (__IS_WEBPACK__) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         return new Set(require(__SOCKET_BONUS_ID_DATA_FILE__) as SocketBonusIdsCacheFile) // Webpack specific function
@@ -12,7 +13,7 @@ const socketBonusIds = await (async (): Promise<Set<number>> => {
     }
 })()
 
-export function getItemHasSocket(bonusIds = new Array<number>()): boolean {
+export function getItemHasSocket(bonusIds = new Array<BonusId>()): boolean {
     for (const bonusId of bonusIds) {
         if (socketBonusIds.has(bonusId)) {
             return true

@@ -1,5 +1,13 @@
+import type { Brand } from '../../@types/Brand.ts'
 import type { ItemContext } from '../ItemContext.ts'
 import type { ItemModifier } from '../ItemModifier.ts'
+
+export type ConnectedRealmId = Brand<number, 'ConnectedRealmId'>
+export type RealmId = Brand<number, 'RealmId'>
+
+export type AuctionId = Brand<number, 'AuctionId'>
+export type ItemId = Brand<number, 'ItemId'>
+export type BonusId = Brand<number, 'BonusId'>
 
 export type BnetOauthResponse = {
     access_token: string
@@ -12,20 +20,19 @@ export type BnetRegionResponse = {
 }
 
 export type BnetConnectedRealmResponse = {
-    id: number
+    id: ConnectedRealmId
     realms: Array<{
-        id: number
+        id: RealmId
         name: string
     }>
 }
 
 export type BnetItemResponse = {
-    id: number
+    id: ItemId
     name: string
 }
 
 export type BnetItemMediaResponse = {
-    id: number
     assets: Array<{
         key: string
         value: string
@@ -34,11 +41,11 @@ export type BnetItemMediaResponse = {
 
 export type BnetAuctionsResponse = {
     auctions?: Array<{
-        id: number
+        id: AuctionId
         item: {
-            id: number
+            id: ItemId
             context?: ItemContext
-            bonus_lists?: Array<number>
+            bonus_lists?: Array<BonusId>
             modifiers?: Array<ItemModifier>
         }
         buyout?: number

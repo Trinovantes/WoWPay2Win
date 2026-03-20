@@ -81,7 +81,7 @@ export type ItemModifier = {
     value: number
 }
 
-export function getSecondaryFromModifiers(modifiers?: Array<ItemModifier>): Array<Secondary> | undefined {
+export function getSecondaryFromModifiers(modifiers?: Array<ItemModifier>): Array<Secondary> {
     const secondaries = new Array<Secondary>()
 
     for (const modifier of modifiers ?? []) {
@@ -107,7 +107,5 @@ export function getSecondaryFromModifiers(modifiers?: Array<ItemModifier>): Arra
         }
     }
 
-    return secondaries.length === 0
-        ? undefined
-        : secondaries
+    return secondaries
 }

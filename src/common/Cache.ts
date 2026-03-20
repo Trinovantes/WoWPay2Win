@@ -1,3 +1,4 @@
+import type { AuctionId, BonusId, ConnectedRealmId, ItemId, RealmId } from './api/BnetResponse.ts'
 import type { ItemModifier } from './ItemModifier.ts'
 import type { RegionLocale } from './RegionConfig.ts'
 
@@ -6,12 +7,12 @@ import type { RegionLocale } from './RegionConfig.ts'
 // ----------------------------------------------------------------------------
 
 export type Realm = {
-    id: number
+    id: RealmId
     name: string
 }
 
 export type ConnectedRealm = {
-    id: number
+    id: ConnectedRealmId
     realms: Array<Realm>
 }
 
@@ -32,11 +33,11 @@ export type Item = {
 // ----------------------------------------------------------------------------
 
 export type ItemAuction = {
-    id: number
-    crId: number
-    itemId: number
+    id: AuctionId
+    crId: ConnectedRealmId
+    itemId: ItemId
     buyout: number
-    bonusIds?: Array<number>
+    bonusIds?: Array<BonusId>
     modifiers?: Array<ItemModifier>
 }
 

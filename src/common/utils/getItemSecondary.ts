@@ -2,8 +2,9 @@ import type { ItemAuction } from '../Cache.ts'
 import type { Secondary } from '../ItemBonusId.ts'
 import { getSecondaryFromModifiers } from '../ItemModifier.ts'
 import type { SecondaryBonusIdsCacheFile } from '../../scripts/fetchBonusIds.ts'
+import type { BonusId } from '../api/BnetResponse.ts'
 
-const secondaryBonusIds = await (async (): Promise<Map<number, Array<Secondary>>> => {
+const secondaryBonusIds = await (async (): Promise<Map<BonusId, Array<Secondary>>> => {
     if (__IS_WEBPACK__) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         return new Map(require(__SECONDARY_BONUS_ID_DATA_FILE__) as SecondaryBonusIdsCacheFile) // Webpack specific function
@@ -15,7 +16,7 @@ const secondaryBonusIds = await (async (): Promise<Map<number, Array<Secondary>>
     }
 })()
 
-export function getItemSecondary(bonusIds = new Array<number>()) {
+export function getItemSecondary(bonusIds = new Array<BonusId>()): Array<Secondary> {
     for (const bonusId of bonusIds) {
         const secondaries = secondaryBonusIds.get(bonusId)
         if (!secondaries) {
@@ -25,12 +26,12 @@ export function getItemSecondary(bonusIds = new Array<number>()) {
         return secondaries
     }
 
-    return undefined
+    return []
 }
 
 export function getAuctionSecondary(auction: ItemAuction): Array<Secondary> {
     return [
-        ...(getItemSecondary(auction.bonusIds) ?? []),
-        ...(getSecondaryFromModifiers(auction.modifiers) ?? []),
+        ...(getItemSecondary(auction.bonusIds)),
+        ...(getSecondaryFromModifiers(auction.modifiers)),
     ]
 }

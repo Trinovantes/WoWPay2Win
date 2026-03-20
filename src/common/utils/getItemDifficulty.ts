@@ -1,7 +1,8 @@
 import { DIFFICULTY, type Difficulty } from '../ItemBonusId.ts'
 import type { DifficultyBonusIdsCacheFile } from '../../scripts/fetchBonusIds.ts'
+import type { BonusId } from '../api/BnetResponse.ts'
 
-const difficultyBonusIds = await (async (): Promise<Map<number, Difficulty>> => {
+const difficultyBonusIds = await (async (): Promise<Map<BonusId, Difficulty>> => {
     if (__IS_WEBPACK__) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         return new Map(require(__DIFFICULTY_BONUS_ID_DATA_FILE__) as DifficultyBonusIdsCacheFile) // Webpack specific function
@@ -13,7 +14,7 @@ const difficultyBonusIds = await (async (): Promise<Map<number, Difficulty>> => 
     }
 })()
 
-export function getItemDifficulty(bonusIds = new Array<number>()): Difficulty | undefined {
+export function getItemDifficulty(bonusIds = new Array<BonusId>()): Difficulty | undefined {
     for (const bonusId of bonusIds) {
         if (difficultyBonusIds.has(bonusId)) {
             return difficultyBonusIds.get(bonusId)

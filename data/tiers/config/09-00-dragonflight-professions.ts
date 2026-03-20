@@ -1,3 +1,4 @@
+import type { ItemId } from '../../../src/common/api/BnetResponse.ts'
 import type { Tier, TierConfig } from '../../../src/common/Boe.ts'
 
 const config: TierConfig = {
@@ -11,7 +12,7 @@ const config: TierConfig = {
                 194640,
                 194641,
                 194642,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Blacksmithing',
@@ -30,7 +31,7 @@ const config: TierConfig = {
                 194483,
                 194476,
                 194481,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Leatherworking',
@@ -46,7 +47,7 @@ const config: TierConfig = {
                 193872,
                 193868,
                 193869,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Tailoring',
@@ -56,13 +57,13 @@ const config: TierConfig = {
                 194260,
                 194259,
                 194256,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Inscription',
             ids: [
                 198876,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Alchemy',
@@ -72,20 +73,20 @@ const config: TierConfig = {
                 201740,
                 191544,
                 191597,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Enchanting',
             ids: [
                 204975,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Engineering',
             ids: [
                 199227,
                 205036,
-            ],
+            ] as Array<ItemId>,
         },
     ],
 }

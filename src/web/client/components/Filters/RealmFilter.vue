@@ -3,12 +3,10 @@ import { computed, ref } from 'vue'
 import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
 import { getRegion } from '../../../../common/utils/getRegion.ts'
 import type { Realm } from '../../../../common/Cache.ts'
-
-type SelectedRealms = Array<number>
-type Realms = Array<Realm>
+import type { RealmId } from '../../../../common/api/BnetResponse.ts'
 
 const filterStore = useFilterStore()
-const selectedRealms = computed<SelectedRealms>({
+const selectedRealms = computed<Array<RealmId>>({
     get() {
         return [...filterStore.realms]
     },
@@ -18,7 +16,7 @@ const selectedRealms = computed<SelectedRealms>({
 })
 
 const region = computed(() => filterStore.region)
-const regionRealms = computed<Realms>(() => {
+const regionRealms = computed<Array<Realm>>(() => {
     if (region.value === null) {
         return []
     }
@@ -28,7 +26,7 @@ const regionRealms = computed<Realms>(() => {
         return []
     }
 
-    const realms: Realms = []
+    const realms = new Array<Realm>()
     const connectedRealms = regionData.connectedRealms
     for (const connectedRealm of connectedRealms) {
         for (const realm of connectedRealm.realms) {
@@ -39,7 +37,7 @@ const regionRealms = computed<Realms>(() => {
     return realms.sort((a, b) => a.name.localeCompare(b.name))
 })
 
-const filteredRealms = ref<Realms>(regionRealms.value)
+const filteredRealms = ref<Array<Realm>>(regionRealms.value)
 const filterFn = (val: string, doneFn: (callbackFn: () => void) => void): void => {
     doneFn(() => {
         const needle = val.toLowerCase()

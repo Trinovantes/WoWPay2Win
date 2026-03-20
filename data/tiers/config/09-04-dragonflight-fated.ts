@@ -1,3 +1,4 @@
+import type { ItemId } from '../../../src/common/api/BnetResponse.ts'
 import type { Tier, TierConfig } from '../../../src/common/Boe.ts'
 
 const config: TierConfig = {
@@ -14,7 +15,7 @@ const config: TierConfig = {
                 204430,
                 202006,
                 202010,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Mail',
@@ -25,7 +26,7 @@ const config: TierConfig = {
                 204422,
                 202005,
                 202009,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Leather',
@@ -36,7 +37,7 @@ const config: TierConfig = {
                 204415,
                 202004,
                 202008,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Cloth',
@@ -47,14 +48,14 @@ const config: TierConfig = {
                 204411,
                 202003,
                 202007,
-            ],
+            ] as Array<ItemId>,
         },
         {
             label: 'Jewelry',
             ids: [
                 208442,
                 201992,
-            ],
+            ] as Array<ItemId>,
         },
     ],
     features: {

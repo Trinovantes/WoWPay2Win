@@ -183,7 +183,7 @@ const fractionFormatter = new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 2,
 })
 
-const getBuyoutTooltip = (val: number): string => {
+const getBuyoutTooltip = (buyout: number): string => {
     const region = filterStore.region
     if (region === null) {
         return ''
@@ -193,7 +193,7 @@ const getBuyoutTooltip = (val: number): string => {
         return ''
     }
 
-    const numTokens = val / auctionsStore.tokenPrice
+    const numTokens = buyout / auctionsStore.tokenPrice
     const localCurrency = numTokens * (tokenPrices.get(region) ?? 0)
     if (!(localCurrency > 0)) {
         return ''

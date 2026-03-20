@@ -1,3 +1,4 @@
+import type { ItemId } from '../../../common/api/BnetResponse.ts'
 import type { Tier, TierConfigMap } from '../../../common/Boe.ts'
 
 // ----------------------------------------------------------------------------
@@ -44,7 +45,7 @@ export function getTierIcon(tierConfigMap: TierConfigMap, tier: Tier): string | 
     return tierIcons.get(iconFile)
 }
 
-export function getItemIcon(itemId: number): string | undefined {
+export function getItemIcon(itemId: ItemId): string | undefined {
     const iconFile = `${itemId}.jpg`
     if (!itemIcons.has(iconFile)) {
         console.warn('Image file not found during compilation', iconFile)

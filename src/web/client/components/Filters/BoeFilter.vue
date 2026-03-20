@@ -4,9 +4,10 @@ import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
 import { getItemIcon } from '../../utils/ImageLoader.ts'
 import { getWowheadItemLinkById } from '../../../../common/utils/getWowheadItemLinkById.ts'
 import { getItemNameById } from '../../../../common/utils/getItemName.ts'
+import type { ItemId } from '../../../../common/api/BnetResponse.ts'
 
 const filterStore = useFilterStore()
-const selectedBoes = computed<Array<number>>({
+const selectedBoes = computed<Array<ItemId>>({
     get() {
         return [...filterStore.boes]
     },
@@ -15,7 +16,7 @@ const selectedBoes = computed<Array<number>>({
     },
 })
 
-const toggleAll = (idsToAdd: ReadonlyArray<number>) => {
+const toggleAll = (idsToAdd: ReadonlyArray<ItemId>) => {
     const currentSelected = new Set(filterStore.boes)
     for (const id of idsToAdd) {
         currentSelected.add(id)
@@ -23,7 +24,7 @@ const toggleAll = (idsToAdd: ReadonlyArray<number>) => {
 
     filterStore.boes = currentSelected
 }
-const toggleNone = (idsToRemove: ReadonlyArray<number>) => {
+const toggleNone = (idsToRemove: ReadonlyArray<ItemId>) => {
     const currentSelected = new Set(filterStore.boes)
     for (const id of idsToRemove) {
         currentSelected.delete(id)
@@ -32,7 +33,7 @@ const toggleNone = (idsToRemove: ReadonlyArray<number>) => {
     filterStore.boes = currentSelected
 }
 
-const isAllActive = (idsToCheck: ReadonlyArray<number>): boolean => {
+const isAllActive = (idsToCheck: ReadonlyArray<ItemId>): boolean => {
     for (const id of idsToCheck) {
         if (!selectedBoes.value.includes(id)) {
             return false
@@ -41,7 +42,7 @@ const isAllActive = (idsToCheck: ReadonlyArray<number>): boolean => {
 
     return true
 }
-const isNoneActive = (idsToCheck: ReadonlyArray<number>): boolean => {
+const isNoneActive = (idsToCheck: ReadonlyArray<ItemId>): boolean => {
     for (const id of idsToCheck) {
         if (selectedBoes.value.includes(id)) {
             return false
@@ -52,14 +53,14 @@ const isNoneActive = (idsToCheck: ReadonlyArray<number>): boolean => {
 }
 
 const region = computed(() => filterStore.region)
-const getWowheadLink = (itemId: number) => {
+const getWowheadLink = (itemId: ItemId) => {
     if (region.value === null) {
         return ''
     }
 
     return getWowheadItemLinkById(itemId, region.value)
 }
-const getItemName = (itemId: number) => {
+const getItemName = (itemId: ItemId) => {
     if (region.value === null) {
         return ''
     }
