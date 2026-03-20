@@ -52,6 +52,8 @@ push:
 
 clean:
 	rm -rf ./dist ./node_modules/.cache
+	rm -f ./data/items/generated/*.json
+	rm -f ./data/regions/generated/*.json
 	docker container prune -f
 	docker image prune -f
 
