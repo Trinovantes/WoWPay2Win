@@ -4,7 +4,7 @@ import { ApiAccessor } from './ApiAccessor.ts'
 import type { BnetAuctionsResponse, BnetConnectedRealmResponse, BnetRegionResponse, BnetTokenResponse } from './BnetResponse.ts'
 import type { ConnectedRealm, Region, RegionAuctions } from '../Cache.ts'
 import { convertCopperToGold } from '../utils/convertCopperToGold.ts'
-import { DIFFICULTY, hasBannedId } from '../ItemBonusId.ts'
+import { DIFFICULTY } from '../ItemBonusId.ts'
 import { filterItemModifiers } from '../utils/filterItemModifiers.ts'
 import { getProcessMemoryStats } from '../node/getProcessMemoryStats.ts'
 import { mkdirp } from '../node/mkdirp.ts'
@@ -152,10 +152,6 @@ export class CacheableRegion extends Cacheable<Region> {
                 }
 
                 const bonusIds = auctionResponse.item.bonus_lists
-                if (hasBannedId(bonusIds)) {
-                    continue
-                }
-
                 const id = auctionResponse.id
                 const modifiers = filterItemModifiers(auctionResponse.item.modifiers)
 
