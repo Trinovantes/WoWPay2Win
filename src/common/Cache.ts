@@ -25,7 +25,6 @@ export type Region = {
 
 export type Item = {
     localizedName: Partial<Record<RegionLocale, string>>
-    baseLevel: number
 }
 
 // ----------------------------------------------------------------------------

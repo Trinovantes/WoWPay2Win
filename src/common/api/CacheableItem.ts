@@ -15,16 +15,13 @@ export class CacheableItem extends Cacheable<Item> {
     readonly id: number
     readonly iconPath: string
     #localizedName: Partial<Record<RegionLocale, string>>
-    #baseLevel: number
 
     constructor(apiAccessor: ApiAccessor, id: number, dataDir: string, imgDir: string) {
         super(apiAccessor, path.resolve(dataDir, `item-${id}.json`))
 
         this.id = id
         this.iconPath = path.resolve(imgDir, `${id}.jpg`)
-
         this.#localizedName = {}
-        this.#baseLevel = NaN
     }
 
     override toString(): string {
@@ -43,7 +40,6 @@ export class CacheableItem extends Cacheable<Item> {
         const cachedItem = JSON.parse(fileContents) as Item
 
         this.#localizedName = cachedItem.localizedName
-        this.#baseLevel = cachedItem.baseLevel
 
         if (!this.#localizedName[this.apiAccessor.regionConfig.locale]) {
             console.info(`Cache file ${this.cacheFile} is missing this region's locale:${this.apiAccessor.regionConfig.locale}`)
@@ -56,7 +52,6 @@ export class CacheableItem extends Cacheable<Item> {
     export(): Item {
         const item: Item = {
             localizedName: this.#localizedName,
-            baseLevel: this.#baseLevel,
         }
 
         return item
@@ -81,7 +76,6 @@ export class CacheableItem extends Cacheable<Item> {
             return
         }
 
-        this.#baseLevel = itemResponse.level
         this.#localizedName[this.apiAccessor.regionConfig.locale] = itemResponse.name
 
         console.info(`Saving ${this.toString()} to ${this.cacheFile}`)
