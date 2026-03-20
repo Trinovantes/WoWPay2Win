@@ -40,8 +40,8 @@ COPY data/                      ./data/
 RUN --mount=type=secret,id=CLIENT_ID \
     --mount=type=secret,id=CLIENT_SECRET \
     --mount=type=secret,id=GIT_HASH \
-    pnpm fetchItems && \
-    pnpm fetchBonusIds
+    pnpm fetchBonusIds && \
+    pnpm fetchItems
 
 # Finally build frontend
 RUN --mount=type=secret,id=GIT_HASH \
