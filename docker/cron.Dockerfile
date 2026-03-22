@@ -61,12 +61,12 @@ RUN apk update && \
     apk add --no-cache git
 
 # Copy app
-COPY --from=deps /app/package.json      ./
-COPY --from=deps /app/node_modules/     ./node_modules/
+COPY --from=deps    /app/package.json   ./
+COPY --from=deps    /app/node_modules/  ./node_modules/
+COPY --from=builder /app/build/         ./build/
+COPY --from=builder /app/src/           ./src/
+COPY --from=builder /app/data/          ./data/
 COPY docker/                            ./docker/
-COPY build/                             ./build/
-COPY data/                              ./data/
-COPY src/                               ./src/
 COPY .git/                              ./.git/
 
 # Mount points
