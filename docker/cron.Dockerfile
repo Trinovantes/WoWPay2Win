@@ -58,7 +58,7 @@ ENV NODE_ENV='production'
 
 # Install cron dependencies
 RUN apk update && \
-    apk add --no-cache git
+    apk add --no-cache git curl
 
 # Copy app
 COPY --from=deps    /app/package.json   ./
