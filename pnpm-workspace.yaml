@@ -8,4 +8,4 @@ patchedDependencies:
   quasar: patches/quasar.patch
 
 overrides:
-  "@types/node": "^24"
+  '@types/node': '^24'
