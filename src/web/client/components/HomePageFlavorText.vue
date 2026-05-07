@@ -3,27 +3,31 @@ import { onMounted, ref } from 'vue'
 
 const DAYS_OF_WEEK = 7
 const daysSinceTues = (DAYS_OF_WEEK + (new Date().getDay() - 2)) % DAYS_OF_WEEK
-const nonClassicExpansions = ['Cataclysm', 'MoP', 'WoD', 'Legion', 'BfA', 'Shadowlands', 'Dragonflight']
+const nonClassicExpansions = ['Cataclysm', 'MoP', 'WoD', 'Legion', 'BfA', 'Shadowlands', 'Dragonflight', 'War Within']
+const easyWipeBosses = ['Shriekwing', 'Zskarn']
 const memes = [
     ...nonClassicExpansions.map((expac) => `${expac} Classic waiting room`),
-    'We are trying to reach you about your mount\'s extended warranty.',
+    ...easyWipeBosses.map((boss) => `${daysSinceTues} ${daysSinceTues === 1 ? 'day' : 'days'} since last wipe on ${boss}`),
+    "We are trying to reach you about your mount's extended warranty.",
     'Does anybody else think we should delete pandas from the game?',
     'Sometimes I wonder how much money I would make if I had put ads on this site',
-    'Isn\'t this just pay2win with extra steps?',
-    'I bet there are still realms that have Realm First Kil\'Jaeden available',
-    'I\'m calling the overtime police',
+    "Isn't this just pay2win with extra steps?",
+    "I bet there are still realms that have Realm First Kil'Jaeden available",
+    "I'm calling the overtime police",
     'Anyone caught playing Classic will be gkicked',
     'Please buff BDK',
     'Sponsored by Raid: Shadow Lands',
-    `${daysSinceTues} ${daysSinceTues === 1 ? 'day' : 'days'} since last wipe on Shriekwing`,
-    `${daysSinceTues} ${daysSinceTues === 1 ? 'day' : 'days'} since last wipe on Zskarn`,
     'Next expansion will be different',
-    'A triumphant roar echoes from atop the Seat of the Aspects as Nasz\'uro, the Unbound Legacy, is formed.',
-    'A twiumphant woaw echoes fwom atop the Seat of the Aspects as Nyasz\'uwu, the Unbound Wegacy is fowmed >:3',
+    "A triumphant roar echoes from atop the Seat of the Aspects as Nasz'uro, the Unbound Legacy, is formed.",
+    "A twiumphant woaw echoes fwom atop the Seat of the Aspects as Nyasz'uwu, the Unbound Wegacy is fowmed >:3",
     'Remember: exploit early, exploit often',
     'Huffs Copium',
-    'Shikanoko nokonoko koshitantan',
     'Beware of danger noodles',
+    "Champion! You got ta heal azeroth's woons!",
+    'Pull the ripcord',
+    'How am I supposed to play the game without addons telling me what to press?',
+    'Now with 67% more AI slop',
+    "If you've played with BfA corruption, you're now old enough to book a colonoscopy",
 ]
 
 const flavorText = ref<string | undefined>('')
