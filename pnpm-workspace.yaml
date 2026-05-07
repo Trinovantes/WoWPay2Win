@@ -1,11 +1,11 @@
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - '@sentry/cli'
-  - esbuild
-  - sharp
-
 patchedDependencies:
   quasar: patches/quasar.patch
 
 overrides:
   '@types/node': '^24'
+
+allowBuilds:
+  '@parcel/watcher': false
+  '@sentry/cli': false
+  esbuild: false
+  sharp: false
