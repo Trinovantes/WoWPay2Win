@@ -5,7 +5,7 @@ import { REGIONS_DATA_DIR, ITEMS_DATA_DIR, ITEMS_ICON_DIR, TIERS_CONFIG_DIR, TIE
 // Assume we are running webpack from the project root (../)
 const rootDir = path.resolve()
 
-export const isDev = (process.env.NODE_ENV === 'development')
+export const isDev = (process.env.NODE_ENV !== 'production')
 export const gitHash = getGitHash(rootDir)
 
 export const distDir = path.resolve(rootDir, 'dist')
