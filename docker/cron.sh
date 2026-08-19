@@ -8,7 +8,7 @@ SENTRY_CRONS="${SENTRY_INGEST}/api/5590531/cron/wowpay2win-cron/ba1fbe840db046be
 
 curl "${SENTRY_CRONS}?status=in_progress"
 
-npm run fetchAuctions
+flock -n /tmp/wowpay2win-cron.lock npm run fetchAuctions || echo "Skipping because previous run is still active"
 
 if [ $? -eq 0 ]; then
     curl "${SENTRY_CRONS}?status=ok"
