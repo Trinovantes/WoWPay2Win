@@ -28,6 +28,7 @@ const memes = [
     'How am I supposed to play the game without addons telling me what to press?',
     'Now with 67% more AI slop',
     "If you've played with BfA corruption, you're now old enough to book a colonoscopy",
+    "If ChatGPT can't fix a bug, it's officially a feature",
 ]
 
 const flavorText = ref<string | undefined>('')
