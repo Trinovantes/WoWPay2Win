@@ -9,6 +9,7 @@ export function filterItemModifiers(modifiers?: Array<ItemModifier>) {
             modifier.type === ITEM_MODIFIER_KEY.CHANGE_MODIFIED_CRAFTING_STAT_1 ||
             modifier.type === ITEM_MODIFIER_KEY.CHANGE_MODIFIED_CRAFTING_STAT_2
         ))
+        .toSorted((a, b) => a.type - b.type) // Ensure stat1 is always before stat2
 
     return !filteredModifiers || filteredModifiers.length === 0
         ? undefined

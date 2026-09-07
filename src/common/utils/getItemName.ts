@@ -40,7 +40,6 @@ export function getItemName(regionSlug: RegionSlug | null, auction: ItemAuction)
 
     if (secondaries.length > 0) {
         const affix = secondaries
-            .sort((a, b) => a - b)
             .map((secondaryKey) => ALL_SECONDARIES[secondaryKey].label)
             .join(' / ')
 
