@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { ALL_DIFFICULTIES, type Difficulty } from '../../../../common/ItemBonusId.ts'
 import { useFilterStore } from '../../store/Filter/useFilterStore.ts'
+import { UPGRADE_LIMIT } from '../../../../common/utils/getItemUpgrade.ts'
 
 type SelectedDifficulty = Array<Difficulty>
 
@@ -45,5 +46,18 @@ const selectedDifficulty = computed<SelectedDifficulty>({
                 </q-item-section>
             </q-item>
         </q-list>
+
+        <template v-if="filterStore.enableUpgradeFilter">
+            <h2>
+                Minimum Item Upgrade
+            </h2>
+
+            <q-slider
+                v-model="filterStore.minUpgrade"
+                :min="UPGRADE_LIMIT.MIN"
+                :max="UPGRADE_LIMIT.MAX"
+                label
+            />
+        </template>
     </div>
 </template>

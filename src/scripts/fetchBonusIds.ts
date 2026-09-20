@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
-import { SECONDARY, type Secondary, type Difficulty, DIFFICULTY } from '../common/ItemBonusId.ts'
-import { DIFFICULTY_BONUS_ID_DATA_FILE, RAIDBOTS_BONUS_ID_DATA_FILE, SECONDARY_BONUS_ID_DATA_FILE, SOCKET_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
+import { SECONDARY, type Secondary, type Difficulty, DIFFICULTY, type Upgrade } from '../common/ItemBonusId.ts'
+import { DIFFICULTY_BONUS_ID_DATA_FILE, RAIDBOTS_BONUS_ID_DATA_FILE, SECONDARY_BONUS_ID_DATA_FILE, SOCKET_BONUS_ID_DATA_FILE, UPGRADE_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
 import type { BonusId } from '../common/api/BnetResponse.ts'
 import { existsSync } from 'node:fs'
 
@@ -52,6 +52,10 @@ async function main() {
     const difficultyBonusIds = getDifficultyBonusIds(bonusIds)
     const difficultyBonusIdsFilePath = path.resolve(DIFFICULTY_BONUS_ID_DATA_FILE)
     await saveCache(difficultyBonusIds, difficultyBonusIdsFilePath)
+
+    const upgradeBonusIds = getUpgradeBonusIds(bonusIds)
+    const upgradeBonusIdsFilePath = path.resolve(UPGRADE_BONUS_ID_DATA_FILE)
+    await saveCache(upgradeBonusIds, upgradeBonusIdsFilePath)
 }
 
 main().catch((err) => {
@@ -180,6 +184,53 @@ function getDifficultyBonusIds(bonusIds: RaidbotsBonusIds): DifficultyBonusIdsCa
         }
 
         cache.push([bonusIdData.id, difficulty])
+    }
+
+    return cache
+}
+
+// ----------------------------------------------------------------------------
+// MARK: Upgrade
+// ----------------------------------------------------------------------------
+
+const upgradeSchema = Type.Object({
+    id: Type.Unsafe<BonusId>(Type.Number()),
+    quality: Type.Number(),
+    itemLevel: Type.Object({
+        amount: Type.Number(),
+        priority: Type.Number(),
+        squishEra: Type.Number(),
+    }),
+    upgrade: Type.Object({
+        level: Type.Number(), // Current upgrade level
+        max: Type.Number(), // Max upgrade level
+        name: Type.String(), // e.g. Hero
+        fullName: Type.String(), // e.g. Hero 1/6
+        itemLevel: Type.Number(),
+        seasonId: Type.Number(),
+    }),
+})
+
+const upgradeValidator = TypeCompiler.Compile(upgradeSchema)
+
+export type UpgradeBonusIdsCacheFile = Array<
+    [BonusId, Upgrade]
+>
+
+function getUpgradeBonusIds(bonusIds: RaidbotsBonusIds): UpgradeBonusIdsCacheFile {
+    const cache: UpgradeBonusIdsCacheFile = []
+
+    for (const bonusIdData of Object.values(bonusIds)) {
+        if (!upgradeValidator.Check(bonusIdData)) {
+            continue
+        }
+
+        cache.push([bonusIdData.id, {
+            name: bonusIdData.upgrade.name,
+            currentLvl: bonusIdData.upgrade.level,
+            maxLvl: bonusIdData.upgrade.max,
+            iLvl: bonusIdData.upgrade.itemLevel,
+        }])
     }
 
     return cache

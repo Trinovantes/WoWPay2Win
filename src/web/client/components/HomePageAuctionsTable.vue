@@ -10,12 +10,27 @@ import { getItemName } from '../../../common/utils/getItemName.ts'
 import { getWowheadItemLinkById } from '../../../common/utils/getWowheadItemLinkById.ts'
 import type { ItemAuction } from '../../../common/Cache.ts'
 import { ROWS_PER_PAGE } from '../../../common/Constants.ts'
-import { type Difficulty, type Tertiary, ALL_DIFFICULTIES, ALL_TERTIARIES } from '../../../common/ItemBonusId.ts'
+import { type Tertiary, ALL_DIFFICULTIES, ALL_TERTIARIES } from '../../../common/ItemBonusId.ts'
 import { tokenPrices, currencyFormatters } from '../../../common/RegionConfig.ts'
-import { getItemDifficulty } from '../../../common/utils/getItemDifficulty.ts'
 import { getRegionConnectedRealmName } from '../../../common/utils/getRegion.ts'
+import type { BonusId } from '../../../common/api/BnetResponse.ts'
+import { getItemDifficulty } from '../../../common/utils/getItemDifficulty.ts'
+import { getItemUpgrade } from '../../../common/utils/getItemUpgrade.ts'
 
 type Pagination = Omit<Required<Required<QTable>['pagination']>, 'rowsNumber'>
+
+const getItemLvlLabel = (bonusIds = new Array<BonusId>()): string => {
+    const difficulty = getItemDifficulty(bonusIds)
+    const upgrade = getItemUpgrade(bonusIds)
+
+    let label = ALL_DIFFICULTIES.find((d) => d.key === difficulty)?.label ?? ''
+
+    if (upgrade) {
+        label += ` (${upgrade.currentLvl}/${upgrade.maxLvl})`
+    }
+
+    return label
+}
 
 const filterStore = useFilterStore()
 const filteredRegion = computed(() => filterStore.region)
@@ -43,12 +58,11 @@ const tableColumns = [
         headerClasses: 'sm-col',
     },
     {
-        name: 'colDifficulty',
+        name: 'colItemLvl',
         label: 'iLvl',
         sortable: true,
         align: 'left',
-        field: (auction: ItemAuction) => getItemDifficulty(auction.bonusIds),
-        format: (val?: Difficulty) => ALL_DIFFICULTIES.find((d) => d.key === val)?.label,
+        field: (auction: ItemAuction) => getItemLvlLabel(auction.bonusIds),
         classes: 'sm-col',
         headerClasses: 'sm-col',
     },
@@ -86,7 +100,7 @@ const visibleColumns = computed<Array<ColumnNames>>(() => {
     const columns: Array<ColumnNames> = []
 
     if (filterStore.enableDifficultyFilter) {
-        columns.push('colDifficulty')
+        columns.push('colItemLvl')
     }
 
     if (filterStore.enableSocketFilter) {
@@ -117,10 +131,10 @@ const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: 
                     comp = x - y
                     break
                 }
-                case 'colDifficulty': {
-                    const x = getItemDifficulty(a.bonusIds) ?? 0
-                    const y = getItemDifficulty(b.bonusIds) ?? 0
-                    comp = x - y
+                case 'colItemLvl': {
+                    const x = getItemLvlLabel(a.bonusIds) ?? 0
+                    const y = getItemLvlLabel(b.bonusIds) ?? 0
+                    comp = x.localeCompare(y)
                     break
                 }
                 case 'colHasSocket': {
@@ -140,7 +154,7 @@ const sortAuctions = (auctions: Readonly<Auctions>, sortBy: string, descending: 
             return comp * (ascending ? 1 : -1)
         }
 
-        return (sortBy && compare(sortBy as ColumnNames, !descending)) || compare('colBuyout') || compare('colDifficulty', false) || compare('colItemId') || compare('colHasSocket', false) || compare('colTertiary', false)
+        return (sortBy && compare(sortBy as ColumnNames, !descending)) || compare('colBuyout') || compare('colItemLvl', false) || compare('colItemId') || compare('colHasSocket', false) || compare('colTertiary', false)
     })
 }
 

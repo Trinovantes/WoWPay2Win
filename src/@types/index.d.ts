@@ -13,6 +13,7 @@ declare global {
     const __SOCKET_BONUS_ID_DATA_FILE__: string
     const __SECONDARY_BONUS_ID_DATA_FILE__: string
     const __DIFFICULTY_BONUS_ID_DATA_FILE__: string
+    const __UPGRADE_BONUS_ID_DATA_FILE__: string
 }
 
 export {}

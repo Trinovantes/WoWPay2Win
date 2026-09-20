@@ -58,10 +58,12 @@ const lastUpdateFromNow = computed(() => auctionsStore.lastUpdateFromNow)
 
                 <template v-if="selectedRegion">
                     <div class="group padded">
-                        <strong>Last Update: </strong>
-                        <time :datetime="lastUpdateIso" :title="lastUpdateString">
-                            {{ lastUpdateFromNow }}
-                        </time>
+                        <div>
+                            <strong>Last Update: </strong>
+                            <time :datetime="lastUpdateIso" :title="lastUpdateString">
+                                {{ lastUpdateFromNow }}
+                            </time>
+                        </div>
                     </div>
 
                     <RealmFilter />

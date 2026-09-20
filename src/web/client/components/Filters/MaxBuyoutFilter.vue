@@ -16,7 +16,7 @@ watch(sliderPosition, throttle((sliderPosition: number) => {
 </script>
 
 <template>
-    <div class="group padded">
+    <div class="group">
         <h2>
             Max Buyout
         </h2>

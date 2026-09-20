@@ -55,24 +55,13 @@ a:not(.q-btn){
 
 .group{
     border-bottom: 1px solid $bg-main;
+    display: grid;
+    gap: $side-padding;
+    padding: $side-padding 0;
 
-    &.vpad{
-        padding-top: $side-padding;
-        padding-bottom: $side-padding;
-    }
-
-    &.padded{
-        padding: $side-padding;
-
-        h2{
-            padding: 0;
-        }
-    }
-
-    &:not(.padded) {
-        h2{
-            padding: 0 $side-padding;
-        }
+    > div:has(h2) {
+        display: grid;
+        gap: $side-padding;
     }
 
     h2{
@@ -80,8 +69,20 @@ a:not(.q-btn){
         font-size: 1.25rem;
         font-weight: bold;
         line-height: 30px;
-        margin-top: 0;
-        margin-bottom: $side-padding;
+        margin: 0;
+        padding: 0 $side-padding;
+    }
+
+    .q-slider{
+        padding: 0 ($side-padding + $padding);
+    }
+
+    &.padded {
+        padding: $side-padding;
+
+        h2{
+            padding: 0;
+        }
     }
 }
 

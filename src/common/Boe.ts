@@ -19,6 +19,7 @@ export type TierConfig = Readonly<{
     boes: ReadonlyArray<BoeCategory>
     features?: Partial<{
         enableDifficultyFilter: boolean
+        enableUpgradeFilter: boolean
         enableSocketFilter: boolean
         enableTertiaryFilter: boolean
         enableSecondaryFilter: boolean

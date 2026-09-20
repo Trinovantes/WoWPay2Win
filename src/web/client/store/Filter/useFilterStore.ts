@@ -12,6 +12,7 @@ import { getItemDifficulty } from '../../../../common/utils/getItemDifficulty.ts
 import { defaultTier, tierConfigMap } from '../../../../common/utils/getTierConfigMap.ts'
 import { getRegionRealmIds } from '../../../../common/utils/getRegion.ts'
 import type { ItemId, RealmId } from '../../../../common/api/BnetResponse.ts'
+import { getItemUpgrade, UPGRADE_LIMIT } from '../../../../common/utils/getItemUpgrade.ts'
 
 // ----------------------------------------------------------------------------
 // State
@@ -33,6 +34,7 @@ type QueryFiltersField =
     | 'realms'
     | 'boes'
     | 'difficulty'
+    | 'minUpgrade'
     | 'maxBuyout'
     | 'mustHaveSocket'
     | 'tertiaries'
@@ -62,6 +64,7 @@ export const useFilterStore = defineStore('Filter', () => {
     const maxBuyout = ref(GOLD_CAP)
     const mustHaveSocket = ref(false)
     const difficulties = ref<DifficultyFilter>(new Set())
+    const minUpgrade = ref(UPGRADE_LIMIT.MIN)
     const tertiaries = ref<TertiaryFilter>(new Set())
     const secondaries = ref<SecondaryFilter>(new Set())
 
@@ -71,6 +74,7 @@ export const useFilterStore = defineStore('Filter', () => {
         maxBuyout.value = GOLD_CAP
         mustHaveSocket.value = false
         difficulties.value = new Set()
+        minUpgrade.value = UPGRADE_LIMIT.MIN
         tertiaries.value = new Set()
         secondaries.value = new Set()
     }
@@ -85,6 +89,7 @@ export const useFilterStore = defineStore('Filter', () => {
     const currentTierBoes = computed(() => tierConfigMap.get(tier.value)?.boes ?? [])
 
     const enableDifficultyFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableDifficultyFilter))
+    const enableUpgradeFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableUpgradeFilter))
     const enableSocketFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableSocketFilter))
     const enableTertiaryFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableTertiaryFilter))
     const enableSecondaryFilter = computed(() => Boolean(tierConfigMap.get(tier.value)?.features?.enableSecondaryFilter))
@@ -106,6 +111,13 @@ export const useFilterStore = defineStore('Filter', () => {
         if (enableDifficultyFilter.value) {
             const itemDifficulty = getItemDifficulty(auction.bonusIds)
             if (difficulties.value.size > 0 && (itemDifficulty === undefined || !difficulties.value.has(itemDifficulty))) {
+                return false
+            }
+        }
+
+        if (enableUpgradeFilter.value) {
+            const itemUpgrade = getItemUpgrade(auction.bonusIds)?.currentLvl ?? UPGRADE_LIMIT.MIN
+            if (itemUpgrade < minUpgrade.value) {
                 return false
             }
         }
@@ -165,6 +177,10 @@ export const useFilterStore = defineStore('Filter', () => {
             queryFilters.difficulty = exportNumSet(difficulties.value)
         }
 
+        if (minUpgrade.value > UPGRADE_LIMIT.MIN) {
+            queryFilters.minUpgrade = minUpgrade.value.toString()
+        }
+
         if (tertiaries.value.size > 0) {
             queryFilters.tertiaries = exportNumSet(tertiaries.value)
         }
@@ -222,6 +238,13 @@ export const useFilterStore = defineStore('Filter', () => {
             difficulties.value = new Set(importedDifficulties)
         }
 
+        if (queryFilters.minUpgrade) {
+            const importedMinUpgrade = parseInt(queryFilters.minUpgrade)
+            if (!isNaN(importedMinUpgrade)) {
+                minUpgrade.value = clamp(importedMinUpgrade, UPGRADE_LIMIT.MIN, UPGRADE_LIMIT.MAX)
+            }
+        }
+
         if (queryFilters.tertiaries) {
             const validTertiaries = ALL_TERTIARIES.map((tertiary) => tertiary.bonusId)
             const importedTertiaries = importNumArray<Tertiary>(queryFilters.tertiaries, validTertiaries)
@@ -244,6 +267,7 @@ export const useFilterStore = defineStore('Filter', () => {
         maxBuyout,
         mustHaveSocket,
         difficulties,
+        minUpgrade,
         tertiaries,
         secondaries,
 
@@ -251,6 +275,7 @@ export const useFilterStore = defineStore('Filter', () => {
         currentTierBoes,
 
         enableDifficultyFilter,
+        enableUpgradeFilter,
         enableSocketFilter,
         enableTertiaryFilter,
         enableSecondaryFilter,

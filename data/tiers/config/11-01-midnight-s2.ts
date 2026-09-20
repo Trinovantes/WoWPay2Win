@@ -43,6 +43,7 @@ const config: TierConfig = {
     ],
     features: {
         enableDifficultyFilter: true,
+        enableUpgradeFilter: true,
         enableSocketFilter: true,
         enableTertiaryFilter: true,
         enableSecondaryFilter: true,
