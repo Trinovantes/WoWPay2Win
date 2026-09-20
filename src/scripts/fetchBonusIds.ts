@@ -3,33 +3,53 @@ import path from 'node:path'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { SECONDARY, type Secondary, type Difficulty, DIFFICULTY } from '../common/ItemBonusId.ts'
-import { DIFFICULTY_BONUS_ID_DATA_FILE, SECONDARY_BONUS_ID_DATA_FILE, SOCKET_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
+import { DIFFICULTY_BONUS_ID_DATA_FILE, RAIDBOTS_BONUS_ID_DATA_FILE, SECONDARY_BONUS_ID_DATA_FILE, SOCKET_BONUS_ID_DATA_FILE } from '../common/Constants.ts'
 import type { BonusId } from '../common/api/BnetResponse.ts'
+import { existsSync } from 'node:fs'
 
-type RaidbotsBonusJson = Record<string, unknown>
+type RaidbotsBonusIds = Record<string, unknown>
 
-async function saveCache<T>(cache: Array<T>, filePath: string): Promise<void> {
+async function saveCache<T>(cache: T, filePath: string): Promise<void> {
     const fileContents = __IS_DEV__
         ? JSON.stringify(cache, null, 4)
         : JSON.stringify(cache)
 
-    console.info(`Saving ${Object.keys(cache).length} bonusIds to ${filePath}`)
+    if (Array.isArray(cache)) {
+        console.info(`Saving ${cache.length} bonusIds to ${filePath}`)
+    } else {
+        console.info(`Saving ${filePath}`)
+    }
+
     await fs.writeFile(filePath, fileContents, 'utf-8')
 }
 
-async function main() {
-    const res = await fetch('https://www.raidbots.com/static/data/live/bonuses.json')
-    const bonusJson = await res.json() as RaidbotsBonusJson
+async function fetchRaidbotsBonusIds(): Promise<RaidbotsBonusIds> {
+    const raidbotsBonusIdsFilePath = path.resolve(RAIDBOTS_BONUS_ID_DATA_FILE)
 
-    const secondaryBonusIds = getSecondaryBonusIds(bonusJson)
+    if (!existsSync(RAIDBOTS_BONUS_ID_DATA_FILE)) {
+        const res = await fetch('https://www.raidbots.com/static/data/live/bonuses.json')
+        const bonusIds = await res.json() as RaidbotsBonusIds
+        await saveCache(bonusIds, raidbotsBonusIdsFilePath)
+    }
+
+    const bonusIdsJson = (await fs.readFile(raidbotsBonusIdsFilePath)).toString('utf-8')
+    const bonusIds = JSON.parse(bonusIdsJson) as RaidbotsBonusIds
+
+    return bonusIds
+}
+
+async function main() {
+    const bonusIds = await fetchRaidbotsBonusIds()
+
+    const secondaryBonusIds = getSecondaryBonusIds(bonusIds)
     const secondaryBonusIdsFilePath = path.resolve(SECONDARY_BONUS_ID_DATA_FILE)
     await saveCache(secondaryBonusIds, secondaryBonusIdsFilePath)
 
-    const socketBonusIds = getSocketBonusIds(bonusJson)
+    const socketBonusIds = getSocketBonusIds(bonusIds)
     const socketBonusIdsFilePath = path.resolve(SOCKET_BONUS_ID_DATA_FILE)
     await saveCache(socketBonusIds, socketBonusIdsFilePath)
 
-    const difficultyBonusIds = getDifficultyBonusIds(bonusJson)
+    const difficultyBonusIds = getDifficultyBonusIds(bonusIds)
     const difficultyBonusIdsFilePath = path.resolve(DIFFICULTY_BONUS_ID_DATA_FILE)
     await saveCache(difficultyBonusIds, difficultyBonusIdsFilePath)
 }
@@ -62,10 +82,10 @@ export type SecondaryBonusIdsCacheFile = Array<
     [BonusId, Array<Secondary>]
 >
 
-function getSecondaryBonusIds(bonusJson: RaidbotsBonusJson): SecondaryBonusIdsCacheFile {
+function getSecondaryBonusIds(bonusIds: RaidbotsBonusIds): SecondaryBonusIdsCacheFile {
     const cache: SecondaryBonusIdsCacheFile = []
 
-    for (const bonusIdData of Object.values(bonusJson)) {
+    for (const bonusIdData of Object.values(bonusIds)) {
         if (!secondaryValidator.Check(bonusIdData)) {
             continue
         }
@@ -108,10 +128,10 @@ const socketyValidator = TypeCompiler.Compile(socketBonusSchema)
 
 export type SocketBonusIdsCacheFile = Array<BonusId>
 
-function getSocketBonusIds(bonusJson: RaidbotsBonusJson): SocketBonusIdsCacheFile {
+function getSocketBonusIds(bonusIds: RaidbotsBonusIds): SocketBonusIdsCacheFile {
     const cache: SocketBonusIdsCacheFile = []
 
-    for (const bonusIdData of Object.values(bonusJson)) {
+    for (const bonusIdData of Object.values(bonusIds)) {
         if (!socketyValidator.Check(bonusIdData)) {
             continue
         }
@@ -139,10 +159,10 @@ export type DifficultyBonusIdsCacheFile = Array<
     [BonusId, Difficulty]
 >
 
-function getDifficultyBonusIds(bonusJson: RaidbotsBonusJson): DifficultyBonusIdsCacheFile {
+function getDifficultyBonusIds(bonusIds: RaidbotsBonusIds): DifficultyBonusIdsCacheFile {
     const cache: DifficultyBonusIdsCacheFile = []
 
-    for (const bonusIdData of Object.values(bonusJson)) {
+    for (const bonusIdData of Object.values(bonusIds)) {
         if (!difficultyValidator.Check(bonusIdData)) {
             continue
         }
