@@ -49,7 +49,7 @@ const selectedDifficulty = computed<SelectedDifficulty>({
 
         <template v-if="filterStore.enableUpgradeFilter">
             <h2>
-                Minimum Item Upgrade
+                Min Item Upgrade
             </h2>
 
             <q-slider
