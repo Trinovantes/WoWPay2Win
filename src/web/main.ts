@@ -39,7 +39,7 @@ async function main() {
                 Sentry.browserTracingIntegration({ router }),
             ],
             tracesSampleRate: 0,
-            profilesSampleRate: 0,
+            profileSessionSampleRate: 0,
         })
     }
 

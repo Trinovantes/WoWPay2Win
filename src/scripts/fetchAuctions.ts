@@ -36,7 +36,7 @@ async function main() {
         dsn: SENTRY_DSN,
         release: __GIT_HASH__,
         tracesSampleRate: 0.1,
-        profilesSampleRate: 0.0,
+        profileSessionSampleRate: 0.0,
         enabled: !__IS_DEV__,
     })
 

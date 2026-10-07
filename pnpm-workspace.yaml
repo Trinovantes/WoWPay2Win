@@ -1,11 +1,12 @@
 patchedDependencies:
-  quasar: patches/quasar.patch
+  'quasar': patches/quasar.patch
 
 overrides:
-  '@types/node': '^24'
+  '@types/node': '^26'
+  'typescript': '^6'
 
 allowBuilds:
   '@parcel/watcher': false
   '@sentry/cli': false
-  esbuild: false
-  sharp: false
+  'esbuild': false
+  'sharp': false
