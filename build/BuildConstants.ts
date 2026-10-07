@@ -7,6 +7,7 @@ const rootDir = path.resolve()
 
 export const isDev = (process.env.NODE_ENV !== 'production')
 export const gitHash = getGitHash(rootDir)
+export const publicPath = '/assets/'
 
 export const distDir = path.resolve(rootDir, 'dist')
 export const distScriptsDir = path.resolve(distDir, 'scripts')

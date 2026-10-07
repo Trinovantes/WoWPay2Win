@@ -14,10 +14,14 @@
     header Content-Security-Policy "default-src 'self'; object-src 'none'; base-uri 'self'; {vars.CSP_SCRIPT}; {vars.CSP_STYLE}; {vars.CSP_FONT}; {vars.CSP_IMG}; {vars.CSP_CONNECT};"
 
     @data path /data/*
-    @static path *.js *.css *.png *.jpg *.ico *.svg *.woff2
-    @html expression `path('/') || path('/index.html')`
-
     header @data Cache-Control "public, max-age=1800, s-maxage=1800, must-revalidate"
+
+    @static path /assets/*
     header @static Cache-Control "public, max-age=31536000, immutable"
+
+    @html not path /assets/* /data/*
     header @html Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+
+    @favicon path /favicon.*
+    header @favicon Cache-Control "public, max-age=86400, must-revalidate"
 }

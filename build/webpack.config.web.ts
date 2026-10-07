@@ -5,10 +5,11 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { QuasarUnusedPlugin } from 'quasar-unused-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import merge from 'webpack-merge'
-import { srcWebDir, distWebDir, isDev, staticDir } from './BuildConstants.ts'
+import { srcWebDir, distWebDir, isDev, staticDir, publicPath } from './BuildConstants.ts'
 import { isAnalyze } from './BuildSecret.ts'
 import { AUCTIONS_DATA_DIR } from '../src/common/Constants.ts'
 import { commonConfig } from './webpack.common.ts'
+import path from 'node:path'
 
 // ----------------------------------------------------------------------------
 // Web
@@ -22,8 +23,8 @@ export default merge.default(commonConfig, {
     },
 
     output: {
-        path: distWebDir,
-        publicPath: '/',
+        path: path.join(distWebDir, publicPath),
+        publicPath: publicPath,
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
@@ -31,7 +32,23 @@ export default merge.default(commonConfig, {
 
     devServer: {
         historyApiFallback: true,
+        devMiddleware: {
+            index: 'index.html',
+            writeToDisk: (filePath) => {
+                // Since output.publicPath is '/assets', index.html can only be accessed at /assets/index.html
+                // Instead, we need to write it to disk and have webpack-dev-server serve it from '/'
+                return filePath.endsWith('.html')
+            },
+        },
         static: [
+            {
+                directory: distWebDir,
+                publicPath: '/',
+            },
+            {
+                directory: staticDir,
+                publicPath: '/',
+            },
             {
                 directory: AUCTIONS_DATA_DIR,
                 publicPath: '/data',
@@ -82,6 +99,7 @@ export default merge.default(commonConfig, {
             patterns: [
                 {
                     from: staticDir,
+                    to: distWebDir,
                 },
             ],
         }),
@@ -91,7 +109,8 @@ export default merge.default(commonConfig, {
                 : '[name].[contenthash].css',
         }),
         new HtmlWebpackPlugin({
-            template: `${srcWebDir}/index.html`,
+            template: path.resolve(srcWebDir, 'index.html'),
+            filename: path.resolve(distWebDir, 'index.html'),
         }),
     ],
 })
