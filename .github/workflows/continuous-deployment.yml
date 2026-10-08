@@ -70,6 +70,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache game data
+        uses: actions/cache@v6
+        with:
+          key: generated-data-${{ hashFiles('./data/tiers/config/*.ts') }}
+          restore-keys: generated-data-
+          path: |
+            ./data/items/generated
+            ./data/items/icons
+            ./data/regions/generated
+
+      - name: Fetch game data
+        run: |
+          pnpm fetchBonusIds
+          pnpm fetchItems
+
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
